@@ -6,6 +6,6 @@
     "url": "https://github.com/alexeylovchikov/eye-extended-shell-extension/",
     "gettext-domain": "eye-extended",
     "settings-schema": "org.gnome.shell.extensions.eye-extended",
-    "version": 14,
+    "version": 16,
     "version-name": "3.0.0-alpha.1"
 }
