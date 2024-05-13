@@ -1,525 +1,151 @@
-/* extension.js
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-'use strict';
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: Contributors to the eye-extended-shell-extension.
 
-const Main = imports.ui.main;// access to the panel menu;
-const PanelMenu = imports.ui.panelMenu;// object classes for items in the panel
-const PopupMenu = imports.ui.popupMenu;
-const Panel = imports.ui.panel;// libraries for the panel area
-const Mainloop = imports.mainloop;// library for drawing and animating the eye
-const { Atspi, Clutter, GLib , GObject, Gio, St } = imports.gi;// graphic objects libraries;
-const ExtensionUtils = imports.misc.extensionUtils;// access to settings from schema
-const Me = ExtensionUtils.getCurrentExtension();
+//#region Import libraries
+import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
+import St from 'gi://St';
 
-let settings = null;// create a global variable to connect user settings
-let eye = null;// create the variable to hold our extension object
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+//#endregion
 
-// Class to create the Eye
-const Eye = GObject.registerClass({},
-    class Eye extends PanelMenu.Button {
+//#region Defining Panel button
+const EyeExtended = GObject.registerClass(
+    class EyeExtended extends PanelMenu.Button {
+        _init(extensionObject) {
+            // Call the class
+            super._init(0.0, extensionObject.metadata.name, false);
 
-        // Create/return a cache directory for thumbnails
-        _initDataDir() {
-            let data_dir = `${GLib.get_user_cache_dir()}/${Me.metadata['gettext-domain']}`;
-            if (GLib.mkdir_with_parents(`${data_dir}/icons`, 0o777) < 0)
-                throw new Error(`Failed to create cache dir at ${data_dir}`);
-            return data_dir;
+            // Get extension object properties
+            this._metadata = extensionObject.metadata;
+            this._path = extensionObject.path;
+            this._settings = extensionObject.getSettings();
+
+            //#region Get starting configuration
+            this.trackerShape = this._settings.get_string('tracker-shape');
+
+            this.trackerColorDefault = this._settings.get_string('tracker-color-default');
+            this.trackerColorLeft = this._settings.get_string('tracker-color-left');
+            this.trackerColorMiddle = this._settings.get_string('tracker-color-middle');
+            this.trackerColorRight = this._settings.get_string('tracker-color-right');
+            //#endregion
+
+            // this.trackerCacheDir = this._trackerGetCacheDir();
+            //this._trackerCreateCacheIcon();
+            this._trackerCreateCacheIcons();
+
+            this.add_child(
+                new St.Icon({
+                    gicon: Gio.icon_new_for_string(`${this._path}/media/eye-extended-logo.svg`),
+                    style_class: 'system-status-icon',
+                })
+            );
+
+            //#region add popups
+            const trackerPopup = new PopupMenu.PopupImageMenuItem(
+                _('Toggle Tracker'),
+                'view-reveal-symbolic'
+            );
+            this.menu.addMenuItem(trackerPopup);
+            trackerPopup.connect('activate', () =>
+                Main.notify(_('Tracker Toggle'), _('You toggled the tracker!'))
+            );
+
+            const prefsPopup = new PopupMenu.PopupImageMenuItem(
+                _('Settings'),
+                'org.gnome.Settings-symbolic'
+            );
+            this.menu.addMenuItem(prefsPopup);
+            prefsPopup.connect('activate', () => extensionObject.openPreferences());
+            //#endregion
         }
 
-        _init(settings) {
+        //#region Tracker functions
 
-            
-            // Load superclass method
-            PanelMenu.Button.prototype._init.call(this, "");
-
-            // Load parameters for Eye
-            this.eye_mode = settings.get_string('eye-mode');
-            this.eye_position = settings.get_string('eye-position');
-            this.eye_position_weight = settings.get_int('eye-position-weight');
-            this.eye_line_width = settings.get_double('eye-line-width');
-            this.eye_margin = settings.get_double('eye-margin');
-            this.eye_repaint_interval = settings.get_int('eye-repaint-interval');
-
-            // Load parameters for Mouse circle
-            this.mouse_circle_mode = settings.get_int('mouse-circle-mode');
-            this.mouse_circle_size = settings.get_int('mouse-circle-size');
-            this.mouse_circle_opacity = settings.get_int('mouse-circle-opacity');
-            this.mouse_circle_repaint_interval = settings.get_int('mouse-circle-repaint-interval');
-            this.mouse_circle_enable = settings.get_boolean('mouse-circle-enable');
-            this.mouse_circle_left_click_enable = settings.get_boolean('mouse-circle-left-click-enable');
-            this.mouse_circle_right_click_enable = settings.get_boolean('mouse-circle-right-click-enable');
-            this.mouse_circle_middle_click_enable = settings.get_boolean('mouse-circle-middle-click-enable');
-
-            // Load parameters for Mouse circle color
-            this.mouse_circle_color = settings.get_string('mouse-circle-color');
-            this.mouse_circle_left_click_color = settings.get_string('mouse-circle-left-click-color');
-            this.mouse_circle_right_click_color = settings.get_string('mouse-circle-right-click-color');
-            this.mouse_circle_middle_click_color = settings.get_string('mouse-circle-middle-click-color');
-
-            this.mouse_circle_show = false;
-            this.mouse_pointer = null;
-            this.data_dir = this._initDataDir();
-
-            this.area = new St.DrawingArea();
-            this.add_actor(this.area);
-            this.connect('button-press-event', this._eyeClick.bind(this));
-            this.connect('touch-event', this._eyeClick.bind(this));
-
-            Atspi.init();
-            this._mouseListener = Atspi.EventListener.new(this._mouseCircleClick.bind(this));
-
-            this.setActive(true);
-            this.setMouseCirclePropertyUpdate();
-
-            this._last_mouse_x_pos = undefined;
-            this._last_mouse_y_pos = undefined;
-
-            const settingsItem = new PopupMenu.PopupMenuItem('Settings');
-            settingsItem.connect('activate', () => { ExtensionUtils.openPrefs(); });
-            this.menu.addMenuItem(settingsItem);
+        // Create/return a cache directory for colored trackers
+        _trackerGetCacheDir() {
+            const cacheDir = `${GLib.get_user_cache_dir()}/${this._metadata.uuid}/trackers`;
+            if (GLib.mkdir_with_parents(cacheDir, 0o755) < 0)
+                throw new Error(`Failed to create cache dir at ${cacheDir}`);
+            return cacheDir;
         }
 
-        destroy() {
-            this.setMouseCircleActive(false);
-            this.setActive(false);
-            this.area.destroy();
-            super.destroy();
-        }
-
-        setActive(enabled) {
-            this.setEyePropertyUpdate();
-
-            if(this._repaint_handler) {
-                this.area.disconnect(this._repaint_handler);
-                this._repaint_handler = null;
-            }
-
-            if(this._eye_update_handler) {
-                Mainloop.source_remove(this._eye_update_handler);
-                this._eye_update_handler = null;
-            }
-
-            if(this._mouse_circle_update_handler) {
-                Mainloop.source_remove(this._mouse_circle_update_handler);
-                this._mouse_circle_update_handler = null;
-            }
-
-            if (enabled) {
-                this._repaint_handler = this.area.connect("repaint", this._eyeDraw.bind(this));
-
-                this._eye_update_handler = Mainloop.timeout_add(
-                    this.eye_repaint_interval, this._eyeTimeout.bind(this)
-                );
-
-                this.area.queue_repaint();
+        _trackerCreateCacheIcons() {
+            // Create cache for all current colors at once
+            // [].foreach ...
+            const cachedSVGpath = `${this._trackerGetCacheDir()}/${this.trackerShape}_${this.trackerColorDefault}.svg`;
+            const cachedSVG = Gio.File.new_for_path(cachedSVGpath);
+            if (!cachedSVG.query_exists(null)) {
+                cachedSVG.create(Gio.FileCreateFlags.NONE, null);
             }
         }
 
-        // MOUSE CIRCLE FUNCTIONS
-
-        _mouseCircleCreateDataIcon(name, color) {
-            // Load content
-            let source = Gio.File.new_for_path(`${Me.path}/circle/${this.mouse_circle_mode}.svg`);
-            let [l_success, contents] = source.load_contents(null);
-            contents = imports.byteArray.toString(contents);
-
-            // Replace to new color
-            contents = contents.replace('fill="#000000"', `fill="${color}"`);
-
-            // Save content to cache dir
-            let dest = Gio.File.new_for_path(`${this.data_dir}/icons/${this.mouse_circle_mode}_${name}_${color}.svg`);
-            if (!dest.query_exists(null)) {
-                dest.create(Gio.FileCreateFlags.NONE, null);
-            }
-            let [r_success, tag] = dest.replace_contents(contents, null, false, Gio.FileCreateFlags.REPLACE_DESTINATION, null);
-        }
-
-        _mouseCircleTimeout() {
-            if (this.mouse_pointer) {
-                let [mouse_x, mouse_y, mask] = global.get_pointer();
-                this.mouse_pointer.set_position(
-                    mouse_x - (this.mouse_circle_size / 2),
-                    mouse_y - (this.mouse_circle_size / 2)
-                );
-            }
-            return true;
-        }
-
-        _mouseCircleClick(event) {
-
-            let clickAnimation = function(self, click_type, color) {
-                let [mouse_x, mouse_y, mask] = global.get_pointer();
-                let actor_scale = self.mouse_circle_size > 20 ? 1.5 : 3;
-
-                if (self.mouse_pointer) {
-                    self.mouse_pointer.gicon = Gio.icon_new_for_string(`${self.data_dir}/icons/${self.mouse_circle_mode}_${click_type}_${color}.svg`);
-                }
-
-                let actor = new St.Icon({
-                    x: mouse_x - (self.mouse_circle_size / 2),
-                    y: mouse_y - (self.mouse_circle_size / 2),
-                    reactive : false,
-                    can_focus : false,
-                    track_hover : false,
-                    icon_size : self.mouse_circle_size,
-                    opacity : self.mouse_circle_opacity,
-                    gicon : Gio.icon_new_for_string(`${self.data_dir}/icons/${self.mouse_circle_mode}_${click_type}_${color}.svg`)
-                });
-
-                Main.uiGroup.add_child(actor);
-
-                actor.ease({
-                    x: mouse_x - (self.mouse_circle_size * actor_scale / 2),
-                    y: mouse_y - (self.mouse_circle_size * actor_scale / 2),
-                    scale_x: actor_scale,
-                    scale_y: actor_scale,
-                    opacity: 0,
-                    duration: 500,
-                    mode: Clutter.AnimationMode.EASE_OUT_QUAD,
-                    onComplete: function () {
-                        Main.uiGroup.remove_child(actor);
-                        actor.destroy();
-                        actor = null;
-
-                        if (self.mouse_pointer) {
-                            self.mouse_pointer.gicon = Gio.icon_new_for_string(`${self.data_dir}/icons/${self.mouse_circle_mode}_default_${self.mouse_circle_color}.svg`);
-                        }
-                    }
-                });
-            };
-
-            switch (event.type) {
-                case 'mouse:button:1p':
-                    if (this.mouse_circle_left_click_enable)
-                        clickAnimation(this,'left_click', this.mouse_circle_left_click_color);
-                    break;
-                case 'mouse:button:2p':
-                    if (this.mouse_circle_middle_click_enable)
-                        clickAnimation(this,'middle_click', this.mouse_circle_middle_click_color);
-                    break;
-                case 'mouse:button:3p':
-                    if (this.mouse_circle_right_click_enable)
-                        clickAnimation(this,'right_click', this.mouse_circle_right_click_color);
-                    break;
-            }
-        }
-
-        setMouseCirclePropertyUpdate() {
-            this._mouseCircleCreateDataIcon('default', this.mouse_circle_color);
-            this._mouseCircleCreateDataIcon('left_click', this.mouse_circle_left_click_color);
-            this._mouseCircleCreateDataIcon('right_click', this.mouse_circle_right_click_color);
-            this._mouseCircleCreateDataIcon('middle_click', this.mouse_circle_middle_click_color);
-
-            if (this.mouse_pointer) {
-                this.mouse_pointer.icon_size = this.mouse_circle_size;
-                this.mouse_pointer.opacity = this.mouse_circle_enable ? this.mouse_circle_opacity : 0;
-                this.mouse_pointer.gicon = Gio.icon_new_for_string(`${this.data_dir}/icons/${this.mouse_circle_mode}_default_${this.mouse_circle_color}.svg`);
-            }
-        }
-
-        setMouseCircleActive(enabled) {
-            if (enabled == null) {
-                enabled = this.mouse_circle_show;
-            }
-
-            if (this.mouse_pointer) {
-                Main.uiGroup.remove_child(this.mouse_pointer);
-                this.mouse_pointer.destroy();
-                this.mouse_pointer = null;
-            }
-
-            if (enabled) {
-                this._mouse_circle_update_handler = Mainloop.timeout_add(
-                    this.mouse_circle_repaint_interval, this._mouseCircleTimeout.bind(this)
-                );
-
-                this.mouse_pointer = new St.Icon({
-                    reactive : false,
-                    can_focus : false,
-                    track_hover : false,
-                    icon_size: this.mouse_circle_size,
-                    opacity: this.mouse_circle_opacity,
-                    gicon: Gio.icon_new_for_string(`${this.data_dir}/icons/${this.mouse_circle_mode}_default_${this.mouse_circle_color}.svg`)
-                });
-                Main.uiGroup.add_child(this.mouse_pointer);
-
-                this.setMouseCirclePropertyUpdate();
-                this._mouseCircleTimeout();
-
-                this._mouseListener.register('mouse');
-            } else {
-                if(this._mouse_circle_update_handler) {
-                    Mainloop.source_remove(this._mouse_circle_update_handler);
-                    this._mouse_circle_update_handler = null;
-                }
-
-                this._mouseListener.deregister('mouse');
-            }
-        }
-
-        // EYE FUNCTIONS
-
-        _eyeTimeout() {
-            let [mouse_x, mouse_y, mask] = global.get_pointer();
-
-            if (this._last_mouse_x_pos !== mouse_x || this._last_mouse_y_pos !== mouse_y) {
-                this._last_mouse_x_pos = mouse_x;
-                this._last_mouse_y_pos = mouse_y;
-                this.area.queue_repaint();
-            }
-
-            return true;
-        }
-
-        _eyeClick(actor, event) {
-            if (event.get_button() === Clutter.BUTTON_PRIMARY) {
-                this.menu.close();
-                this.mouse_circle_show = !this.mouse_circle_show;
-                this.setMouseCircleActive(this.mouse_circle_show);
-                this.area.queue_repaint();
-            }
-        }
-
-        _eyeDraw(area) {
-            let get_pos = function(self)
-            {
-                let area_x = 0;
-                let area_y = 0;
-
-                let obj = self.area;
-                do
-                {
-                    let tx = 0;
-                    let ty = 0;
-                    try {
-                        [tx, ty] = obj.get_position();
-                    } catch {
-                    }
-                    area_x += tx;
-                    area_y += ty;
-                    obj = obj.get_parent();
-                }
-                while(obj);
-
-                return [area_x, area_y];
-            };
-
-            let [area_width, area_height] = area.get_surface_size();
-            let [area_x, area_y] = get_pos(this);
-            area_x += area_width / 2;
-            area_y += area_height / 2;
-
-            let [mouse_x, mouse_y, mask] = global.get_pointer();
-            mouse_x -= area_x;
-            mouse_y -= area_y;
-
-            let mouse_ang = Math.atan2(mouse_y, mouse_x);
-            let mouse_rad = Math.sqrt(mouse_x * mouse_x + mouse_y * mouse_y);
-
-            let eye_rad;
-            let iris_rad;
-            let pupil_rad;
-            let max_rad;
-
-            if(this.eye_mode === "bulb")
-            {
-                eye_rad = (area_height) / 2.3;
-                iris_rad = eye_rad * 0.6;
-                pupil_rad = iris_rad * 0.4;
-
-                max_rad = eye_rad * Math.cos(Math.asin((iris_rad) / eye_rad) ) - this.eye_line_width;
-            }
-
-            if(this.eye_mode === "lids")
-            {
-                eye_rad = (area_height) / 2;
-                iris_rad = eye_rad * 0.5;
-                pupil_rad = iris_rad * 0.4;
-
-                max_rad = eye_rad * (Math.pow(Math.cos(mouse_ang), 4) * 0.5 + 0.25)
-            }
-
-            if(mouse_rad > max_rad)
-                mouse_rad = max_rad;
-
-            let iris_arc = Math.asin(iris_rad / eye_rad);
-            let iris_r = eye_rad * Math.cos(iris_arc);
-
-            let eye_ang = Math.atan(mouse_rad / iris_r);
-
-            let cr = area.get_context();
-            let theme_node = this.area.get_theme_node();
-
-            if (this.mouse_circle_show) {
-                let [ok, color] = Clutter.Color.from_string(this.mouse_circle_color);
-                Clutter.cairo_set_source_color(cr, ok ? color : theme_node.get_foreground_color());
-            } else {
-                Clutter.cairo_set_source_color(cr, theme_node.get_foreground_color());
-            }
-
-            cr.translate(area_width * 0.5, area_height * 0.5);
-            cr.setLineWidth(this.eye_line_width);
-
-            if(this.eye_mode === "bulb")
-            {
-                cr.arc(0,0, eye_rad, 0,2 * Math.PI);
-                cr.stroke();
-            }
-
-            if(this.eye_mode === "lids")
-            {
-                let x_def = iris_rad * Math.cos(mouse_ang) * (Math.sin(eye_ang));
-                let y_def = iris_rad * Math.sin(mouse_ang) * (Math.sin(eye_ang));
-                let amp;
-
-                let top_lid = 0.8;
-                let bottom_lid = 0.6
-
-                amp = eye_rad * top_lid;
-                cr.moveTo(-eye_rad, 0);
-                cr.curveTo(x_def-iris_rad, y_def + amp,
-                            x_def + iris_rad, y_def + amp, eye_rad, 0);
-
-                amp = eye_rad * bottom_lid;
-                cr.curveTo(x_def + iris_rad, y_def - amp,
-                            x_def - iris_rad, y_def - amp, -eye_rad, 0);
-                cr.stroke();
-
-                amp = eye_rad * top_lid;
-                cr.moveTo(-eye_rad, 0);
-                cr.curveTo(x_def - iris_rad, y_def + amp,
-                            x_def + iris_rad, y_def + amp, eye_rad, 0);
-
-                amp = eye_rad * bottom_lid;
-                cr.curveTo(x_def + iris_rad, y_def - amp,
-                            x_def - iris_rad, y_def - amp, -eye_rad, 0);
-                cr.clip();
-            }
-
-            cr.rotate(mouse_ang);
-            cr.setLineWidth(this.eye_line_width / iris_rad);
-
-            cr.translate(iris_r * Math.sin(eye_ang), 0);
-            cr.scale(iris_rad * Math.cos(eye_ang), iris_rad);
-            cr.arc(0,0, 1.0, 0,2 * Math.PI);
-            cr.stroke();
-            cr.scale(1 / (iris_rad * Math.cos(eye_ang)), 1 / iris_rad);
-            cr.translate(-iris_r * Math.sin(eye_ang), 0);
-
-            cr.translate(eye_rad * Math.sin(eye_ang), 0);
-            cr.scale(pupil_rad * Math.cos(eye_ang), pupil_rad);
-            cr.arc(0,0, 1.0, 0,2 * Math.PI);
-            cr.fill();
-
-            cr.save();
-            cr.restore();
-            cr.$dispose();
-        }
-
-        setEyePropertyUpdate() {
-            Main.panel.addToStatusArea('EyeExtended'+ Math.random(), this, this.eye_position_weight, this.eye_position);
-            this.area.set_width((Panel.PANEL_ICON_SIZE * 2) - (2 * this.eye_margin));
-            this.area.set_height(Panel.PANEL_ICON_SIZE - (2 * this.eye_margin));
-            this.set_width(Panel.PANEL_ICON_SIZE * (2 * this.eye_margin));
-            this.area.queue_repaint();
-        }
-});
-
-function setEyePropertyUpdate() {
-    if (eye) {
-        eye.eye_mode = settings.get_string('eye-mode');
-        eye.eye_position = settings.get_string('eye-position');
-        eye.eye_position_weight = settings.get_int('eye-position-weight');
-        eye.eye_line_width = settings.get_double('eye-line-width');
-        eye.eye_margin = settings.get_double('eye-margin');
-        eye.setEyePropertyUpdate();
-
-        eye.mouse_circle_mode = settings.get_int('mouse-circle-mode');
-        eye.mouse_circle_size = settings.get_int('mouse-circle-size');
-        eye.mouse_circle_opacity = settings.get_int('mouse-circle-opacity');
-        eye.mouse_circle_enable = settings.get_boolean('mouse-circle-enable');
-        eye.mouse_circle_left_click_enable = settings.get_boolean('mouse-circle-left-click-enable');
-        eye.mouse_circle_right_click_enable = settings.get_boolean('mouse-circle-right-click-enable');
-        eye.mouse_circle_middle_click_enable = settings.get_boolean('mouse-circle-middle-click-enable');
-
-        eye.mouse_circle_color = settings.get_string('mouse-circle-color');
-        eye.mouse_circle_left_click_color = settings.get_string('mouse-circle-left-click-color');
-        eye.mouse_circle_right_click_color = settings.get_string('mouse-circle-right-click-color');
-        eye.mouse_circle_middle_click_color = settings.get_string('mouse-circle-middle-click-color');
-        eye.setMouseCirclePropertyUpdate();
-    }
+        /*     // Get the current tracker color
+_trackerGetCurrentColor() {
+const colorIndex = this._settings.get_int('tracker-color-index');
+const colorKey = `tracker-color-${colorIndex}`;
+return this._settings.get_string(colorKey);
 }
 
-function setEyeRepaintInterval() {
-    if (eye) {
-        eye.eye_repaint_interval = settings.get_int('eye-repaint-interval');
-        eye.setActive(true);
+// Create current tracker
+_trackerCreateCacheIcon() {
+// load shape
+const sourceSVG = Gio.File.new_for_path(`${this._path}/media/glyphs/${this.trackerShape}.svg`);
+let [l_success, contents] = sourceSVG.load_contents(null);
+contents = imports.TextDecoder.toString(contents);
+
+// replace color
+contents = contents.replace('#000000', `${this.trackerColor}`);
+
+// save colored shape to cache
+
+const cacheSVG = Gio.File.new_for_path(`${this.trackerCacheDir}/${this.trackerShape}_${this.trackerColor}.svg`);
+if (!cacheSVG.query_exists(null))
+    cacheSVG.create(Gio.FileCreateFlags.NONE, null);
+let [r_success, tag] = cacheSVG.replace_contents(contents, null, false, Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+console.log('@@@Cached Tracker Shape File: ' + `${this.trackerCacheDir}/${this.trackerShape}_${this.trackerColor}.svg`);
+} */
+
+        //#endregion
     }
-}
+);
+//#endregion
 
-function setMouseCircleRepaintInterval() {
-    if (eye) {
-        eye.mouse_circle_repaint_interval = settings.get_int('mouse-circle-repaint-interval');
-        eye.setMouseCircleActive(null);
-    }
-}
+//#region Launching extension
+export default class EyeExtendedExtension extends Extension {
+    /**
+     * This class is constructed once when your extension is loaded, not
+     * enabled. This is a good time to setup translations or anything else you
+     * only do once.
+     *
+     * You MUST NOT make any changes to GNOME Shell, create any objects,
+     * connect any signals or add any event sources here.
+     *
+     * @param {this} Extension - this extension object
+     */
 
-function init() {}// launch the extension
-
-// Run when the extension is enabled
-function enable() {
-    settings = ExtensionUtils.getSettings();
-
-    // Connect the changing of any value to an update function
-    settings.connect('changed::eye-mode', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::eye-position', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::eye-position-weight', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::eye-line-width', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::eye-margin', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::eye-repaint-interval', setEyeRepaintInterval.bind(this));
-
-    settings.connect('changed::mouse-circle-mode', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::mouse-circle-size', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::mouse-circle-opacity', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::mouse-circle-repaint-interval', setMouseCircleRepaintInterval.bind(this));
-    settings.connect('changed::mouse-circle-enable', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::mouse-circle-left-click-enable', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::mouse-circle-right-click-enable', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::mouse-circle-middle-click-enable', setEyePropertyUpdate.bind(this));
-
-    settings.connect('changed::mouse-circle-color', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::mouse-circle-left-click-color', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::mouse-circle-right-click-color', setEyePropertyUpdate.bind(this));
-    settings.connect('changed::mouse-circle-middle-click-color', setEyePropertyUpdate.bind(this));
-
-    eye = new Eye(settings);
-}
-
-// Run when extension is disabled
-function disable() {
-    if (eye) {
-        eye.destroy();
-        eye = null;
+    // Runs when the extension is enabled or the desktop session is logged in or unlocked
+    // Create objects, connect signals and add main loop sources
+    enable() {
+        this.eyeButton = new EyeExtended(this);
+        Main.panel.addToStatusArea(
+            this.uuid,
+            this.eyeButton,
+            this.getSettings().get_int('eye-index'),
+            this.getSettings().get_string('eye-position')
+        );
     }
 
-    if (settings) {
-        settings.run_dispose();
-        settings = null;
+    // Runs when the extension is disabled, uninstalled or the desktop session is exited or locked
+    // Cleanup anything done in enable()
+    disable() {
+        this.eyeButton.destroy();
+        this.eyeButton = null;
     }
 }
+//#endregion
