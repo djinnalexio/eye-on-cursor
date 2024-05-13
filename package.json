@@ -1,0 +1,38 @@
+{
+    "name": "eye-extended-shell-extension",
+    "version": "3.0.0-alpha.1",
+    "description": "Your desktop just can’t look away!\n\nAdd an eyeball to your panel that will always stare right at your mouse. It comes with a customizable cursor indicator that highlights clicks to make sure that your pointer gets all the attention.",
+    "author": "alexeylovchikov",
+    "license": "GPL-3.0-or-later",
+    "main": "eye-extended@als.kz/extension.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/alexeylovchikov/eye-extended-shell-extension.git"
+    },
+    "homepage": "https://github.com/alexeylovchikov/eye-extended-shell-extension#readme",
+    "bugs": {
+        "url": "https://github.com/alexeylovchikov/eye-extended-shell-extension/issues"
+    },
+    "scripts": {
+        "format": "prettier ./eye-extended@als.kz/ --write",
+        "lint": "eslint ./eye-extended@als.kz/ --fix",
+        "test": "make test"
+    },
+    "prettier": {
+        "printWidth": 100,
+        "quoteProps": "consistent",
+        "semi": true,
+        "singleQuote": true,
+        "tabWidth": 4,
+        "trailingComma": "es5",
+        "bracketSpacing":false
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.2.0",
+        "@stylistic/eslint-plugin-js": "^2.1.0",
+        "eslint": "^9.2.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.1.3",
+        "prettier": "3.2.5"
+    }
+}
