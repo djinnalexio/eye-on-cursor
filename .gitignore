@@ -1,11 +1,22 @@
-eye-extended@als.kz/locale/
-*.mo
-*gschemas.compiled
-*.zip
+# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-FileCopyrightText: Contributors to the eye-extended-shell-extension.
 
+# Ignore Node.js dependencies
+node_modules/
+
+# Ignore ESLint cache
+.eslintcache
+
+# Ignore workspace settings
 .idea
 .vscode/
+*.code-workspace
 
+# Ignore swap files
+*.swp
+
+# Ignore build output or temporary files
+*.mo
 *.shell-extension.zip
-
-TODO.txt
+*gschemas.compiled
+**/locale/
