@@ -1,17 +1,17 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# SPDX-FileCopyrightText: Contributors to the eye-extended-shell-extension.
+# SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension.
 
 EXTENSION_UUID = eye-extended@als.kz
-EXTENSION_SCHEMA = eye-extended
+EXTENSION_GETTEXT_DOMAIN = eye-and-mouse-extended
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
 
-.phony: pack install uninstall enable disable clean prefs test test-prefs test-settings
+.phony: pack install uninstall enable disable clean prefs test test-prefs test-settings update-pot
 
 pack:
 	gnome-extensions pack $(EXTENSION_UUID) \
 		--extra-source="media" \
 		--extra-source="settings" \
-		--podir="../po" \
+		--podir="po" \
 		--force
 	# Extension has been packed into ./$(PACK_NAME).
 
@@ -20,7 +20,7 @@ install: pack
 	# Extension has been installed.
 
 uninstall:
-	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_SCHEMA)
+	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_GETTEXT_DOMAIN)
 	gnome-extensions uninstall $(EXTENSION_UUID)
 	# Extension has been uninstalled and settings purged.
 
@@ -51,5 +51,8 @@ test-prefs: install prefs
 	journalctl -f -o cat /usr/bin/gjs
 
 test-settings: install prefs
-	# Monitoring settings:
-	dconf watch /org/gnome/shell/extensions/$(EXTENSION_SCHEMA)/
+	# Monitoring settings values:
+	dconf watch /org/gnome/shell/extensions/$(EXTENSION_GETTEXT_DOMAIN)/
+
+update-pot:
+	find $(EXTENSION_UUID)/ -iname "*.js" | xargs xgettext --from-code=UTF-8 --output=$(EXTENSION_UUID)/po/$(EXTENSION_GETTEXT_DOMAIN).pot

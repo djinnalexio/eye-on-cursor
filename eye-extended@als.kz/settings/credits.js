@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: Contributors to the eye-extended-shell-extension.
+// SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension.
 
 import Adw from 'gi://Adw';
 import Gdk from 'gi://Gdk';
@@ -13,9 +13,9 @@ import Gtk from 'gi://Gtk';
  * Translators must use the "translator_credits" string located in the translation files.
  */
 
-const applicationIcon = 'eye-extended-logo';
+const applicationIcon = 'eye-and-mouse-extended-logo';
 const artists = [];
-const copyright = '© 2020-2024 Contributors to the eye-extended-shell-extension.';
+const copyright = '© 2020-2024 Contributors to the Eye and Mouse Extended GNOME extension.';
 const developerName = 'alexeylovchikov';
 const developers = [
     'alexeylovchikov https://github.com/alexeylovchikov/',

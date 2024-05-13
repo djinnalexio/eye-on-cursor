@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: Contributors to the eye-extended-shell-extension.
+// SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension.
 
 //#region Import libraries
 import Adw from 'gi://Adw';

@@ -1,5 +1,5 @@
 {
-    "name": "eye-extended-shell-extension",
+    "name": "eye-and-mouse-extended",
     "version": "3.0.0-alpha.1",
     "description": "Your desktop just can’t look away!\n\nAdd an eyeball to your panel that will always stare right at your mouse. It comes with a customizable cursor indicator that highlights clicks to make sure that your pointer gets all the attention.",
     "author": "alexeylovchikov",
@@ -25,7 +25,7 @@
         "singleQuote": true,
         "tabWidth": 4,
         "trailingComma": "es5",
-        "bracketSpacing":false
+        "bracketSpacing": false
     },
     "devDependencies": {
         "@eslint/js": "^9.2.0",

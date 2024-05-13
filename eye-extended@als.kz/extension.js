@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: Contributors to the eye-extended-shell-extension.
+// SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension.
 
 //#region Import libraries
 import Gio from 'gi://Gio';
@@ -41,7 +41,9 @@ const EyeExtended = GObject.registerClass(
 
             this.add_child(
                 new St.Icon({
-                    gicon: Gio.icon_new_for_string(`${this._path}/media/eye-extended-logo.svg`),
+                    gicon: Gio.icon_new_for_string(
+                        `${this._path}/media/eye-and-mouse-extended-logo.svg`
+                    ),
                     style_class: 'system-status-icon',
                 })
             );
@@ -53,7 +55,7 @@ const EyeExtended = GObject.registerClass(
             );
             this.menu.addMenuItem(trackerPopup);
             trackerPopup.connect('activate', () =>
-                Main.notify(_('Tracker Toggle'), _('You toggled the tracker!'))
+                Main.notify(_('Tracker Toggled'), _('You toggled the tracker!'))
             );
 
             const prefsPopup = new PopupMenu.PopupImageMenuItem(
