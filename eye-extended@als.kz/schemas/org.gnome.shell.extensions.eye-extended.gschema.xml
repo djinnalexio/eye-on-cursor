@@ -1,83 +1,113 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="eye-extended-extension">
-  <schema id="org.gnome.shell.extensions.eye-extended" path="/org/gnome/shell/extensions/eye-extended/">
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- SPDX-FileCopyrightText: Contributors to the eye-extended-shell-extension. -->
+<!DOCTYPE xml>
+<schemalist gettext-domain="eye-extended">
 
-    <key name="eye-mode" type="s">
-      <default>"lids"</default>
-      <summary>Eye mode</summary>
-      <description>Supported value "lids" and "bulb"</description>
-    </key>
-    <key name="eye-position" type="s">
-      <default>"left"</default>
+  <!-- Enumerators -->
+
+  <enum id="org.gnome.shell.extensions.eye-extended.eye-position">
+    <value value="0" nick="left" />
+    <value value="1" nick="center" />
+    <value value="2" nick="right" />
+  </enum>
+
+  <enum id="org.gnome.shell.extensions.eye-extended.eye-shape">
+    <value value="0" nick="eyelid" />
+    <value value="1" nick="round" />
+  </enum>
+
+  <!-- Settings -->
+
+  <schema id="org.gnome.shell.extensions.eye-extended"
+    path="/org/gnome/shell/extensions/eye-extended/">
+
+    <!-- Eye Position Settings -->
+
+    <key name="eye-position" enum="org.gnome.shell.extensions.eye-extended.eye-position">
+      <default>"center"</default>
       <summary>Eye position</summary>
-      <description>Supported value "left", "center" and "right"</description>
+      <description>Supported values "left", "center" and "right"</description>
     </key>
-    <key name="eye-position-weight" type="i">
+
+    <key name="eye-index" type="i">
       <default>0</default>
-      <summary>Eye position weight</summary>
+      <summary>Eye position index</summary>
     </key>
-    <key name="eye-line-width" type="d">
-      <default>1.5</default>
-      <summary>Eye line width</summary>
-    </key>
+
     <key name="eye-margin" type="d">
       <default>1.5</default>
       <summary>Eye margin</summary>
     </key>
-    <key name="eye-repaint-interval" type="i">
-      <default>100</default>
-      <summary>Eye repaint interval</summary>
-    </key>
 
-    <key name="mouse-circle-mode" type="i">
+    <key name="eye-count" type="i">
       <default>1</default>
-      <summary>Mouse circle mode</summary>
+      <summary>Number of eyes to intantiate</summary>
     </key>
-    <key name="mouse-circle-size" type="i">
-      <default>60</default>
-      <summary>Mouse circle size</summary>
+
+    <!-- Eye Drawing Settings -->
+
+    <key name="eye-shape" enum="org.gnome.shell.extensions.eye-extended.eye-shape">
+      <default>"eyelid"</default>
+      <summary>Eye shape</summary>
+      <description>Supported values "eyelid" and "round"</description>
     </key>
-    <key name="mouse-circle-opacity" type="i">
+
+    <key name="eye-line-width" type="d">
+      <default>1.5</default>
+      <summary>Eye line width</summary>
+    </key>
+
+    <key name="eye-color" type="s">
+      <default>"#ffffff"</default>
+      <summary>eye color</summary>
+    </key>
+
+    <key name="eye-repaint-interval" type="i">
+      <default>16</default>
+      <summary>Milliseconds between redraws of the eye</summary>
+    </key>
+
+    <!-- Tracker Drawing Settings -->
+
+    <key name="tracker-shape" type="s">
+      <default>"Mandala_04"</default>
+      <summary>tracker shape</summary>
+      <description>Filename of the image to use as tracker</description>
+    </key>
+
+    <key name="tracker-size" type="i">
+      <default>256</default>
+      <summary>tracker size</summary>
+    </key>
+
+    <key name="tracker-color-default" type="s">
+      <default>"#f5c211"</default>
+      <summary>default tracker color</summary>
+    </key>
+
+    <key name="tracker-color-left" type="s">
+      <default>"#ed333b"</default>
+      <summary>tracker color on left click</summary>
+    </key>
+
+    <key name="tracker-color-middle" type="s">
+      <default>"#57e389"</default>
+      <summary>tracker color on middle click</summary>
+    </key>
+
+    <key name="tracker-color-right" type="s">
+      <default>"#62a0ea"</default>
+      <summary>tracker color on right click</summary>
+    </key>
+
+    <key name="tracker-opacity" type="i">
       <default>200</default>
-      <summary>Mouse circle opacity</summary>
-    </key>
-    <key name="mouse-circle-repaint-interval" type="i">
-      <default>10</default>
-      <summary>Mouse circle repaint interval</summary>
+      <summary>tracker opacity</summary>
     </key>
 
-    <key name="mouse-circle-enable" type="b">
-      <default>true</default>
-      <summary>Mouse circle enable</summary>
-    </key>
-    <key name="mouse-circle-left-click-enable" type="b">
-      <default>true</default>
-      <summary>Mouse circle left click enable</summary>
-    </key>
-    <key name="mouse-circle-right-click-enable" type="b">
-      <default>true</default>
-      <summary>Mouse circle right click enable</summary>
-    </key>
-    <key name="mouse-circle-middle-click-enable" type="b">
-      <default>true</default>
-      <summary>Mouse circle middle click enable</summary>
-    </key>
-
-    <key name="mouse-circle-color" type="s">
-      <default>"#ffc107"</default>
-      <summary>Mouse circle color</summary>
-    </key>
-    <key name="mouse-circle-left-click-color" type="s">
-      <default>"#ffc107"</default>
-      <summary>Mouse circle left click color</summary>
-    </key>
-    <key name="mouse-circle-right-click-color" type="s">
-      <default>"#ffc107"</default>
-      <summary>Mouse circle right click color</summary>
-    </key>
-    <key name="mouse-circle-middle-click-color" type="s">
-      <default>"#ffc107"</default>
-      <summary>Mouse circle middle click color</summary>
+    <key name="tracker-repaint-interval" type="i">
+      <default>16</default>
+      <summary>Milliseconds between redraws of the tracker</summary>
     </key>
 
   </schema>
