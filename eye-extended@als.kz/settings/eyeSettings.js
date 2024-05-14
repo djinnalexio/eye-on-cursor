@@ -23,11 +23,11 @@ export const EyePage = GObject.registerClass(
                 icon_name: 'view-reveal-symbolic',
             });
 
-            //#region Eye position group
-            const positionGroup = new Adw.PreferencesGroup({
+            //#region Eye placement group
+            const placementGroup = new Adw.PreferencesGroup({
                 title: _('Eye Placement'),
             });
-            this.add(positionGroup);
+            this.add(placementGroup);
 
             //#region Eye position
             const positionLabelList = new Gtk.StringList();
@@ -44,7 +44,7 @@ export const EyePage = GObject.registerClass(
             positionRow.connect('notify::selected', (widget) => {
                 this._settings.set_enum('eye-position', widget.selected);
             });
-            positionGroup.add(positionRow);
+            placementGroup.add(positionRow);
             //#endregion
 
             //#region Eye index
@@ -61,25 +61,7 @@ export const EyePage = GObject.registerClass(
             indexRow.adjustment.connect('value-changed', (widget) => {
                 this._settings.set_int('eye-index', widget.value);
             });
-            positionGroup.add(indexRow);
-            //#endregion
-
-            //#region Eye margin
-            const marginRow = new Adw.SpinRow({
-                title: _('Margin'),
-                subtitle: _('Margins around the eye'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 0.0,
-                    upper: 10.0,
-                    step_increment: 0.1,
-                }),
-                digits: 1,
-                value: this._settings.get_double('eye-margin'),
-            });
-            marginRow.adjustment.connect('value-changed', (widget) => {
-                this._settings.set_double('eye-margin', widget.value);
-            });
-            positionGroup.add(marginRow);
+            placementGroup.add(indexRow);
             //#endregion
 
             //#region Eye count
@@ -96,7 +78,7 @@ export const EyePage = GObject.registerClass(
             countRow.adjustment.connect('value-changed', (widget) => {
                 this._settings.set_int('eye-count', widget.value);
             });
-            positionGroup.add(countRow);
+            placementGroup.add(countRow);
             //#endregion
             //#endregion
 
@@ -138,6 +120,24 @@ export const EyePage = GObject.registerClass(
                 this._settings.set_double('eye-line-width', widget.value);
             });
             drawingGroup.add(lineRow);
+            //#endregion
+
+            //#region Eye margin
+            const marginRow = new Adw.SpinRow({
+                title: _('Margin'),
+                subtitle: _('Margins around the eye'),
+                adjustment: new Gtk.Adjustment({
+                    lower: 0.0,
+                    upper: 10.0,
+                    step_increment: 0.1,
+                }),
+                digits: 1,
+                value: this._settings.get_double('eye-margin'),
+            });
+            marginRow.adjustment.connect('value-changed', (widget) => {
+                this._settings.set_double('eye-margin', widget.value);
+            });
+            drawingGroup.add(marginRow);
             //#endregion
 
             //#region Eye color

@@ -29,7 +29,7 @@ export const MouseTrackerPage = GObject.registerClass(
             this.add(drawingGroup);
 
             //#region Tracker shape
-            function _getSVGsList(path) {
+            function getSVGsList(path) {
                 const svgsList = [];
                 const svgsDir = Gio.file_new_for_path(path);
                 const enumFiles = svgsDir.enumerate_children(
@@ -47,7 +47,7 @@ export const MouseTrackerPage = GObject.registerClass(
                 return svgsList;
             }
 
-            const shapeList = _getSVGsList(`${this._path}/media/glyphs/`);
+            const shapeList = getSVGsList(`${this._path}/media/glyphs/`);
             const shapeLabelList = new Gtk.StringList();
             shapeList.forEach((shape) => {
                 shape = shape.replaceAll('_', ' ');
@@ -86,7 +86,7 @@ export const MouseTrackerPage = GObject.registerClass(
             //#endregion
 
             //#region Tracker colors
-            function _newColorPicker(settings, key) {
+            function newColorPicker(settings, key) {
                 const colorPicker = new Gtk.ColorDialogButton({
                     dialog: new Gtk.ColorDialog({
                         modal: true,
@@ -117,10 +117,10 @@ export const MouseTrackerPage = GObject.registerClass(
                 return colorPicker;
             }
 
-            const colorPickerDefault = _newColorPicker(this._settings, 'tracker-color-default');
-            const colorPickerLeft = _newColorPicker(this._settings, 'tracker-color-left');
-            const colorPickerMiddle = _newColorPicker(this._settings, 'tracker-color-middle');
-            const colorPickerRight = _newColorPicker(this._settings, 'tracker-color-right');
+            const colorPickerDefault = newColorPicker(this._settings, 'tracker-color');
+            const colorPickerLeft = newColorPicker(this._settings, 'tracker-color-left');
+            const colorPickerMiddle = newColorPicker(this._settings, 'tracker-color-middle');
+            const colorPickerRight = newColorPicker(this._settings, 'tracker-color-right');
 
             const colorDefaultRow = new Adw.ActionRow({
                 title: _('Default Color'),

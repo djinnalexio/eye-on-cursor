@@ -34,11 +34,6 @@
       <summary>Eye position index</summary>
     </key>
 
-    <key name="eye-margin" type="d">
-      <default>1.5</default>
-      <summary>Eye margin</summary>
-    </key>
-
     <key name="eye-count" type="i">
       <default>1</default>
       <summary>Number of eyes to intantiate</summary>
@@ -55,6 +50,11 @@
     <key name="eye-line-width" type="d">
       <default>1.5</default>
       <summary>Eye line width</summary>
+    </key>
+
+    <key name="eye-margin" type="d">
+      <default>1.5</default>
+      <summary>Eye margin</summary>
     </key>
 
     <key name="eye-color" type="s">
@@ -80,7 +80,7 @@
       <summary>tracker size</summary>
     </key>
 
-    <key name="tracker-color-default" type="s">
+    <key name="tracker-color" type="s">
       <default>"#f5c211"</default>
       <summary>default tracker color</summary>
     </key>

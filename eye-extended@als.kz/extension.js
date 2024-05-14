@@ -15,24 +15,24 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 //#endregion
 
 //#region Defining Panel button
-const EyeExtended = GObject.registerClass(
-    class EyeExtended extends PanelMenu.Button {
+const Eye = GObject.registerClass(
+    class Eye extends PanelMenu.Button {
         _init(extensionObject) {
             // Call the class
             super._init(0.0, extensionObject.metadata.name, false);
 
             // Get extension object properties
-            this._metadata = extensionObject.metadata;
-            this._path = extensionObject.path;
-            this._settings = extensionObject.getSettings();
+            this.metadata = extensionObject.metadata;
+            this.path = extensionObject.path;
+            this.settings = extensionObject.getSettings();
 
             //#region Get starting configuration
-            this.trackerShape = this._settings.get_string('tracker-shape');
+            this.trackerShape = this.settings.get_string('tracker-shape');
 
-            this.trackerColorDefault = this._settings.get_string('tracker-color-default');
-            this.trackerColorLeft = this._settings.get_string('tracker-color-left');
-            this.trackerColorMiddle = this._settings.get_string('tracker-color-middle');
-            this.trackerColorRight = this._settings.get_string('tracker-color-right');
+            this.trackerColorDefault = this.settings.get_string('tracker-color');
+            this.trackerColorLeft = this.settings.get_string('tracker-color-left');
+            this.trackerColorMiddle = this.settings.get_string('tracker-color-middle');
+            this.trackerColorRight = this.settings.get_string('tracker-color-right');
             //#endregion
 
             // this.trackerCacheDir = this._trackerGetCacheDir();
@@ -42,7 +42,7 @@ const EyeExtended = GObject.registerClass(
             this.add_child(
                 new St.Icon({
                     gicon: Gio.icon_new_for_string(
-                        `${this._path}/media/eye-and-mouse-extended-logo.svg`
+                        `${this.path}/media/eye-and-mouse-extended-logo.svg`
                     ),
                     style_class: 'system-status-icon',
                 })
@@ -71,7 +71,7 @@ const EyeExtended = GObject.registerClass(
 
         // Create/return a cache directory for colored trackers
         _trackerGetCacheDir() {
-            const cacheDir = `${GLib.get_user_cache_dir()}/${this._metadata.uuid}/trackers`;
+            const cacheDir = `${GLib.get_user_cache_dir()}/${this.metadata.uuid}/trackers`;
             if (GLib.mkdir_with_parents(cacheDir, 0o755) < 0)
                 throw new Error(`Failed to create cache dir at ${cacheDir}`);
             return cacheDir;
@@ -118,6 +118,32 @@ console.log('@@@Cached Tracker Shape File: ' + `${this.trackerCacheDir}/${this.t
 );
 //#endregion
 
+//#region Creating/Destroying eyes
+function spawnEyes(eyeArray, settings, extensionObject) {
+    // Remove current eyes
+    destroyEyes(eyeArray);
+
+    for (let count = 0; count < settings.get_int('eye-count'); count++) {
+        eyeArray.push(new Eye(extensionObject));
+        Main.panel.addToStatusArea(
+            extensionObject.uuid + Math.random(),
+            eyeArray[count],
+            settings.get_int('eye-index'),
+            settings.get_string('eye-position')
+        );
+    }
+}
+
+function destroyEyes(eyeArray) {
+    if (eyeArray.length > 0) {
+        eyeArray.forEach((eye) => {
+            eye.destroy();
+        });
+        eyeArray.length = 0; // Or eyeArray = [];
+    }
+}
+//#endregion
+
 //#region Launching extension
 export default class EyeExtendedExtension extends Extension {
     /**
@@ -131,23 +157,35 @@ export default class EyeExtendedExtension extends Extension {
      * @param {this} Extension - this extension object
      */
 
+    //#region Enable
     // Runs when the extension is enabled or the desktop session is logged in or unlocked
     // Create objects, connect signals and add main loop sources
     enable() {
-        this.eyeButton = new EyeExtended(this);
-        Main.panel.addToStatusArea(
-            this.uuid,
-            this.eyeButton,
-            this.getSettings().get_int('eye-index'),
-            this.getSettings().get_string('eye-position')
-        );
-    }
+        this.settings = this.getSettings();
+        this.eyeArray = [];
 
+        // Create initial eyes
+        spawnEyes(this.eyeArray, this.settings, this);
+
+        //
+        this.placementSettings = ['eye-position', 'eye-index', 'eye-count'];
+        this.placementSettings.forEach((key) => {
+            console.debug('Connected `Spawn` to ' + key);
+            this.settings.connect(`changed::${key}`, () => {
+                console.debug('Noticed a change in Placement settings');
+                spawnEyes(this.eyeArray, this.settings, this);
+            });
+        });
+    }
+    //#endregion
+
+    //#region Disable
     // Runs when the extension is disabled, uninstalled or the desktop session is exited or locked
     // Cleanup anything done in enable()
     disable() {
-        this.eyeButton.destroy();
-        this.eyeButton = null;
+        destroyEyes(this.eyeArray);
+        this.settings = null;
     }
+    //#endregion
 }
 //#endregion
