@@ -8,6 +8,9 @@ export default [
         plugins: {
             stylisticJS: stylisticJs,
         },
+        languageOptions: {
+            globals: {console: true},
+        },
         linterOptions: {
             noInlineConfig: true,
         },
@@ -16,7 +19,7 @@ export default [
                 'warn',
                 'always',
                 {
-                    ignorePattern: 'pragma|ignored|import|let|const',
+                    ignorePattern: 'pragma|ignored|import|let|const|this|function',
                     ignoreInlineComments: true,
                     ignoreConsecutiveComments: true,
                 },

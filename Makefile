@@ -18,6 +18,7 @@ pack:
 install: pack
 	gnome-extensions install --force $(PACK_NAME)
 	# Extension has been installed.
+	# Log out and in to use it, or start testing immediately.
 
 uninstall:
 	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_GETTEXT_DOMAIN)
