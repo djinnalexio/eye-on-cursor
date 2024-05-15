@@ -3,8 +3,8 @@
 
 //#region Import libraries
 import Adw from 'gi://Adw';
-import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
+import Gio from 'gi://Gio';
 import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
@@ -12,15 +12,14 @@ import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions
 
 export const MouseTrackerPage = GObject.registerClass(
     class MouseTrackerPage extends Adw.PreferencesPage {
-        _init(extensionObject) {
-            this._metadata = extensionObject.metadata;
-            this._path = extensionObject.path;
-            this._settings = extensionObject.getSettings();
-
-            super._init({
+        constructor(extensionObject) {
+            super({
                 title: _('Mouse Tracker'),
                 icon_name: 'input-mouse-symbolic',
             });
+
+            this.path = extensionObject.path;
+            this.settings = extensionObject.getSettings();
 
             //#region Tracker drawing
             const drawingGroup = new Adw.PreferencesGroup({
@@ -47,9 +46,9 @@ export const MouseTrackerPage = GObject.registerClass(
                 return svgsList;
             }
 
-            const shapeList = getSVGsList(`${this._path}/media/glyphs/`);
+            const shapeList = getSVGsList(`${this.path}/media/glyphs/`);
             const shapeLabelList = new Gtk.StringList();
-            shapeList.forEach((shape) => {
+            shapeList.forEach(shape => {
                 shape = shape.replaceAll('_', ' ');
                 shapeLabelList.append(shape);
             });
@@ -60,10 +59,10 @@ export const MouseTrackerPage = GObject.registerClass(
                 model: shapeLabelList,
                 enable_search: true,
                 expression: new Gtk.PropertyExpression(Gtk.StringObject, null, 'string'),
-                selected: shapeList.indexOf(this._settings.get_string('tracker-shape')),
+                selected: shapeList.indexOf(this.settings.get_string('tracker-shape')),
             });
-            shapeRow.connect('notify::selected', (widget) => {
-                this._settings.set_string('tracker-shape', shapeList[widget.selected]);
+            shapeRow.connect('notify::selected', widget => {
+                this.settings.set_string('tracker-shape', shapeList[widget.selected]);
             });
             drawingGroup.add(shapeRow);
             //#endregion
@@ -77,10 +76,10 @@ export const MouseTrackerPage = GObject.registerClass(
                     upper: 1024,
                     step_increment: 16,
                 }),
-                value: this._settings.get_int('tracker-size'),
+                value: this.settings.get_int('tracker-size'),
             });
-            sizeRow.adjustment.connect('value-changed', (widget) => {
-                this._settings.set_int('tracker-size', widget.value);
+            sizeRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_int('tracker-size', widget.value);
             });
             drawingGroup.add(sizeRow);
             //#endregion
@@ -100,7 +99,7 @@ export const MouseTrackerPage = GObject.registerClass(
                 currentColor.parse(settings.get_string(key));
                 colorPicker.set_rgba(currentColor);
 
-                colorPicker.connect('notify::rgba', (widget) => {
+                colorPicker.connect('notify::rgba', widget => {
                     // Convert 'rgb(255,255,255)' to '#ffffff'
                     const rgbCode = widget.get_rgba().to_string();
                     const hexCode =
@@ -108,19 +107,19 @@ export const MouseTrackerPage = GObject.registerClass(
                         rgbCode
                             .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
                             .split(',') // Split numbers at ","
-                            .map((string) => parseInt(string)) // Convert them to int
-                            .map((number) => number.toString(16)) // Convert them to base16
-                            .map((string) => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
+                            .map(string => parseInt(string)) // Convert them to int
+                            .map(number => number.toString(16)) // Convert them to base16
+                            .map(string => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
                             .join(''); // Join them back into a string
                     settings.set_string(key, hexCode);
                 });
                 return colorPicker;
             }
 
-            const colorPickerDefault = newColorPicker(this._settings, 'tracker-color');
-            const colorPickerLeft = newColorPicker(this._settings, 'tracker-color-left');
-            const colorPickerMiddle = newColorPicker(this._settings, 'tracker-color-middle');
-            const colorPickerRight = newColorPicker(this._settings, 'tracker-color-right');
+            const colorPickerDefault = newColorPicker(this.settings, 'tracker-color');
+            const colorPickerLeft = newColorPicker(this.settings, 'tracker-color-left');
+            const colorPickerMiddle = newColorPicker(this.settings, 'tracker-color-middle');
+            const colorPickerRight = newColorPicker(this.settings, 'tracker-color-right');
 
             const colorDefaultRow = new Adw.ActionRow({
                 title: _('Default Color'),
@@ -148,10 +147,10 @@ export const MouseTrackerPage = GObject.registerClass(
                     upper: 255,
                     step_increment: 10,
                 }),
-                value: this._settings.get_int('tracker-opacity'),
+                value: this.settings.get_int('tracker-opacity'),
             });
-            opacityRow.adjustment.connect('value-changed', (widget) => {
-                this._settings.set_int('tracker-opacity', widget.value);
+            opacityRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_int('tracker-opacity', widget.value);
             });
             drawingGroup.add(opacityRow);
             //#endregion
@@ -167,10 +166,10 @@ export const MouseTrackerPage = GObject.registerClass(
                     upper: 1000,
                     step_increment: 10,
                 }),
-                value: this._settings.get_int('tracker-repaint-interval'),
+                value: this.settings.get_int('tracker-repaint-interval'),
             });
-            repaintRow.adjustment.connect('value-changed', (widget) => {
-                this._settings.set_int('tracker-repaint-interval', widget.value);
+            repaintRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_int('tracker-repaint-interval', widget.value);
             });
             drawingGroup.add(repaintRow);
             //#endregion

@@ -1,0 +1,196 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-15 16:43+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: eye-extended@als.kz/lib/eye.js:41
+msgid "Toggle Tracker"
+msgstr ""
+
+#: eye-extended@als.kz/lib/eye.js:46
+msgid "Tracker Toggled"
+msgstr ""
+
+#: eye-extended@als.kz/lib/eye.js:46
+msgid "You toggled the tracker!"
+msgstr ""
+
+#: eye-extended@als.kz/lib/eye.js:50
+msgid "Settings"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:18
+msgid "Eye"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:28
+msgid "Eye Placement"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:34
+msgid "Left"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:34
+msgid "Center"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:34
+msgid "Right"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:39
+msgid "Position"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:40
+msgid "Position of the eye on the panel"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:52
+msgid "Index"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:53
+msgid "Index of the eye on the panel segment"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:69
+msgid "Count"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:70
+msgid "Number of eyes to be spawned"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:87
+msgid "Eye Drawing"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:93
+msgid "Eyelid"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:93
+msgid "Round"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:96
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:57
+msgid "Shape"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:97
+msgid "Shape of the eye"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:109
+msgid "Drawing Thickness"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:110
+msgid "Thickness of the strokes"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:127
+msgid "Margin"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:128
+msgid "Margins around the eye"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:173
+msgid "Color"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:174
+msgid "Default color of the eye"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:183
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:160
+msgid "Refresh Interval"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:185
+msgid ""
+"Milliseconds between redraws of the eye. Lower is faster, but more CPU "
+"intensive."
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:206
+msgid "About"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:207
+msgid "Development information and credits"
+msgstr ""
+
+#: eye-extended@als.kz/settings/eyeSettings.js:217
+msgid "translator_credits"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:17
+msgid "Mouse Tracker"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:26
+msgid "Tracker Drawing"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:58
+msgid "Shape of the tracker"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:72
+msgid "Size"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:73
+msgid "Size of the tracker"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:125
+msgid "Default Color"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:126
+msgid "Default color of the tracker"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:132
+msgid "Colors on Click"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:133
+msgid "Colors when left, middle, and right-clicking"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:143
+msgid "Opacity"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:144
+msgid "Opacity of the tracker"
+msgstr ""
+
+#: eye-extended@als.kz/settings/mouseTrackerSettings.js:162
+msgid ""
+"Milliseconds between redraws of the tracker. Lower is faster, but more CPU "
+"intensive."
+msgstr ""

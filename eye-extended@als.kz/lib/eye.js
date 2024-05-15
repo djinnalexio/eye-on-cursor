@@ -2,22 +2,21 @@
 // SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension.
 
 //#region Import libraries
-import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
+import Gio from 'gi://Gio';
 import St from 'gi://St';
 
-import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
+import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 //#endregion
 
 //#region Defining Eye
 export const Eye = GObject.registerClass(
     class Eye extends PanelMenu.Button {
-        _init(extensionObject) {
-            // Call the class
-            super._init(0, extensionObject.metadata.name, false);
+        constructor(extensionObject) {
+            super(0, extensionObject.metadata.name, false);
 
             // Get extension object properties
             this.metadata = extensionObject.metadata;

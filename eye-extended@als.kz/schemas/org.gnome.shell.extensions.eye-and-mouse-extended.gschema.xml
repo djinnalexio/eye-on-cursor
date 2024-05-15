@@ -30,12 +30,12 @@
     </key>
 
     <key name="eye-index" type="i">
-      <default>0</default>
+      <default>1</default>
       <summary>Eye position index</summary>
     </key>
 
     <key name="eye-count" type="i">
-      <default>1</default>
+      <default>2</default>
       <summary>Number of eyes to intantiate</summary>
     </key>
 

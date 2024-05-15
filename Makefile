@@ -12,7 +12,7 @@ pack:
 		--extra-source="lib" \
 		--extra-source="media" \
 		--extra-source="settings" \
-		--podir="po" \
+		--podir="../po" \
 		--force
 	# Extension has been packed into ./$(PACK_NAME).
 
@@ -57,4 +57,4 @@ test-settings: install prefs
 	dconf watch /org/gnome/shell/extensions/$(EXTENSION_GETTEXT_DOMAIN)/
 
 update-pot:
-	find $(EXTENSION_UUID)/ -iname "*.js" | xargs xgettext --from-code=UTF-8 --output=$(EXTENSION_UUID)/po/$(EXTENSION_GETTEXT_DOMAIN).pot
+	find $(EXTENSION_UUID)/ -iname "*.js" | xargs xgettext --from-code=UTF-8 --output=po/$(EXTENSION_GETTEXT_DOMAIN).pot

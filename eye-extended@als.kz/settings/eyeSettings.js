@@ -13,15 +13,15 @@ import * as Credits from './credits.js';
 
 export const EyePage = GObject.registerClass(
     class EyePage extends Adw.PreferencesPage {
-        _init(extensionObject) {
-            this._metadata = extensionObject.metadata;
-            this._path = extensionObject.path;
-            this._settings = extensionObject.getSettings();
-
-            super._init({
+        constructor(extensionObject) {
+            super({
                 title: _('Eye'),
                 icon_name: 'view-reveal-symbolic',
             });
+
+            this.metadata = extensionObject.metadata;
+            this.path = extensionObject.path;
+            this.settings = extensionObject.getSettings();
 
             //#region Eye placement group
             const placementGroup = new Adw.PreferencesGroup({
@@ -31,7 +31,7 @@ export const EyePage = GObject.registerClass(
 
             //#region Eye position
             const positionLabelList = new Gtk.StringList();
-            [_('Left'), _('Center'), _('Right')].forEach((position) =>
+            [_('Left'), _('Center'), _('Right')].forEach(position =>
                 positionLabelList.append(position)
             );
 
@@ -39,10 +39,10 @@ export const EyePage = GObject.registerClass(
                 title: _('Position'),
                 subtitle: _('Position of the eye on the panel'),
                 model: positionLabelList,
-                selected: this._settings.get_enum('eye-position'),
+                selected: this.settings.get_enum('eye-position'),
             });
-            positionRow.connect('notify::selected', (widget) => {
-                this._settings.set_enum('eye-position', widget.selected);
+            positionRow.connect('notify::selected', widget => {
+                this.settings.set_enum('eye-position', widget.selected);
             });
             placementGroup.add(positionRow);
             //#endregion
@@ -56,10 +56,10 @@ export const EyePage = GObject.registerClass(
                     upper: 100,
                     step_increment: 1,
                 }),
-                value: this._settings.get_int('eye-index'),
+                value: this.settings.get_int('eye-index'),
             });
-            indexRow.adjustment.connect('value-changed', (widget) => {
-                this._settings.set_int('eye-index', widget.value);
+            indexRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_int('eye-index', widget.value);
             });
             placementGroup.add(indexRow);
             //#endregion
@@ -73,10 +73,10 @@ export const EyePage = GObject.registerClass(
                     upper: 100,
                     step_increment: 1,
                 }),
-                value: this._settings.get_int('eye-count'),
+                value: this.settings.get_int('eye-count'),
             });
-            countRow.adjustment.connect('value-changed', (widget) => {
-                this._settings.set_int('eye-count', widget.value);
+            countRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_int('eye-count', widget.value);
             });
             placementGroup.add(countRow);
             //#endregion
@@ -90,16 +90,16 @@ export const EyePage = GObject.registerClass(
 
             //#region Eye shape
             const shapeLabelList = new Gtk.StringList();
-            [_('Eyelid'), _('Round')].forEach((shape) => shapeLabelList.append(shape));
+            [_('Eyelid'), _('Round')].forEach(shape => shapeLabelList.append(shape));
 
             const shapeRow = new Adw.ComboRow({
                 title: _('Shape'),
                 subtitle: _('Shape of the eye'),
                 model: shapeLabelList,
-                selected: this._settings.get_enum('eye-shape'),
+                selected: this.settings.get_enum('eye-shape'),
             });
-            shapeRow.connect('notify::selected', (widget) => {
-                this._settings.set_enum('eye-shape', widget.selected);
+            shapeRow.connect('notify::selected', widget => {
+                this.settings.set_enum('eye-shape', widget.selected);
             });
             drawingGroup.add(shapeRow);
             //#endregion
@@ -114,10 +114,10 @@ export const EyePage = GObject.registerClass(
                     step_increment: 0.1,
                 }),
                 digits: 1,
-                value: this._settings.get_double('eye-line-width'),
+                value: this.settings.get_double('eye-line-width'),
             });
-            lineRow.adjustment.connect('value-changed', (widget) => {
-                this._settings.set_double('eye-line-width', widget.value);
+            lineRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_double('eye-line-width', widget.value);
             });
             drawingGroup.add(lineRow);
             //#endregion
@@ -132,10 +132,10 @@ export const EyePage = GObject.registerClass(
                     step_increment: 0.1,
                 }),
                 digits: 1,
-                value: this._settings.get_double('eye-margin'),
+                value: this.settings.get_double('eye-margin'),
             });
-            marginRow.adjustment.connect('value-changed', (widget) => {
-                this._settings.set_double('eye-margin', widget.value);
+            marginRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_double('eye-margin', widget.value);
             });
             drawingGroup.add(marginRow);
             //#endregion
@@ -151,10 +151,10 @@ export const EyePage = GObject.registerClass(
                 margin_end: 16,
             });
             const currentColor = colorPicker.get_rgba();
-            currentColor.parse(this._settings.get_string('eye-color'));
+            currentColor.parse(this.settings.get_string('eye-color'));
             colorPicker.set_rgba(currentColor);
 
-            colorPicker.connect('notify::rgba', (widget) => {
+            colorPicker.connect('notify::rgba', widget => {
                 // Convert 'rgb(255,255,255)' to '#ffffff'
                 const rgbCode = widget.get_rgba().to_string();
                 const hexCode =
@@ -162,11 +162,11 @@ export const EyePage = GObject.registerClass(
                     rgbCode
                         .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
                         .split(',') // Split numbers at ","
-                        .map((string) => parseInt(string)) // Convert them to int
-                        .map((number) => number.toString(16)) // Convert them to base16
-                        .map((string) => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
+                        .map(string => parseInt(string)) // Convert them to int
+                        .map(number => number.toString(16)) // Convert them to base16
+                        .map(string => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
                         .join(''); // Join them back into a string
-                this._settings.set_string('eye-color', hexCode);
+                this.settings.set_string('eye-color', hexCode);
             });
 
             const colorRow = new Adw.ActionRow({
@@ -189,10 +189,10 @@ export const EyePage = GObject.registerClass(
                     upper: 1000,
                     step_increment: 10,
                 }),
-                value: this._settings.get_int('eye-repaint-interval'),
+                value: this.settings.get_int('eye-repaint-interval'),
             });
-            repaintRow.adjustment.connect('value-changed', (widget) => {
-                this._settings.set_int('eye-repaint-interval', widget.value);
+            repaintRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_int('eye-repaint-interval', widget.value);
             });
             drawingGroup.add(repaintRow);
             //#endregion
@@ -212,8 +212,8 @@ export const EyePage = GObject.registerClass(
 
             aboutRow.connect('activated', () => {
                 this.aboutWindow = Credits.aboutDialog(
-                    this._metadata,
-                    this._path,
+                    this.metadata,
+                    this.path,
                     _('translator_credits')
                 );
                 this.aboutWindow.present(this);

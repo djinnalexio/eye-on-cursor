@@ -19,17 +19,18 @@
         "test": "make test"
     },
     "prettier": {
+        "arrowParens": "avoid",
+        "bracketSpacing": false,
         "printWidth": 100,
-        "quoteProps": "consistent",
+        "quoteProps": "as-needed",
         "semi": true,
         "singleQuote": true,
         "tabWidth": 4,
         "trailingComma": "es5",
-        "bracketSpacing": false
+        "useTabs": false
     },
     "devDependencies": {
         "@eslint/js": "^9.2.0",
-        "@stylistic/eslint-plugin-js": "^2.1.0",
         "eslint": "^9.2.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-prettier": "^5.1.3",

@@ -4,10 +4,10 @@
 //#region Import libraries
 import GLib from 'gi://GLib';
 
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import {Eye} from './lib/Eye.js';
+import {Eye} from './lib/eye.js';
 //#endregion
 
 //#region Creating/Destroying eyes
@@ -28,7 +28,7 @@ function spawnEyes(eyeArray, settings, extensionObject) {
 
 function destroyEyes(eyeArray) {
     if (eyeArray.length > 0) {
-        eyeArray.forEach((eye) => {
+        eyeArray.forEach(eye => {
             eye.destroy();
         });
         eyeArray.length = 0; // Or eyeArray = [];
@@ -65,16 +65,22 @@ function createCacheTracker(shape, color, cacheDir) {
 
 //#region Launching extension
 export default class EyeExtendedExtension extends Extension {
-    /**
-     * This class is constructed once when your extension is loaded, not
-     * enabled. This is a good time to setup translations or anything else you
-     * only do once.
-     *
-     * You MUST NOT make any changes to GNOME Shell, create any objects,
-     * connect any signals or add any event sources here.
-     *
-     * @param {this} Extension - this extension object
-     */
+    constructor(metadata) {
+        super(metadata);
+        /**
+         * This class is constructed once when your extension is loaded, not
+         * enabled. This is a good time to setup translations or anything else you
+         * only do once.
+         *
+         * You MUST NOT make any changes to GNOME Shell, create any objects,
+         * connect any signals or add any event sources here.
+         *
+         * Extensions **MAY** create and store a reasonable amount of static
+         * data during initialization.
+         *
+         * @param {this} Extension - this extension object
+         */
+    }
 
     //#region Enable
     // Runs when the extension is enabled or the desktop session is logged in or unlocked
@@ -88,10 +94,11 @@ export default class EyeExtendedExtension extends Extension {
 
         // Connect eye placement settings
         this.placementSettings = ['eye-position', 'eye-index', 'eye-count'];
-        this.placementSettings.forEach((key) => {
-            this.settings.connect(`changed::${key}`, () => {
-                spawnEyes(this.eyeArray, this.settings, this);
-            });
+        this.placementSettings.forEach(key => {
+            this.settings.connect(
+                `changed::${key}`,
+                spawnEyes.bind(this, this.eyeArray, this.settings, this)
+            );
         });
 
         // Create initial cached tracker icons and connect tracker color settings
@@ -103,13 +110,19 @@ export default class EyeExtendedExtension extends Extension {
             'tracker-color-middle',
             'tracker-color-right',
         ];
-        this.trackerColorSettings.forEach((key) => {
-            createCacheTracker(this.trackerShape, key, this.cacheDir);
-            console.debug('Working on color ' + this.settings.get_string(key));
-            this.settings.connect(`changed::${key}`, () => {
-                console.debug('Noticed a change in Tracker color settings');
-                createCacheTracker(this.trackerShape, this.settings.get_string(key), this.cacheDir);
-            });
+        this.trackerColorSettings.forEach(key => {
+            // Create initial cached tracker icons
+            createCacheTracker(this.trackerShape, this.settings.get_string(key), this.cacheDir);
+            // Connect tracker color settings
+            this.settings.connect(
+                `changed::${key}`,
+                createCacheTracker.bind(
+                    this,
+                    this.trackerShape,
+                    this.settings.get_string(key),
+                    this.cacheDir
+                )
+            );
         });
 
         //this.mouseTracker = new Tracker(this.settings, this);
