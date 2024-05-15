@@ -9,6 +9,7 @@ PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
 
 pack:
 	gnome-extensions pack $(EXTENSION_UUID) \
+		--extra-source="lib" \
 		--extra-source="media" \
 		--extra-source="settings" \
 		--podir="po" \
