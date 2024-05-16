@@ -151,7 +151,6 @@ export default [
                 },
             ],
             curly: ['error', 'multi-or-nest', 'consistent'],
-            'dot-notation': 'error',
             'func-style': ['error', 'declaration'],
             'no-console': 'warn',
             'prefer-const': 'warn',

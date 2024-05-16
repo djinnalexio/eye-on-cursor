@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension.
+// SPDX-FileCopyrightText: djinnalexio
 
 //#region Import libraries
 import Adw from 'gi://Adw';
@@ -8,7 +8,7 @@ import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import * as Credits from './credits.js';
+import {makeAboutDialog} from './credits.js';
 // #endregion
 
 export const EyePage = GObject.registerClass(
@@ -211,7 +211,7 @@ export const EyePage = GObject.registerClass(
             aboutRow.add_suffix(new Gtk.Image({icon_name: 'go-next-symbolic'}));
 
             aboutRow.connect('activated', () => {
-                this.aboutWindow = Credits.aboutDialog(
+                this.aboutWindow = makeAboutDialog(
                     this.metadata,
                     this.path,
                     _('translator_credits')

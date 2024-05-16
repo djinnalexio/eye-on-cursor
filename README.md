@@ -1,7 +1,5 @@
 # Eye and Mouse Extended Extension
 
-This is Fork at <https://extensions.gnome.org/extension/213/eye/>
-
 The extension adds an eye to the indicator bar that follows your cursor.
 
 ## Installation and Development
@@ -17,3 +15,13 @@ The extension adds an eye to the indicator bar that follows your cursor.
 * <https://gjs.guide/>
 * <https://gjs.guide/extensions/upgrading/gnome-shell-45.html>
 * <https://developer.gnome.org/hig/>
+
+## Credits
+
+list of developers.
+
+## Acknowledgements
+
+forks and previous developers.
+
+This is Fork at <https://extensions.gnome.org/extension/213/eye/>

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension.
+// SPDX-FileCopyrightText: djinnalexio
 
 //#region Import libraries
 import GLib from 'gi://GLib';
@@ -64,7 +64,7 @@ function createCacheTracker(shape, color, cacheDir) {
 //#endregion
 
 //#region Launching extension
-export default class EyeExtendedExtension extends Extension {
+export default class EyeOnCursorExtension extends Extension {
     constructor(metadata) {
         super(metadata);
         /**
@@ -125,7 +125,7 @@ export default class EyeExtendedExtension extends Extension {
             );
         });
 
-        //this.mouseTracker = new Tracker(this.settings, this);
+        //this.tracker = new Tracker(this.settings, this);
     }
     //#endregion
 

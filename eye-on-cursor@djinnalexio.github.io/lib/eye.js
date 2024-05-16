@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension.
+// SPDX-FileCopyrightText: djinnalexio
 
 //#region Import libraries
 import GObject from 'gi://GObject';
@@ -16,7 +16,7 @@ import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js'
 export const Eye = GObject.registerClass(
     class Eye extends PanelMenu.Button {
         constructor(extensionObject) {
-            super(0, extensionObject.metadata.name, false);
+            super(0, 'Eye.' + extensionObject.uuid, false);
 
             // Get extension object properties
             this.metadata = extensionObject.metadata;
@@ -29,9 +29,7 @@ export const Eye = GObject.registerClass(
             // Do stuff
             this.add_child(
                 new St.Icon({
-                    gicon: Gio.icon_new_for_string(
-                        `${this.path}/media/eye-and-mouse-extended-logo.svg`
-                    ),
+                    gicon: Gio.icon_new_for_string(`${this.path}/media/eye-on-cursor-logo.svg`),
                     style_class: 'system-status-icon',
                 })
             );

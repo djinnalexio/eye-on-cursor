@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension.
+// SPDX-FileCopyrightText: djinnalexio
 
 //#region Import libraries
 import Adw from 'gi://Adw';
@@ -10,8 +10,8 @@ import Gtk from 'gi://Gtk';
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 //#endregion
 
-export const MouseTrackerPage = GObject.registerClass(
-    class MouseTrackerPage extends Adw.PreferencesPage {
+export const TrackerPage = GObject.registerClass(
+    class TrackerPage extends Adw.PreferencesPage {
         constructor(extensionObject) {
             super({
                 title: _('Mouse Tracker'),

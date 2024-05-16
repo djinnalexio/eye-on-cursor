@@ -1,29 +1,29 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
-<!-- SPDX-FileCopyrightText: Contributors to the Eye and Mouse Extended GNOME extension. -->
+<!-- SPDX-FileCopyrightText: djinnalexio -->
 <!DOCTYPE xml>
-<schemalist gettext-domain="eye-and-mouse-extended">
+<schemalist gettext-domain="eye-on-cursor">
 
   <!-- Enumerators -->
 
-  <enum id="org.gnome.shell.extensions.eye-and-mouse-extended.eye-position">
+  <enum id="org.gnome.shell.extensions.eye-on-cursor.eye-position">
     <value value="0" nick="left" />
     <value value="1" nick="center" />
     <value value="2" nick="right" />
   </enum>
 
-  <enum id="org.gnome.shell.extensions.eye-and-mouse-extended.eye-shape">
+  <enum id="org.gnome.shell.extensions.eye-on-cursor.eye-shape">
     <value value="0" nick="eyelid" />
     <value value="1" nick="round" />
   </enum>
 
   <!-- Settings -->
 
-  <schema id="org.gnome.shell.extensions.eye-and-mouse-extended"
-    path="/org/gnome/shell/extensions/eye-and-mouse-extended/">
+  <schema id="org.gnome.shell.extensions.eye-on-cursor"
+    path="/org/gnome/shell/extensions/eye-on-cursor/">
 
     <!-- Eye Position Settings -->
 
-    <key name="eye-position" enum="org.gnome.shell.extensions.eye-and-mouse-extended.eye-position">
+    <key name="eye-position" enum="org.gnome.shell.extensions.eye-on-cursor.eye-position">
       <default>"center"</default>
       <summary>Eye position</summary>
       <description>Supported values "left", "center" and "right"</description>
@@ -41,7 +41,7 @@
 
     <!-- Eye Drawing Settings -->
 
-    <key name="eye-shape" enum="org.gnome.shell.extensions.eye-and-mouse-extended.eye-shape">
+    <key name="eye-shape" enum="org.gnome.shell.extensions.eye-on-cursor.eye-shape">
       <default>"eyelid"</default>
       <summary>Eye shape</summary>
       <description>Supported values "eyelid" and "round"</description>

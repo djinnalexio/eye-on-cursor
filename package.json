@@ -1,21 +1,20 @@
 {
-    "name": "eye-and-mouse-extended",
-    "version": "3.0.0-alpha.1",
-    "description": "Your desktop just can’t look away!\n\nAdd an eyeball to your panel that will always stare right at your mouse. It comes with a customizable cursor indicator that highlights clicks to make sure that your pointer gets all the attention.",
-    "author": "alexeylovchikov",
+    "name": "eye-on-cursor",
+    "version": "1.0.0-alpha.1",
+    "description": "Let your desktop \"keep an eye\" on your mouse! And with the included cursor indicator, keep track of your pointer's every action!",
     "license": "GPL-3.0-or-later",
-    "main": "eye-extended@als.kz/extension.js",
+    "main": "eye-on-cursor@djinnalexio.github.io/extension.js",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/alexeylovchikov/eye-extended-shell-extension.git"
+        "url": "git+https://github.com/djinnalexio/eye-on-cursor.git"
     },
-    "homepage": "https://github.com/alexeylovchikov/eye-extended-shell-extension#readme",
+    "homepage": "https://github.com/djinnalexio/eye-on-cursor#readme",
     "bugs": {
-        "url": "https://github.com/alexeylovchikov/eye-extended-shell-extension/issues"
+        "url": "https://github.com/djinnalexio/eye-on-cursor/issues"
     },
     "scripts": {
-        "format": "prettier ./eye-extended@als.kz/ --write",
-        "lint": "eslint ./eye-extended@als.kz/ --fix",
+        "format": "prettier ./eye-on-cursor@djinnalexio.github.io/ --write",
+        "lint": "eslint ./eye-on-cursor@djinnalexio.github.io/ --fix",
         "test": "make test"
     },
     "prettier": {
