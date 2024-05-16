@@ -10,7 +10,8 @@ import Gtk from 'gi://Gtk';
 /* Feel free to add your name and url in the relevant section below
  * if you have contributed.
  *
- * Translators must use the "translator_credits" string located in the translation files.
+ * Translators do not need to write in this file and must instead
+ * use the "translator_credits" string located in the translation files.
  */
 
 const artists = [];
@@ -59,7 +60,11 @@ export function makeAboutDialog(metadata, path, translatorCredits) {
         website: metadata['url'],
     });
 
-    aboutPage.add_link('Extension Page', 'https://extensions.gnome.org/extension//eye-on-cursor/');
+    /* / aboutPage.add_link(
+        'Extension Page',
+        'https://extensions.gnome.org/extension/gnome_ext_code/eye-on-cursor/'
+    ); */
+
     aboutPage.add_acknowledgement_section('Forked from', [
         'Eye and Mouse Extended https://extensions.gnome.org/extension/3139/eye-extended/',
     ]);
