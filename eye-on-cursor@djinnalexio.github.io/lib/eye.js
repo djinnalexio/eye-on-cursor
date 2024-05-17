@@ -15,16 +15,38 @@ import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js'
 //#region Defining Eye
 export const Eye = GObject.registerClass(
     class Eye extends PanelMenu.Button {
-        constructor(extensionObject) {
+        constructor(extensionObject, trackerManager) {
             super(0, 'Eye.' + extensionObject.uuid, false);
 
             // Get extension object properties
-            this.metadata = extensionObject.metadata;
             this.path = extensionObject.path;
             this.settings = extensionObject.getSettings();
+            this.settingConnections = [];
 
-            // Get starting configuration
-            this.trackerShape = this.settings.get_string('tracker-shape');
+            this.mouseTracker = trackerManager;
+
+            //#region add popups
+            this.trackerPopup = new PopupMenu.PopupImageMenuItem(
+                _('Toggle Tracker'),
+                'view-reveal-symbolic'
+            );
+            this.menu.addMenuItem(this.trackerPopup);
+            this.settingConnections.push(
+                this.trackerPopup.connect('activate', () => {
+                    Main.notify(_('Tracker Toggled'), _('You toggled the tracker!'));
+                    this.mouseTracker.toggleTracker();
+                })
+            );
+
+            this.prefsPopup = new PopupMenu.PopupImageMenuItem(
+                _('Settings'),
+                'org.gnome.Settings-symbolic'
+            );
+            this.menu.addMenuItem(this.prefsPopup);
+            this.settingConnections.push(
+                this.prefsPopup.connect('activate', () => extensionObject.openPreferences())
+            );
+            //#endregion
 
             // Do stuff
             this.add_child(
@@ -33,24 +55,19 @@ export const Eye = GObject.registerClass(
                     style_class: 'system-status-icon',
                 })
             );
+        }
 
-            //#region add popups
-            const trackerPopup = new PopupMenu.PopupImageMenuItem(
-                _('Toggle Tracker'),
-                'view-reveal-symbolic'
-            );
-            this.menu.addMenuItem(trackerPopup);
-            trackerPopup.connect('activate', () =>
-                Main.notify(_('Tracker Toggled'), _('You toggled the tracker!'))
-            );
+        destroy() {
+            // Disconnect signal handlers
+            if (this.settingConnections) {
+                this.settingConnections.forEach(connection => {
+                    this.settings.disconnect(connection);
+                });
+                this.settingConnections = null;
+            }
 
-            const prefsPopup = new PopupMenu.PopupImageMenuItem(
-                _('Settings'),
-                'org.gnome.Settings-symbolic'
-            );
-            this.menu.addMenuItem(prefsPopup);
-            prefsPopup.connect('activate', () => extensionObject.openPreferences());
-            //#endregion
+            // Destroy the button
+            super.destroy();
         }
     }
 );

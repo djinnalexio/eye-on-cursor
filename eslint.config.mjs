@@ -140,7 +140,16 @@ export default [
                     message: 'Use constructor() and super()',
                 },
             ],
-            // User Custom
+        },
+    },
+    {
+        // Custom options
+        languageOptions: {
+            globals: {
+                global: 'readonly',
+            },
+        },
+        rules: {
             'capitalized-comments': [
                 'warn',
                 'always',

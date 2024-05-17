@@ -70,7 +70,7 @@
     <!-- Tracker Drawing Settings -->
 
     <key name="tracker-shape" type="s">
-      <default>"Mandala_04"</default>
+      <default>"Crosshair_1"</default>
       <summary>tracker shape</summary>
       <description>Filename of the image to use as tracker</description>
     </key>
@@ -81,22 +81,22 @@
     </key>
 
     <key name="tracker-color" type="s">
-      <default>"#f5c211"</default>
+      <default>"#ffff00"</default>
       <summary>default tracker color</summary>
     </key>
 
     <key name="tracker-color-left" type="s">
-      <default>"#ed333b"</default>
+      <default>"#ff0000"</default>
       <summary>tracker color on left click</summary>
     </key>
 
     <key name="tracker-color-middle" type="s">
-      <default>"#57e389"</default>
+      <default>"#00ff00"</default>
       <summary>tracker color on middle click</summary>
     </key>
 
     <key name="tracker-color-right" type="s">
-      <default>"#62a0ea"</default>
+      <default>"#0000ff"</default>
       <summary>tracker color on right click</summary>
     </key>
 
