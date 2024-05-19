@@ -1,10 +1,22 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: djinnalexio
+/*
+ * This file is part of the Eye on Cursor GNOME extension (eye-on-cursor@djinnalexio.github.io).
+ *
+ * Copyright (C) 2024 djinnalexio
+ *
+ * This extension is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ *
+ * This extension is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this extension.
+ * If not, see <https://www.gnu.org/licenses/gpl-3.0.html#license-text>.
+ */
+'use strict';
 
 //#region Import libraries
-///import Atspi from 'gi://Atspi';
-///import Clutter from 'gi://Clutter';
-
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import {spawnEyes, destroyEyes} from './lib/eye.js';
@@ -16,25 +28,24 @@ export default class EyeOnCursorExtension extends Extension {
     constructor(metadata) {
         super(metadata);
         /**
-         * This class is constructed once when your extension is loaded, not
-         * enabled.
+         * Runs when your extension is loaded, not enabled.
          *
-         * You MUST NOT make any changes to GNOME Shell, create any objects,
-         * connect any signals or add any event sources here.
+         * DO NOT make any changes to GNOME Shell, create any objects, connect any signals
+         * or add any event sources here.
          *
-         * Extensions **MAY** create and store a reasonable amount of static
-         * data during initialization.
+         * Extensions **MAY** create and store a reasonable amount of static data
+         * during initialization.
          *
          * @param {this} Extension - this extension object
          */
-
-        this.settings = this.getSettings();
     }
 
     //#region Enable
     // Runs when the extension is enabled or the desktop session is logged in or unlocked
     // Create objects, connect signals and add main loop sources
     enable() {
+        this.settings = this.getSettings();
+
         // Create the tracker
         this.mouseTracker = new TrackerManager(this);
 

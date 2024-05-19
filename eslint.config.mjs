@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: CC0-1.0
-// SPDX-FileCopyrightText: No rights reserved
+// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-FileCopyrightText: djinnalexio
 
 import prettier from 'eslint-plugin-prettier/recommended';
 import js from '@eslint/js';
@@ -163,7 +163,7 @@ export default [
             'func-style': ['error', 'declaration'],
             'no-console': 'warn',
             'prefer-const': 'warn',
-            strict: ['error', 'safe'],
+            strict: ['off', 'safe'],
         },
     },
     prettier,

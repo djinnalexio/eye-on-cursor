@@ -1,13 +1,34 @@
+/*
+ * This file is part of the Eye on Cursor GNOME extension (eye-on-cursor@djinnalexio.github.io).
+ *
+ * Copyright (C) 2024 djinnalexio
+ *
+ * This extension is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ *
+ * This extension is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this extension.
+ * If not, see <https://www.gnu.org/licenses/gpl-3.0.html#license-text>.
+ */
+'use strict';
+
+//#region Import libraries
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 import St from 'gi://St';
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 //#endregion
+
 //#region Defining Tracker
 export class TrackerManager {
+    //#region Constructor
     constructor(extensionObject) {
         // Get extension object properties
         this.path = extensionObject.path;
@@ -65,13 +86,15 @@ export class TrackerManager {
             this.toggleTracker.bind(this)
         );
     }
+    //#endregion
 
+    //#region Cache icons functions
     // Create/return a cache directory for colored trackers
     getCacheDir(uuid) {
         const cacheDir = `${GLib.get_user_cache_dir()}/${uuid}/trackers`;
         try {
             if (!GLib.file_test(cacheDir, GLib.FileTest.IS_DIR)) {
-                GLib.mkdir_with_parents(cacheDir, 493); // 'rwx' permissions for user, 'r_x' for others
+                GLib.mkdir_with_parents(cacheDir, 0o755); // 'rwx' permissions for user, 'r_x' for others
             }
         } catch (e) {
             throw new Error(`Failed to create cache dir at ${cacheDir}: ${e.message}`);
@@ -132,6 +155,28 @@ export class TrackerManager {
             createCacheTracker(this.currentShape, color, this.cacheDir, this.path);
         });
     }
+    //#endregion
+
+    //#region Settings update function
+    updateTrackerProperties() {
+        // Update properties
+        this.currentShape = this.settings.get_string('tracker-shape');
+        this.currentSize = this.settings.get_int('tracker-size');
+        this.currentColor = this.settings.get_string('tracker-color');
+        this.currentOpacity = this.settings.get_int('tracker-opacity');
+        this.currentRepaintInterval = this.settings.get_int('tracker-repaint-interval');
+
+        // Update cached icons
+        this.updateCacheTrackers();
+
+        // Update icon
+        this.trackerIcon.icon_size = this.currentSize;
+        this.trackerIcon.opacity = this.currentOpacity;
+        this.trackerIcon.gicon = Gio.icon_new_for_string(
+            `${this.cacheDir}/${this.currentShape}_${this.currentColor}.svg`
+        );
+    }
+    //#endregion
 
     // Set tracker position to mouse position
     updateTrackerPosition() {
@@ -152,25 +197,7 @@ export class TrackerManager {
         return GLib.SOURCE_CONTINUE; */
     }
 
-    updateTrackerProperties() {
-        // Update properties
-        this.currentShape = this.settings.get_string('tracker-shape');
-        this.currentSize = this.settings.get_int('tracker-size');
-        this.currentColor = this.settings.get_string('tracker-color');
-        this.currentOpacity = this.settings.get_int('tracker-opacity');
-        this.currentRepaintInterval = this.settings.get_int('tracker-repaint-interval');
-
-        // Update cached icons
-        this.updateCacheTrackers();
-
-        // Update icon
-        this.trackerIcon.icon_size = this.currentSize;
-        this.trackerIcon.opacity = this.currentOpacity;
-        this.trackerIcon.gicon = Gio.icon_new_for_string(
-            `${this.cacheDir}/${this.currentShape}_${this.currentColor}.svg`
-        );
-    }
-
+    //#region Toggle tracker functions
     toggleTracker() {
         if (!this.trackerEnabled) {
             this.enableTracker();
@@ -207,7 +234,9 @@ export class TrackerManager {
 
         // DESTROY THE LOOP HERE
     }
+    //#endregion
 
+    //#region Destroy function
     // Clean up any connections or resources when the tracker manager is destroyed
     destroy() {
         if (this.settingConnections) {
@@ -227,4 +256,5 @@ export class TrackerManager {
             this.trackerIcon = null;
         }
     }
+    //#endregion
 }
