@@ -39,6 +39,11 @@
       <summary>Number of eyes to intantiate</summary>
     </key>
 
+    <key name='eye-reactive' type='b'>
+      <default>true</default>
+      <summary>Whether eyes are actionable or not</summary>
+    </key>
+
     <!-- Eye Drawing Settings -->
 
     <key name='eye-shape' enum='org.gnome.shell.extensions.eye-on-cursor.eye-shape'>

@@ -85,6 +85,7 @@ export function spawnEyes(eyeArray, settings, extensionObject, trackerManager) {
             settings.get_int('eye-index'),
             settings.get_string('eye-position')
         );
+        eyeArray[count].reactive = settings.get_boolean('eye-reactive');
     }
 }
 

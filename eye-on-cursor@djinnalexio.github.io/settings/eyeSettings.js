@@ -9,7 +9,7 @@ import Gtk from 'gi://Gtk';
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 import {makeAboutDialog} from './credits.js';
-// #endregion
+//#endregion
 
 export const EyePage = GObject.registerClass(
     class EyePage extends Adw.PreferencesPage {
@@ -79,6 +79,18 @@ export const EyePage = GObject.registerClass(
                 this.settings.set_int('eye-count', widget.value);
             });
             placementGroup.add(countRow);
+            //#endregion
+
+            //#region Eye reactivity
+            const reactiveRow = new Adw.SwitchRow({
+                title: _('Interactivity'),
+                subtitle: _('Allow eyes to respond to clicks'),
+                active: this.settings.get_boolean('eye-reactive'),
+            });
+            reactiveRow.connect('notify::active', widget => {
+                this.settings.set_boolean('eye-reactive', widget.active);
+            });
+            placementGroup.add(reactiveRow);
             //#endregion
             //#endregion
 
