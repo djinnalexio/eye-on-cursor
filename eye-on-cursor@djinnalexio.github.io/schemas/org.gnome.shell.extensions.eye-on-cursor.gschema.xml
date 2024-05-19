@@ -1,113 +1,118 @@
 <!-- SPDX-License-Identifier: GPL-3.0-or-later -->
 <!-- SPDX-FileCopyrightText: djinnalexio -->
 <!DOCTYPE xml>
-<schemalist gettext-domain="eye-on-cursor">
+<schemalist gettext-domain='eye-on-cursor'>
 
   <!-- Enumerators -->
 
-  <enum id="org.gnome.shell.extensions.eye-on-cursor.eye-position">
-    <value value="0" nick="left" />
-    <value value="1" nick="center" />
-    <value value="2" nick="right" />
+  <enum id='org.gnome.shell.extensions.eye-on-cursor.eye-position'>
+    <value value='0' nick='left' />
+    <value value='1' nick='center' />
+    <value value='2' nick='right' />
   </enum>
 
-  <enum id="org.gnome.shell.extensions.eye-on-cursor.eye-shape">
-    <value value="0" nick="eyelid" />
-    <value value="1" nick="round" />
+  <enum id='org.gnome.shell.extensions.eye-on-cursor.eye-shape'>
+    <value value='0' nick='eyelid' />
+    <value value='1' nick='round' />
   </enum>
 
   <!-- Settings -->
 
-  <schema id="org.gnome.shell.extensions.eye-on-cursor"
-    path="/org/gnome/shell/extensions/eye-on-cursor/">
+  <schema id='org.gnome.shell.extensions.eye-on-cursor'
+    path='/org/gnome/shell/extensions/eye-on-cursor/'>
 
     <!-- Eye Position Settings -->
 
-    <key name="eye-position" enum="org.gnome.shell.extensions.eye-on-cursor.eye-position">
-      <default>"center"</default>
+    <key name='eye-position' enum='org.gnome.shell.extensions.eye-on-cursor.eye-position'>
+      <default>'center'</default>
       <summary>Eye position</summary>
-      <description>Supported values "left", "center" and "right"</description>
+      <description>Supported values 'left', 'center' and 'right'</description>
     </key>
 
-    <key name="eye-index" type="i">
+    <key name='eye-index' type='i'>
       <default>1</default>
       <summary>Eye position index</summary>
     </key>
 
-    <key name="eye-count" type="i">
+    <key name='eye-count' type='i'>
       <default>2</default>
       <summary>Number of eyes to intantiate</summary>
     </key>
 
     <!-- Eye Drawing Settings -->
 
-    <key name="eye-shape" enum="org.gnome.shell.extensions.eye-on-cursor.eye-shape">
-      <default>"eyelid"</default>
+    <key name='eye-shape' enum='org.gnome.shell.extensions.eye-on-cursor.eye-shape'>
+      <default>'eyelid'</default>
       <summary>Eye shape</summary>
-      <description>Supported values "eyelid" and "round"</description>
+      <description>Supported values 'eyelid' and 'round'</description>
     </key>
 
-    <key name="eye-line-width" type="d">
+    <key name='eye-line-width' type='d'>
       <default>1.5</default>
       <summary>Eye line width</summary>
     </key>
 
-    <key name="eye-margin" type="d">
+    <key name='eye-margin' type='d'>
       <default>1.5</default>
       <summary>Eye margin</summary>
     </key>
 
-    <key name="eye-color" type="s">
-      <default>"#ffffff"</default>
+    <key name='eye-color' type='s'>
+      <default>'#ffffff'</default>
       <summary>eye color</summary>
     </key>
 
-    <key name="eye-repaint-interval" type="i">
+    <key name='eye-repaint-interval' type='i'>
       <default>16</default>
       <summary>Milliseconds between redraws of the eye</summary>
     </key>
 
     <!-- Tracker Drawing Settings -->
 
-    <key name="tracker-shape" type="s">
-      <default>"Crosshair_1"</default>
+    <key name='tracker-shape' type='s'>
+      <default>'Crosshair_1'</default>
       <summary>tracker shape</summary>
       <description>Filename of the image to use as tracker</description>
     </key>
 
-    <key name="tracker-size" type="i">
+    <key name='tracker-size' type='i'>
       <default>256</default>
       <summary>tracker size</summary>
     </key>
 
-    <key name="tracker-color" type="s">
-      <default>"#ffff00"</default>
+    <key name='tracker-color' type='s'>
+      <default>'#ffff00'</default>
       <summary>default tracker color</summary>
     </key>
 
-    <key name="tracker-color-left" type="s">
-      <default>"#ff0000"</default>
+    <key name='tracker-color-left' type='s'>
+      <default>'#ff0000'</default>
       <summary>tracker color on left click</summary>
     </key>
 
-    <key name="tracker-color-middle" type="s">
-      <default>"#00ff00"</default>
+    <key name='tracker-color-middle' type='s'>
+      <default>'#00ff00'</default>
       <summary>tracker color on middle click</summary>
     </key>
 
-    <key name="tracker-color-right" type="s">
-      <default>"#0000ff"</default>
+    <key name='tracker-color-right' type='s'>
+      <default>'#0000ff'</default>
       <summary>tracker color on right click</summary>
     </key>
 
-    <key name="tracker-opacity" type="i">
-      <default>200</default>
+    <key name='tracker-opacity' type='i'>
+      <default>150</default>
       <summary>tracker opacity</summary>
     </key>
 
-    <key name="tracker-repaint-interval" type="i">
+    <key name='tracker-repaint-interval' type='i'>
       <default>16</default>
       <summary>Milliseconds between redraws of the tracker</summary>
+    </key>
+
+    <key name='tracker-keybinding' type='as'>
+      <default><![CDATA[['']]]></default>
+      <summary>Keyboard shorcut to toggle the tracker</summary>
     </key>
 
   </schema>
