@@ -29,7 +29,7 @@
 
 ## Acknowledgements
 
-This extension is forked from [Eye and Mouse Extended](https://extensions.gnome.org/extension/213/eye/) by [Alexey Lovchikov](https://github.com/alexeylovchikov).
+This extension is forked from [Eye and Mouse Extended](https://extensions.gnome.org/extension/3139/eye-extended/) by [Alexey Lovchikov](https://github.com/alexeylovchikov).
 
 ## Contributing
 
