@@ -247,9 +247,7 @@ export class TrackerManager {
             this.settingConnections = null;
         }
 
-        if (Main.wm.listKeybindings().includes('tracker-keybinding')) {
-            Main.wm.removeKeybinding('tracker-keybinding');
-        }
+        Main.wm.removeKeybinding('tracker-keybinding');
 
         if (this.trackerIcon) {
             this.trackerIcon.destroy();
