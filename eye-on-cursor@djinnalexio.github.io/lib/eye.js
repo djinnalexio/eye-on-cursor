@@ -1,5 +1,5 @@
 /*
- * This file is part of the Eye on Cursor GNOME extension (eye-on-cursor@djinnalexio.github.io).
+ * This file is part of the Eye on Cursor GNOME Shell extension (eye-on-cursor@djinnalexio.github.io).
  *
  * Copyright (C) 2024 djinnalexio
  *
@@ -36,6 +36,7 @@ export const Eye = GObject.registerClass(
             // Get extension object properties
             this.path = extensionObject.path;
             this.settings = extensionObject.getSettings();
+
             this.settingConnections = [];
 
             this.mouseTracker = trackerManager;

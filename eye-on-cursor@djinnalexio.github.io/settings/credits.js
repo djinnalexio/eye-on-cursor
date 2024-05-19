@@ -1,5 +1,5 @@
 /*
- * This file is part of the Eye on Cursor GNOME extension (eye-on-cursor@djinnalexio.github.io).
+ * This file is part of the Eye on Cursor GNOME Shell extension (eye-on-cursor@djinnalexio.github.io).
  *
  * Copyright (C) 2024 djinnalexio
  *

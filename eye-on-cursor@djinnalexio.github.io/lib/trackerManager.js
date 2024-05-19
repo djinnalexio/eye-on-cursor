@@ -1,5 +1,5 @@
 /*
- * This file is part of the Eye on Cursor GNOME extension (eye-on-cursor@djinnalexio.github.io).
+ * This file is part of the Eye on Cursor GNOME Shell extension (eye-on-cursor@djinnalexio.github.io).
  *
  * Copyright (C) 2024 djinnalexio
  *
@@ -34,8 +34,10 @@ export class TrackerManager {
         this.path = extensionObject.path;
         this.settings = extensionObject.getSettings();
 
+        this.settingConnections = [];
+
         // Variables for initial state
-        this.cacheDir = this.getCacheDir(extensionObject.uuid);
+        this.cacheDir = this.getCacheDir(extensionObject.metadata['gettext-domain']);
         this.trackerEnabled = false;
         this.trackerPositionUpdater = null;
 
@@ -60,7 +62,6 @@ export class TrackerManager {
         this.updateCacheTrackers();
 
         // Connect settings changes to update cached trackers
-        this.settingConnections = [];
         this.trackerSettings = [
             'tracker-shape',
             'tracker-size',
@@ -69,13 +70,19 @@ export class TrackerManager {
             'tracker-color-middle',
             'tracker-color-right',
             'tracker-opacity',
-            'tracker-repaint-interval',
         ];
         this.trackerSettings.forEach(key => {
             this.settingConnections.push(
                 this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this))
             );
         });
+
+        this.settingConnections.push(
+            this.settings.connect(
+                `changed::tracker-repaint-interval`,
+                this.updateRepaintInterval.bind(this)
+            )
+        );
 
         // Connect toggle tracker shortcut
         Main.wm.addKeybinding(
@@ -90,16 +97,16 @@ export class TrackerManager {
 
     //#region Cache icons functions
     // Create/return a cache directory for colored trackers
-    getCacheDir(uuid) {
-        const cacheDir = `${GLib.get_user_cache_dir()}/${uuid}/trackers`;
+    getCacheDir(gettext_domain) {
+        const cacheDirPath = `${GLib.get_user_cache_dir()}/${gettext_domain}/trackers`;
         try {
-            if (!GLib.file_test(cacheDir, GLib.FileTest.IS_DIR)) {
-                GLib.mkdir_with_parents(cacheDir, 0o755); // 'rwx' permissions for user, 'r_x' for others
+            if (!GLib.file_test(cacheDirPath, GLib.FileTest.IS_DIR)) {
+                GLib.mkdir_with_parents(cacheDirPath, 0o755); // 'rwx' permissions for user, 'r_x' for others
             }
         } catch (e) {
-            throw new Error(`Failed to create cache dir at ${cacheDir}: ${e.message}`);
+            throw new Error(`Failed to create cache dir at ${cacheDirPath}: ${e.message}`);
         }
-        return cacheDir;
+        return cacheDirPath;
     }
 
     // Update cached tracker for all colors
@@ -110,8 +117,10 @@ export class TrackerManager {
             const cachedSVG = Gio.File.new_for_path(cachedSVGpath);
             if (!cachedSVG.query_exists(null)) {
                 try {
+                    // Create empty file
                     cachedSVG.create(Gio.FileCreateFlags.NONE, null);
 
+                    // Get template SVG
                     const shapeSVG = Gio.File.new_for_path(`${path}/media/glyphs/${shape}.svg`);
 
                     // Load contents of the shape SVG
@@ -128,7 +137,7 @@ export class TrackerManager {
                     const encoder = new TextEncoder();
                     const encodedContents = encoder.encode(decodedContents);
 
-                    // Replace contents of cached SVG with modified contents
+                    // Fill cachedSVG with modified contents
                     cachedSVG.replace_contents(
                         encodedContents,
                         null,
@@ -157,14 +166,13 @@ export class TrackerManager {
     }
     //#endregion
 
-    //#region Settings update function
+    //#region Settings update functions
     updateTrackerProperties() {
         // Update properties
         this.currentShape = this.settings.get_string('tracker-shape');
         this.currentSize = this.settings.get_int('tracker-size');
         this.currentColor = this.settings.get_string('tracker-color');
         this.currentOpacity = this.settings.get_int('tracker-opacity');
-        this.currentRepaintInterval = this.settings.get_int('tracker-repaint-interval');
 
         // Update cached icons
         this.updateCacheTrackers();
@@ -175,6 +183,24 @@ export class TrackerManager {
         this.trackerIcon.gicon = Gio.icon_new_for_string(
             `${this.cacheDir}/${this.currentShape}_${this.currentColor}.svg`
         );
+    }
+
+    updateRepaintInterval() {
+        this.currentRepaintInterval = this.settings.get_int('tracker-repaint-interval');
+
+        // If the position updater is currently running, stop it and start a new one with the updated interval
+        if (this.trackerPositionUpdater) {
+            GLib.source_remove(this.trackerPositionUpdater);
+            this.trackerPositionUpdater = null;
+            this.trackerPositionUpdater = GLib.timeout_add(
+                GLib.PRIORITY_DEFAULT,
+                this.currentRepaintInterval,
+                () => {
+                    this.updateTrackerPosition();
+                    return GLib.SOURCE_CONTINUE;
+                }
+            );
+        }
     }
     //#endregion
 
@@ -187,14 +213,6 @@ export class TrackerManager {
                 mouse_y - this.currentSize / 2
             ); // Offset so that the cursor appears in the middle of the tracker
         }
-
-        /*         this.trackerPositionUpdater = GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            this.currentRepaintInterval,
-            this.updateTrackerPosition.bind(this)
-        );
-
-        return GLib.SOURCE_CONTINUE; */
     }
 
     //#region Toggle tracker functions
@@ -207,32 +225,35 @@ export class TrackerManager {
     }
 
     enableTracker() {
-        console.debug('Tracker Enabled');
         this.trackerEnabled = true;
 
-        this.updateTrackerPosition();
-
-        /* this.trackerPositionUpdater = GLib.timeout_add(
+        // Start updating the tracker position at regular intervals
+        this.trackerPositionUpdater = GLib.timeout_add(
             GLib.PRIORITY_DEFAULT,
             this.currentRepaintInterval,
-            this.updateTrackerPosition.bind(this)
-        ); */
+            () => {
+                this.updateTrackerPosition();
+                return GLib.SOURCE_CONTINUE;
+            }
+        );
+
+        // Add tracker to desktop
         Main.uiGroup.add_child(this.trackerIcon);
     }
 
     disableTracker() {
-        console.debug('Tracker Disabled');
         this.trackerEnabled = false;
 
-        /* /if (this.trackerPositionUpdater) {
-            GLib.Source.remove(this.trackerPositionUpdater);
-            this.trackerPositionUpdater = null;
-        } */
+        // Remove tracker from desktop
         if (this.trackerIcon && this.trackerIcon.get_parent() === Main.uiGroup) {
             Main.uiGroup.remove_child(this.trackerIcon);
         }
 
-        // DESTROY THE LOOP HERE
+        // Stop updating the tracker position
+        if (this.trackerPositionUpdater) {
+            GLib.source_remove(this.trackerPositionUpdater);
+            this.trackerPositionUpdater = null;
+        }
     }
     //#endregion
 
