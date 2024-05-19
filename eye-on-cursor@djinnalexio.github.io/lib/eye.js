@@ -33,7 +33,6 @@ export const Eye = GObject.registerClass(
             this.menu.addMenuItem(this.trackerPopup);
             this.settingConnections.push(
                 this.trackerPopup.connect('activate', () => {
-                    Main.notify(_('Tracker Toggled'), _('You toggled the tracker!'));
                     this.mouseTracker.toggleTracker();
                 })
             );
@@ -71,4 +70,30 @@ export const Eye = GObject.registerClass(
         }
     }
 );
+//#endregion
+
+//#region Creating/Destroying eyes
+export function spawnEyes(eyeArray, settings, extensionObject, trackerManager) {
+    // Remove current eyes
+    destroyEyes(eyeArray);
+
+    for (let count = 0; count < settings.get_int('eye-count'); count++) {
+        eyeArray.push(new Eye(extensionObject, trackerManager));
+        Main.panel.addToStatusArea(
+            extensionObject.uuid + Math.random(),
+            eyeArray[count],
+            settings.get_int('eye-index'),
+            settings.get_string('eye-position')
+        );
+    }
+}
+
+export function destroyEyes(eyeArray) {
+    if (eyeArray.length > 0) {
+        eyeArray.forEach(eye => {
+            eye.destroy();
+        });
+        eyeArray.length = 0; // Or eyeArray = [];
+    }
+}
 //#endregion

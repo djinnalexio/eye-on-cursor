@@ -5,37 +5,10 @@
 ///import Atspi from 'gi://Atspi';
 ///import Clutter from 'gi://Clutter';
 
-import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-import {Eye} from './lib/eye.js';
-import {TrackerManager} from './TrackerManager.js';
-//#endregion
-
-//#region Creating/Destroying eyes
-function spawnEyes(eyeArray, settings, extensionObject, trackerManager) {
-    // Remove current eyes
-    destroyEyes(eyeArray);
-
-    for (let count = 0; count < settings.get_int('eye-count'); count++) {
-        eyeArray.push(new Eye(extensionObject, trackerManager));
-        Main.panel.addToStatusArea(
-            extensionObject.uuid + Math.random(),
-            eyeArray[count],
-            settings.get_int('eye-index'),
-            settings.get_string('eye-position')
-        );
-    }
-}
-
-function destroyEyes(eyeArray) {
-    if (eyeArray.length > 0) {
-        eyeArray.forEach(eye => {
-            eye.destroy();
-        });
-        eyeArray.length = 0; // Or eyeArray = [];
-    }
-}
+import {spawnEyes, destroyEyes} from './lib/eye.js';
+import {TrackerManager} from './lib/trackerManager.js';
 //#endregion
 
 //#region Launching extension
