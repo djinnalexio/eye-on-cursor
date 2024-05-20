@@ -168,40 +168,47 @@ export const EyePage = GObject.registerClass(
             //#endregion
 
             //#region Eye color
-            const colorPicker = new Gtk.ColorDialogButton({
-                dialog: new Gtk.ColorDialog({
-                    modal: true,
-                    with_alpha: false,
-                }),
-                margin_top: 4,
-                margin_bottom: 4,
-                margin_end: 16,
-            });
-            const currentColor = colorPicker.get_rgba();
-            currentColor.parse(this.settings.get_string('eye-color'));
-            colorPicker.set_rgba(currentColor);
+            function newColorPicker(settings, key) {
+                const colorPicker = new Gtk.ColorDialogButton({
+                    dialog: new Gtk.ColorDialog({
+                        modal: true,
+                        with_alpha: false,
+                    }),
+                    hexpand: false,
+                    margin_end: 8,
+                    valign: Gtk.Align.CENTER,
+                    vexpand: false,
+                });
+                const currentColor = colorPicker.get_rgba();
+                currentColor.parse(settings.get_string(key));
+                colorPicker.set_rgba(currentColor);
 
-            colorPicker.connect('notify::rgba', widget => {
-                // Convert 'rgb(255,255,255)' to '#ffffff'
-                const rgbCode = widget.get_rgba().to_string();
-                const hexCode =
-                    '#' +
-                    rgbCode
-                        .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
-                        .split(',') // Split numbers at ","
-                        .map(string => parseInt(string)) // Convert them to int
-                        .map(number => number.toString(16)) // Convert them to base16
-                        .map(string => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
-                        .join(''); // Join them back into a string
-                this.settings.set_string('eye-color', hexCode);
-            });
+                colorPicker.connect('notify::rgba', widget => {
+                    // Convert 'rgb(255,255,255)' to '#ffffff'
+                    const rgbCode = widget.get_rgba().to_string();
+                    const hexCode =
+                        '#' +
+                        rgbCode
+                            .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
+                            .split(',') // Split numbers at ","
+                            .map(string => parseInt(string)) // Convert them to int
+                            .map(number => number.toString(16)) // Convert them to base16
+                            .map(string => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
+                            .join(''); // Join them back into a string
+                    settings.set_string(key, hexCode);
+                });
+                return colorPicker;
+            }
 
             const colorRow = new Adw.ActionRow({
                 title: _('Color'),
                 subtitle: _('Default color of the eye'),
             });
 
-            colorRow.add_suffix(colorPicker);
+            const colorBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
+            colorBox.append(newColorPicker(this.settings, 'eye-color'));
+
+            colorRow.add_suffix(colorBox);
             drawingGroup.add(colorRow);
             //#endregion
 
@@ -212,8 +219,8 @@ export const EyePage = GObject.registerClass(
                     'Milliseconds between redraws of the eye. Lower is faster, but more CPU intensive.'
                 ),
                 adjustment: new Gtk.Adjustment({
-                    lower: 1,
-                    upper: 1000,
+                    lower: 5, // Min 5ms interval => max 200fps
+                    upper: 1000, // Max 1000ms interval => min 1fps
                     step_increment: 10,
                 }),
                 value: this.settings.get_int('eye-repaint-interval'),

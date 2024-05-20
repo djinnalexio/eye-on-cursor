@@ -179,8 +179,8 @@ export const TrackerPage = GObject.registerClass(
                     'Milliseconds between redraws of the tracker. Lower is faster, but more CPU intensive.'
                 ),
                 adjustment: new Gtk.Adjustment({
-                    lower: 1,
-                    upper: 1000,
+                    lower: 5, // Min 5ms interval => max 200fps
+                    upper: 1000, // Max 1000ms interval => min 1fps
                     step_increment: 10,
                 }),
                 value: this.settings.get_int('tracker-repaint-interval'),

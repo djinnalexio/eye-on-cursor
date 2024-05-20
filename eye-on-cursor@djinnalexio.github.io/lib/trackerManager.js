@@ -34,8 +34,6 @@ export class TrackerManager {
         this.path = extensionObject.path;
         this.settings = extensionObject.getSettings();
 
-        this.settingConnections = [];
-
         // Variables for initial state
         this.cacheDir = this.getCacheDir(extensionObject.metadata['gettext-domain']);
         this.trackerEnabled = false;
@@ -44,6 +42,9 @@ export class TrackerManager {
         this.currentShape = this.settings.get_string('tracker-shape');
         this.currentSize = this.settings.get_int('tracker-size');
         this.currentColor = this.settings.get_string('tracker-color');
+        this.currentColorLeft = this.settings.get_string('tracker-color-left');
+        this.currentColorMiddle = this.settings.get_string('tracker-color-middle');
+        this.currentColorRight = this.settings.get_string('tracker-color-right');
         this.currentOpacity = this.settings.get_int('tracker-opacity');
         this.currentRepaintInterval = this.settings.get_int('tracker-repaint-interval');
 
@@ -59,7 +60,12 @@ export class TrackerManager {
         });
 
         // Create tracker icons in cache based on the initial settings
-        this.updateCacheTrackers();
+        this.updateCacheTrackers(this.currentShape, [
+            this.currentColor,
+            this.currentColorLeft,
+            this.currentColorMiddle,
+            this.currentColorRight,
+        ]);
 
         // Connect settings changes to update cached trackers
         this.trackerSettings = [
@@ -70,19 +76,14 @@ export class TrackerManager {
             'tracker-color-middle',
             'tracker-color-right',
             'tracker-opacity',
+            'tracker-repaint-interval',
         ];
+        this.settingConnections = [];
         this.trackerSettings.forEach(key => {
             this.settingConnections.push(
                 this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this))
             );
         });
-
-        this.settingConnections.push(
-            this.settings.connect(
-                `changed::tracker-repaint-interval`,
-                this.updateRepaintInterval.bind(this)
-            )
-        );
 
         // Connect toggle tracker shortcut
         Main.wm.addKeybinding(
@@ -110,9 +111,13 @@ export class TrackerManager {
     }
 
     // Update cached tracker for all colors
-    updateCacheTrackers() {
+    updateCacheTrackers(shape, colorArray) {
+        colorArray.forEach(color => {
+            createCacheTracker(color, this.cacheDir, this.path);
+        });
+
         // Create a cached tracker icon if it doesn't exist
-        function createCacheTracker(shape, color, cacheDir, path) {
+        function createCacheTracker(color, cacheDir, path) {
             const cachedSVGpath = `${cacheDir}/${shape}_${color}.svg`;
             const cachedSVG = Gio.File.new_for_path(cachedSVGpath);
             if (!cachedSVG.query_exists(null)) {
@@ -152,68 +157,104 @@ export class TrackerManager {
                 }
             }
         }
-
-        this.trackerColorSettings = [
-            'tracker-color',
-            'tracker-color-left',
-            'tracker-color-middle',
-            'tracker-color-right',
-        ];
-        this.trackerColorSettings.forEach(key => {
-            const color = this.settings.get_string(key);
-            createCacheTracker(this.currentShape, color, this.cacheDir, this.path);
-        });
     }
     //#endregion
 
-    //#region Settings update functions
+    //#region properties update functions
     updateTrackerProperties() {
-        // Update properties
-        this.currentShape = this.settings.get_string('tracker-shape');
-        this.currentSize = this.settings.get_int('tracker-size');
-        this.currentColor = this.settings.get_string('tracker-color');
-        this.currentOpacity = this.settings.get_int('tracker-opacity');
+        // Get new settings
+        const newShape = this.settings.get_string('tracker-shape');
+        const newSize = this.settings.get_int('tracker-size');
+        const newColor = this.settings.get_string('tracker-color');
+        const newColorLeft = this.settings.get_string('tracker-color-left');
+        const newColorMiddle = this.settings.get_string('tracker-color-middle');
+        const newColorRight = this.settings.get_string('tracker-color-right');
+        const newOpacity = this.settings.get_int('tracker-opacity');
+        const newRepaintInterval = this.settings.get_int('tracker-repaint-interval');
 
-        // Update cached icons
-        this.updateCacheTrackers();
+        // Update cache if shape or any color has changed
+        if (
+            this.currentShape !== newShape ||
+            this.currentColor !== newColor ||
+            this.currentColorLeft !== newColorLeft ||
+            this.currentColorMiddle !== newColorMiddle ||
+            this.currentColorRight !== newColorRight
+        ) {
+            this.updateCacheTrackers(newShape, [
+                newColor,
+                newColorLeft,
+                newColorMiddle,
+                newColorRight,
+            ]);
+        }
 
-        // Update icon
-        this.trackerIcon.icon_size = this.currentSize;
-        this.trackerIcon.opacity = this.currentOpacity;
-        this.trackerIcon.gicon = Gio.icon_new_for_string(
-            `${this.cacheDir}/${this.currentShape}_${this.currentColor}.svg`
-        );
-    }
-
-    updateRepaintInterval() {
-        this.currentRepaintInterval = this.settings.get_int('tracker-repaint-interval');
-
-        // If the position updater is currently running, stop it and start a new one with the updated interval
-        if (this.trackerPositionUpdater) {
-            GLib.source_remove(this.trackerPositionUpdater);
-            this.trackerPositionUpdater = null;
-            this.trackerPositionUpdater = GLib.timeout_add(
-                GLib.PRIORITY_DEFAULT,
-                this.currentRepaintInterval,
-                () => {
-                    this.updateTrackerPosition();
-                    return GLib.SOURCE_CONTINUE;
-                }
+        // Update current tracker if shape or main color has changed
+        if (this.currentShape !== newShape || this.currentColor !== newColor) {
+            this.trackerIcon.gicon = Gio.icon_new_for_string(
+                `${this.cacheDir}/${newShape}_${newColor}.svg`
             );
         }
+
+        if (this.currentSize !== newSize) {
+            this.trackerIcon.icon_size = newSize;
+        }
+
+        if (this.currentOpacity !== newOpacity) {
+            this.trackerIcon.opacity = newOpacity;
+        }
+
+        // If the position updater is currently running, stop it and start a new one with the updated interval
+        if (this.currentRepaintInterval !== newRepaintInterval && this.trackerPositionUpdater) {
+            this.stopPositionUpdater();
+            this.startPositionUpdater(newRepaintInterval);
+        }
+
+        // Update variables
+        this.currentShape = newShape;
+        this.currentSize = newSize;
+        this.currentColor = newColor;
+        this.currentColorLeft = newColorLeft;
+        this.currentColorMiddle = newColorMiddle;
+        this.currentColorRight = newColorRight;
+        this.currentOpacity = newOpacity;
+        this.currentRepaintInterval = newRepaintInterval;
     }
     //#endregion
 
     // Set tracker position to mouse position
     updateTrackerPosition() {
         if (this.trackerIcon) {
-            const [mouse_x, mouse_y] = global.get_pointer();
-            this.trackerIcon.set_position(
-                mouse_x - this.currentSize / 2,
-                mouse_y - this.currentSize / 2
-            ); // Offset so that the cursor appears in the middle of the tracker
+            // Get mouse coordinates
+            const [mouseX, mouseY] = global.get_pointer();
+
+            // Offset so that the cursor appears in the center of the tracker
+            const newXPosition = mouseX - this.currentSize / 2;
+            const newYPosition = mouseY - this.currentSize / 2;
+
+            // If mouse has moved, update icon position
+            if (this.currentXPosition !== newXPosition || this.currentYPosition !== newYPosition) {
+                this.trackerIcon.set_position(newXPosition, newYPosition);
+                // Update last recorded position
+                [this.currentXPosition, this.currentYPosition] = [newXPosition, newYPosition];
+            }
         }
     }
+
+    //#region Position Updater functions
+    startPositionUpdater(interval) {
+        this.trackerPositionUpdater = GLib.timeout_add(GLib.PRIORITY_DEFAULT, interval, () => {
+            this.updateTrackerPosition();
+            return GLib.SOURCE_CONTINUE;
+        });
+    }
+
+    stopPositionUpdater() {
+        if (this.trackerPositionUpdater) {
+            GLib.source_remove(this.trackerPositionUpdater);
+            this.trackerPositionUpdater = null;
+        }
+    }
+    //#endregion
 
     //#region Toggle tracker functions
     toggleTracker() {
@@ -227,15 +268,8 @@ export class TrackerManager {
     enableTracker() {
         this.trackerEnabled = true;
 
-        // Start updating the tracker position at regular intervals
-        this.trackerPositionUpdater = GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            this.currentRepaintInterval,
-            () => {
-                this.updateTrackerPosition();
-                return GLib.SOURCE_CONTINUE;
-            }
-        );
+        //Start Updater
+        this.startPositionUpdater(this.currentRepaintInterval);
 
         // Add tracker to desktop
         Main.uiGroup.add_child(this.trackerIcon);
@@ -250,16 +284,16 @@ export class TrackerManager {
         }
 
         // Stop updating the tracker position
-        if (this.trackerPositionUpdater) {
-            GLib.source_remove(this.trackerPositionUpdater);
-            this.trackerPositionUpdater = null;
-        }
+        this.stopPositionUpdater();
     }
     //#endregion
 
     //#region Destroy function
-    // Clean up any connections or resources when the tracker manager is destroyed
     destroy() {
+        // Disable tracker if active
+        this.disableTracker();
+
+        // Remove all connections
         if (this.settingConnections) {
             this.disableTracker();
             this.settingConnections.forEach(connection => {
@@ -268,8 +302,10 @@ export class TrackerManager {
             this.settingConnections = null;
         }
 
+        // Disconnect keybinding
         Main.wm.removeKeybinding('tracker-keybinding');
 
+        // Destroy tracker
         if (this.trackerIcon) {
             this.trackerIcon.destroy();
             this.trackerIcon = null;
