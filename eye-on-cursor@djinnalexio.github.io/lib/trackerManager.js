@@ -33,11 +33,11 @@ export class TrackerManager {
     //#region Constructor
     constructor(extensionObject) {
         // Get extension object properties
+        this.gettext_domain = extensionObject.metadata['gettext-domain'];
         this.path = extensionObject.path;
         this.settings = extensionObject.getSettings();
 
         // Variables for initial state
-        this.cacheDir = this.getCacheDir(extensionObject.metadata['gettext-domain']);
         this.trackerEnabled = false;
         this.currentPositionX = null;
         this.currentPositionY = null;
@@ -54,6 +54,7 @@ export class TrackerManager {
         this.currentRepaintInterval = this.settings.get_int('tracker-repaint-interval');
 
         // Create tracker icons in cache based on the initial settings
+        this.cacheDir = this.getCacheDir(this.gettext_domain);
         this.updateCacheTrackers(this.currentShape, [
             this.currentColor,
             this.currentColorLeft,
@@ -116,6 +117,9 @@ export class TrackerManager {
 
     // Update cached tracker for all colors
     updateCacheTrackers(shape, colorArray) {
+        // Check cacheDir
+        this.cacheDir = this.getCacheDir(this.gettext_domain);
+
         colorArray.forEach(color => {
             createCacheTracker(color, this.cacheDir, this.path);
         });
