@@ -39,8 +39,8 @@ export class TrackerManager {
         // Variables for initial state
         this.cacheDir = this.getCacheDir(extensionObject.metadata['gettext-domain']);
         this.trackerEnabled = false;
-        this.currentXPosition = null;
-        this.currentYPosition = null;
+        this.currentPositionX = null;
+        this.currentPositionY = null;
         this.trackerPositionUpdater = null;
         this.mouseListener = null;
 
@@ -254,10 +254,10 @@ export class TrackerManager {
             const newYPosition = mouseY - this.currentSize / 2;
 
             // If mouse has moved, update icon position
-            if (this.currentXPosition !== newXPosition || this.currentYPosition !== newYPosition) {
+            if (this.currentPositionX !== newXPosition || this.currentPositionY !== newYPosition) {
                 this.trackerIcon.set_position(newXPosition, newYPosition);
                 // Update last recorded position
-                [this.currentXPosition, this.currentYPosition] = [newXPosition, newYPosition];
+                [this.currentPositionX, this.currentPositionY] = [newXPosition, newYPosition];
             }
         }
     }
