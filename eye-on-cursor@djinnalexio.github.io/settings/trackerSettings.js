@@ -13,6 +13,8 @@
  *
  * You should have received a copy of the GNU General Public License along with this extension.
  * If not, see <https://www.gnu.org/licenses/gpl-3.0.html#license-text>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 'use strict';
 
