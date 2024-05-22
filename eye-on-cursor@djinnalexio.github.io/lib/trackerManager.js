@@ -42,7 +42,6 @@ export class TrackerManager {
         this.currentPositionX = null;
         this.currentPositionY = null;
         this.trackerPositionUpdater = null;
-        this.mouseListener = null;
 
         this.currentShape = this.settings.get_string('tracker-shape');
         this.currentSize = this.settings.get_int('tracker-size');
@@ -69,7 +68,7 @@ export class TrackerManager {
             track_hover: false,
         });
         this.trackerIcon.icon_size = this.currentSize;
-        this.trackerIcon.opacity = this.currentOpacity;
+        this.trackerIcon.opacity = Math.ceil(this.currentOpacity * 2.55);
         this.updateTrackerIcon(this.currentShape, this.currentColor);
 
         // Connect change in settings to update function
@@ -206,7 +205,7 @@ export class TrackerManager {
         }
 
         if (this.currentOpacity !== newOpacity) {
-            this.trackerIcon.opacity = newOpacity;
+            this.trackerIcon.opacity = Math.ceil(newOpacity * 2.55);
         }
 
         // If the position updater is currently running, stop it and start a new one with the updated interval

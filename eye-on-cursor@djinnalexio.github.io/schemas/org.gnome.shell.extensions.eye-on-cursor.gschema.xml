@@ -107,7 +107,7 @@
     </key>
 
     <key name='tracker-opacity' type='i'>
-      <default>150</default>
+      <default>40</default>
       <summary>tracker opacity</summary>
     </key>
 

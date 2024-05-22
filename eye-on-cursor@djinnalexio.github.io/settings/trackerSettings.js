@@ -163,7 +163,7 @@ export const TrackerPage = GObject.registerClass(
                 subtitle: _('Opacity of the tracker'),
                 adjustment: new Gtk.Adjustment({
                     lower: 0,
-                    upper: 255,
+                    upper: 100,
                     step_increment: 10,
                 }),
                 value: this.settings.get_int('tracker-opacity'),
