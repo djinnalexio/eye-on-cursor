@@ -1,0 +1,52 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 100 100"
+    width="100"
+    height="100"
+>
+<g fill="none" stroke="#000000">
+  <!-- Outer Circle -->
+  <circle cx="50" cy="50" r="45" stroke-width="2"/>
+
+  <!-- Middle Circle -->
+  <circle cx="50" cy="50" r="25" stroke-width="1"/>
+
+  <!-- Inner Circle -->
+  <circle cx="50" cy="50" r="10" stroke-width="2"/>
+
+  <!-- Vertical Line -->
+  <line x1="50" y1="5" x2="50" y2="25" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="50" y1="75" x2="50" y2="95" stroke-width="2" stroke-dasharray="5,5"/>
+
+  <!-- Horizontal Line -->
+  <line x1="5" y1="50" x2="25" y2="50" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="75" y1="50" x2="95" y2="50" stroke-width="2" stroke-dasharray="5,5"/>
+
+  <!-- Diagonal Lines -->
+  <line x1="18" y1="18" x2="32" y2="32" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="68" y1="68" x2="82" y2="82" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="18" y1="82" x2="32" y2="68" stroke-width="2" stroke-dasharray="5,5"/>
+  <line x1="68" y1="32" x2="82" y2="18" stroke-width="2" stroke-dasharray="5,5"/>
+
+  <!-- Decorative Elements -->
+  <!-- Small circles at line ends -->
+  <circle cx="50" cy="5" r="2" stroke-width="3.5"/>
+  <circle cx="50" cy="95" r="2" stroke-width="3.5"/>
+  <circle cx="5" cy="50" r="2" stroke-width="3.5"/>
+  <circle cx="95" cy="50" r="2" stroke-width="3.5"/>
+  <circle cx="18" cy="18" r="2" stroke-width="3.5"/>
+  <circle cx="82" cy="82" r="2" stroke-width="3.5"/>
+  <circle cx="18" cy="82" r="2" stroke-width="3.5"/>
+  <circle cx="82" cy="18" r="2" stroke-width="3.5"/>
+
+  <!-- Radial Lines -->
+  <line x1="50" y1="50" x2="50" y2="0" stroke-width="0.5"/>
+  <line x1="50" y1="50" x2="50" y2="100" stroke-width="0.5"/>
+  <line x1="50" y1="50" x2="0" y2="50" stroke-width="0.5"/>
+  <line x1="50" y1="50" x2="100" y2="50" stroke-width="0.5"/>
+  <line x1="50" y1="50" x2="35.36" y2="35.36" stroke-width="0.5"/>
+  <line x1="50" y1="50" x2="64.64" y2="64.64" stroke-width="0.5"/>
+  <line x1="50" y1="50" x2="35.36" y2="64.64" stroke-width="0.5"/>
+  <line x1="50" y1="50" x2="64.64" y2="35.36" stroke-width="0.5"/>
+</g>
+</svg>
