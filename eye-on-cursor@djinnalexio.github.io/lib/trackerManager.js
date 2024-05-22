@@ -19,6 +19,8 @@
 'use strict';
 
 //#region Import libraries
+import Atspi from 'gi://Atspi';
+import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import Meta from 'gi://Meta';
@@ -36,6 +38,7 @@ export class TrackerManager {
         this.gettext_domain = extensionObject.metadata['gettext-domain'];
         this.path = extensionObject.path;
         this.settings = extensionObject.getSettings();
+        this.gdkBackend = this.getBackend();
 
         // Variables for initial state
         this.trackerEnabled = false;
@@ -68,7 +71,7 @@ export class TrackerManager {
             track_hover: false,
         });
         this.trackerIcon.icon_size = this.currentSize;
-        this.trackerIcon.opacity = Math.ceil(this.currentOpacity * 2.55);
+        this.trackerIcon.opacity = Math.ceil(this.currentOpacity * 2.55); // Go from 0-100 to 0-255 range
         this.updateTrackerIcon(this.currentShape, this.currentColor);
 
         // Connect change in settings to update function
@@ -97,6 +100,21 @@ export class TrackerManager {
             Shell.ActionMode.ALL,
             this.toggleTracker.bind(this)
         );
+
+        // Set up mouse click highlighting depending on display server
+        this.capturedEvent = null;
+        this.mouseListener = null;
+
+        this.activeClick = null;
+        this.clickMaxTimeoutID = null;
+        this.clickResetPending = false;
+        this.clickDebounce = 50; // Min delay to stop highlighting after receiving BUTTON RELEASED signal
+        this.clickMaxTimeout = 3000; // Max duration before highlighting is stopped without receiving BUTTON RELEASED signal
+        // For cases where the BUTTON RELEASED signal never arrives
+
+        if (this.gdkBackend === 'x11') {
+            Atspi.init();
+        }
     }
     //#endregion
 
@@ -167,7 +185,7 @@ export class TrackerManager {
     }
     //#endregion
 
-    //#region properties update functions
+    //#region Properties update functions
     updateTrackerProperties() {
         // Get new settings
         const newShape = this.settings.get_string('tracker-shape');
@@ -205,7 +223,7 @@ export class TrackerManager {
         }
 
         if (this.currentOpacity !== newOpacity) {
-            this.trackerIcon.opacity = Math.ceil(newOpacity * 2.55);
+            this.trackerIcon.opacity = Math.ceil(newOpacity * 2.55); // Go from 0-100 to 0-255 range
         }
 
         // If the position updater is currently running, stop it and start a new one with the updated interval
@@ -231,7 +249,7 @@ export class TrackerManager {
     }
     //#endregion
 
-    //#region Position Updater functions
+    //#region Position updater functions
     startPositionUpdater(interval) {
         this.trackerPositionUpdater = GLib.timeout_add(GLib.PRIORITY_DEFAULT, interval, () => {
             this.updateTrackerPosition();
@@ -253,17 +271,128 @@ export class TrackerManager {
             const [mouseX, mouseY] = global.get_pointer();
 
             // Offset so that the cursor appears in the center of the tracker
-            const newXPosition = mouseX - this.currentSize / 2;
-            const newYPosition = mouseY - this.currentSize / 2;
+            const newPositionX = mouseX - this.currentSize / 2;
+            const newPositionY = mouseY - this.currentSize / 2;
 
             // If mouse has moved, update icon position
-            if (this.currentPositionX !== newXPosition || this.currentPositionY !== newYPosition) {
-                this.trackerIcon.set_position(newXPosition, newYPosition);
+            if (this.currentPositionX !== newPositionX || this.currentPositionY !== newPositionY) {
+                this.trackerIcon.set_position(newPositionX, newPositionY);
                 // Update last recorded position
-                [this.currentPositionX, this.currentPositionY] = [newXPosition, newYPosition];
+                [this.currentPositionX, this.currentPositionY] = [newPositionX, newPositionY];
             }
         }
     }
+    //#endregion
+
+    //#region Mouse click event functions
+    getBackend() {
+        if (Meta.is_wayland_compositor()) {
+            return 'wayland';
+        } else {
+            return 'x11';
+        }
+    }
+
+    // Using `global.stage` to monitor mouse clicks on Wayland
+    // While it works on both x11 and Wayland, signals are only caught on the desktop and Shell
+    onCapturedEvent(actor, event) {
+        if (event.type() === Clutter.EventType.BUTTON_PRESS) {
+            const button = event.get_button();
+            switch (button) {
+                case 1:
+                    this.handleButtonPress(button, this.currentColorLeft);
+                    break;
+                case 2:
+                    this.handleButtonPress(button, this.currentColorMiddle);
+                    break;
+                case 3:
+                    this.handleButtonPress(button, this.currentColorRight);
+                    break;
+                default:
+                    return;
+            }
+        } else if (event.type() === Clutter.EventType.BUTTON_RELEASE) {
+            const button = event.get_button();
+            this.handleButtonRelease(button);
+        }
+    }
+
+    // Using `Atspi.EventListener` to monitor clicks on X11
+    // works on X11, but not at all on Wayland, and middle click is not registered
+    onMouseEvent(event) {
+        // Match button presses and releases
+        const match = event.type.match(/mouse:button:(\d)([pr])/);
+        if (match) {
+            const button = parseInt(match[1], 10);
+            const action = match[2];
+            if (action === 'p') {
+                // Button presses
+                switch (button) {
+                    case 1:
+                        this.handleButtonPress(button, this.currentColorLeft);
+                        break;
+                    case 2:
+                        this.handleButtonPress(button, this.currentColorMiddle);
+                        break;
+                    case 3:
+                        this.handleButtonPress(button, this.currentColorRight);
+                        break;
+                    default:
+                        return;
+                }
+            } else if (action === 'r') {
+                // Button releases
+                this.handleButtonRelease(button);
+            }
+        }
+    }
+
+    //#region Handle click functions
+    handleButtonPress(button, color) {
+        // Clear any existing timeout if a new button press occurs
+        if (this.clickMaxTimeoutID) {
+            clearTimeout(this.clickMaxTimeoutID);
+            this.clickMaxTimeoutID = null;
+        }
+
+        // Update the tracker icon with the new color
+        this.updateTrackerIcon(this.currentShape, color);
+
+        // Set the active button
+        this.activeClick = button;
+        this.clickResetPending = false;
+
+        // Set a maximum timeout to revert the color
+        this.clickMaxTimeoutID = setTimeout(() => {
+            this.resetColor();
+        }, this.clickMaxTimeout);
+    }
+
+    handleButtonRelease(button) {
+        // Debounce the release event
+        setTimeout(() => {
+            // Only reset if no new click event has occurred in the meantime
+            if (this.activeClick === button && this.clickResetPending) {
+                this.resetColor();
+            }
+        }, this.clickDebounce);
+
+        this.clickResetPending = true;
+    }
+
+    resetColor() {
+        // Reset the tracker icon to the default color
+        this.updateTrackerIcon(this.currentShape, this.currentColor);
+        this.activeClick = null;
+        this.clickResetPending = false;
+
+        // Clear timeout
+        if (this.clickMaxTimeoutID) {
+            clearTimeout(this.clickMaxTimeoutID);
+            this.clickMaxTimeoutID = null;
+        }
+    }
+    //#endregion
     //#endregion
 
     //#region Toggle tracker functions
@@ -283,10 +412,32 @@ export class TrackerManager {
 
         // Add tracker to desktop
         Main.uiGroup.add_child(this.trackerIcon);
+
+        // Connect mouse click events
+        if (this.gdkBackend === 'wayland') {
+            this.capturedEvent = global.stage.connect(
+                'captured-event',
+                this.onCapturedEvent.bind(this)
+            );
+        } else if (this.gdkBackend === 'x11') {
+            this.mouseListener = Atspi.EventListener.new(this.onMouseEvent.bind(this));
+            this.mouseListener.register('mouse');
+        }
     }
 
     disableTracker() {
         this.trackerEnabled = false;
+
+        // Disconnect mouse click events
+        if (this.capturedEvent) {
+            global.stage.disconnect(this.capturedEvent);
+            this.capturedEvent = null;
+        }
+
+        if (this.mouseListener) {
+            this.mouseListener.deregister('mouse');
+            this.mouseListener = null;
+        }
 
         // Remove tracker from desktop
         if (this.trackerIcon && this.trackerIcon.get_parent() === Main.uiGroup) {
