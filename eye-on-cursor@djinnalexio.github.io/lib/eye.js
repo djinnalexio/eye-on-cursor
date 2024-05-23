@@ -76,12 +76,10 @@ export const Eye = GObject.registerClass(
 
         destroy() {
             // Disconnect signal handlers
-            if (this.settingConnections) {
-                this.settingConnections.forEach(connection => {
-                    this.settings.disconnect(connection);
-                });
-                this.settingConnections = null;
-            }
+            this.settingConnections?.forEach(connection => {
+                this.settings.disconnect(connection);
+            });
+            this.settingConnections = null;
 
             // Destroy the button
             super.destroy();
@@ -110,11 +108,7 @@ export function spawnEyes(eyeArray, settings, extensionObject, trackerManager) {
 
 //#region Destroying eyes function
 export function destroyEyes(eyeArray) {
-    if (eyeArray.length > 0) {
-        eyeArray.forEach(eye => {
-            eye.destroy();
-        });
-        eyeArray.length = 0; // Or eyeArray = [];
-    }
+    eyeArray?.forEach(eye => eye.destroy());
+    eyeArray.length = 0; // Or eyeArray = [];
 }
 //#endregion

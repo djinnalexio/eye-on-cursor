@@ -70,22 +70,16 @@ export default class EyeOnCursorExtension extends Extension {
     // Runs when the extension is disabled, uninstalled or the desktop session is exited or locked
     // Cleanup anything done in enable()
     disable() {
-        if (this.placementConnections) {
-            this.placementConnections.forEach(connection => {
-                this.settings.disconnect(connection);
-            });
-            this.placementConnections = null;
-        }
+        this.placementConnections?.forEach(connection => {
+            this.settings.disconnect(connection);
+        });
+        this.placementConnections = null;
 
-        if (this.eyeArray) {
-            destroyEyes(this.eyeArray);
-            this.eyeArray = null;
-        }
+        destroyEyes(this.eyeArray);
+        this.eyeArray = null;
 
-        if (this.mouseTracker) {
-            this.mouseTracker.destroy();
-            this.mouseTracker = null;
-        }
+        this.mouseTracker?.destroy();
+        this.mouseTracker = null;
 
         this.settings = null;
     }

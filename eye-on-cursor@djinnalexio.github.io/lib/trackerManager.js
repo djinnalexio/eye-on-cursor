@@ -284,7 +284,7 @@ export class TrackerManager {
     }
     //#endregion
 
-    //#region Mouse click event functions
+    //#region Monitor Click functions
     getBackend() {
         if (Meta.is_wayland_compositor()) {
             return 'wayland';
@@ -434,10 +434,8 @@ export class TrackerManager {
             this.capturedEvent = null;
         }
 
-        if (this.mouseListener) {
-            this.mouseListener.deregister('mouse');
-            this.mouseListener = null;
-        }
+        this.mouseListener?.deregister('mouse');
+        this.mouseListener = null;
 
         // Remove tracker from desktop
         if (this.trackerIcon && this.trackerIcon.get_parent() === Main.uiGroup) {
@@ -455,21 +453,20 @@ export class TrackerManager {
         this.disableTracker();
 
         // Remove all connections
-        if (this.settingConnections) {
-            this.settingConnections.forEach(connection => {
-                this.settings.disconnect(connection);
-            });
-            this.settingConnections = null;
-        }
+        this.settingConnections?.forEach(connection => {
+            this.settings.disconnect(connection);
+        });
+        this.settingConnections = null;
 
         // Disconnect keybinding
         Main.wm.removeKeybinding('tracker-keybinding');
 
         // Destroy tracker
-        if (this.trackerIcon) {
-            this.trackerIcon.destroy();
-            this.trackerIcon = null;
-        }
+        this.trackerIcon?.destroy();
+        this.trackerIcon = null;
+
+        // Disconnect settings
+        this.settings = null;
     }
     //#endregion
 }
