@@ -1,4 +1,5 @@
-/*
+/* trackerManager.js
+ *
  * This file is part of the Eye on Cursor GNOME Shell extension (eye-on-cursor@djinnalexio.github.io).
  *
  * Copyright (C) 2024 djinnalexio

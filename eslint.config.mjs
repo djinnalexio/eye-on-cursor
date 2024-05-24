@@ -150,15 +150,6 @@ export default [
             },
         },
         rules: {
-            'capitalized-comments': [
-                'warn',
-                'always',
-                {
-                    ignorePattern: 'pragma|ignored|import|let|const|this|function',
-                    ignoreInlineComments: true,
-                    ignoreConsecutiveComments: true,
-                },
-            ],
             curly: ['error', 'multi-or-nest', 'consistent'],
             'func-style': ['error', 'declaration'],
             'no-console': 'warn',
