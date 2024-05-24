@@ -87,6 +87,10 @@ export function makeAboutDialog(metadata, path, translatorCredits) {
         'Eye and Mouse Extended https://extensions.gnome.org/extension/3139/eye-extended/',
     ]);
 
+    aboutPage.add_acknowledgement_section('Cinnamon Fork', [
+        'C-eyes https://github.com/anaximeno/c-eyes',
+    ]);
+
     return aboutPage;
 }
 //#endregion
