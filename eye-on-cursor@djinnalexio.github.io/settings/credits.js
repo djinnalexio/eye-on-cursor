@@ -53,6 +53,14 @@ const supportUrl = '';
 
 //#region About dialog
 export function makeAboutDialog(metadata, path, translatorCredits) {
+    /**
+     * Returns an AboutDialog window with information about the extension filled out.
+     *
+     * @param {metadata} metadata - metadata of the extension
+     * @param {string} path - path to the extension folder
+     * @param {string} translatorCredits - string containing translators' info in any
+     * */
+
     // To find custom icons
     const iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
     if (!iconTheme.get_search_path().includes(`${path}/media/`))

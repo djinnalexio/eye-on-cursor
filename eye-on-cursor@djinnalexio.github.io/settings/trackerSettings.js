@@ -32,6 +32,12 @@ import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions
 export const TrackerPage = GObject.registerClass(
     class TrackerPage extends Adw.PreferencesPage {
         constructor(extensionObject) {
+            /**
+             * A page displaying the tracker settings
+             *
+             * @param {Extension} extensionObject - the extension object
+             */
+
             super({
                 title: _('Mouse Tracker'),
                 icon_name: 'input-mouse-symbolic',
@@ -140,7 +146,7 @@ export const TrackerPage = GObject.registerClass(
             });
 
             const colorDefaultBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
-            colorDefaultBox.append(newColorPicker(this.settings, 'tracker-color'));
+            colorDefaultBox.append(newColorPicker(this.settings, 'tracker-color-default'));
 
             colorDefaultRow.add_suffix(colorDefaultBox);
             drawingGroup.add(colorDefaultRow);
@@ -184,7 +190,7 @@ export const TrackerPage = GObject.registerClass(
                 adjustment: new Gtk.Adjustment({
                     lower: 5, // Min 5ms interval => max 200fps
                     upper: 1000, // Max 1000ms interval => min 1fps
-                    step_increment: 10,
+                    step_increment: 1,
                 }),
                 value: this.settings.get_int('tracker-repaint-interval'),
             });
@@ -261,7 +267,7 @@ export const TrackerPage = GObject.registerClass(
                     modal: true,
                     hide_on_close: true,
                     transient_for: row.get_root(),
-                    width_request: 480, // TODO resize this later
+                    width_request: 480,
                     height_request: 320,
                     content,
                 });

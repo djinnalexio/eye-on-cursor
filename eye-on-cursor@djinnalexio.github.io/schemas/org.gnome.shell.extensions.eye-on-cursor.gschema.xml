@@ -62,11 +62,6 @@
       <summary>Eye margin</summary>
     </key>
 
-    <key name='eye-color' type='s'>
-      <default>'#ffffff'</default>
-      <summary>eye color</summary>
-    </key>
-
     <key name='eye-repaint-interval' type='i'>
       <default>16</default>
       <summary>Milliseconds between redraws of the eye</summary>
@@ -86,7 +81,7 @@
       <summary>tracker size</summary>
     </key>
 
-    <key name='tracker-color' type='s'>
+    <key name='tracker-color-default' type='s'>
       <default>'#ffff00'</default>
       <summary>default tracker color</summary>
     </key>

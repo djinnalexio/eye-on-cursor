@@ -38,8 +38,6 @@ export default class EyeOnCursorExtension extends Extension {
          *
          * Extensions **MAY** create and store a reasonable amount of static data
          * during initialization.
-         *
-         * @param {this} Extension - this extension object
          */
     }
 
@@ -57,8 +55,8 @@ export default class EyeOnCursorExtension extends Extension {
         spawnEyes(this.eyeArray, this.settings, this, this.mouseTracker);
 
         // Connect eye placement settings
-        this.placementSettings = ['eye-position', 'eye-index', 'eye-count', 'eye-reactive'];
-        this.placementConnections = this.placementSettings.map(key =>
+        this.placementSettings = ['eye-position', 'eye-index', 'eye-count'];
+        this.placementSettingHandlers = this.placementSettings.map(key =>
             this.settings.connect(
                 `changed::${key}`,
                 spawnEyes.bind(this, this.eyeArray, this.settings, this, this.mouseTracker)
@@ -71,10 +69,10 @@ export default class EyeOnCursorExtension extends Extension {
     // Runs when the extension is disabled, uninstalled or the desktop session is exited or locked
     // Cleanup anything done in enable()
     disable() {
-        this.placementConnections?.forEach(connection => {
+        this.placementSettingHandlers?.forEach(connection => {
             this.settings.disconnect(connection);
         });
-        this.placementConnections = null;
+        this.placementSettingHandlers = null;
 
         destroyEyes(this.eyeArray);
         this.eyeArray = null;

@@ -31,64 +31,80 @@ import St from 'gi://St';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 //#endregion
 
+//#region Constants
+const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
+const CLICK_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
+const CLICK_MAX_TIMEOUT = 3000; // Max highlighting duration after receiving BUTTON PRESSED signal
+const GTK_BACKEND_WAYLAND = 'wayland';
+const GTK_BACKEND_X11 = 'x11';
+const TRACKER_SETTINGS = [
+    'tracker-shape',
+    'tracker-size',
+    'tracker-color-default',
+    'tracker-color-left',
+    'tracker-color-middle',
+    'tracker-color-right',
+    'tracker-opacity',
+    'tracker-repaint-interval',
+];
+//#endregion
+
 //#region Defining Tracker
 export class TrackerManager {
     //#region Constructor
     constructor(extensionObject) {
+        /**
+         * Creates an instance of TrackerManager, which controls an icon that follows
+         * and reacts to the cursor.
+         *
+         * @param {Extension} extensionObject - The extension object.
+         */
+
         // Get extension object properties
-        this.gettext_domain = extensionObject.metadata['gettext-domain'];
-        this.path = extensionObject.path;
+        this.gettextDomain = extensionObject.metadata['gettext-domain'];
+        this.glyphsDir = `${extensionObject.path}/media/glyphs`;
         this.settings = extensionObject.getSettings();
-        this.gdkBackend = this.getBackend();
 
         // Variables for initial state
-        this.trackerEnabled = false;
-        this.currentPositionX = null;
-        this.currentPositionY = null;
+        this.enabled = false;
+        this.currentColor = null;
+        this.lastPositionX = null;
+        this.lastPositionY = null;
         this.trackerPositionUpdater = null;
 
-        this.currentShape = this.settings.get_string('tracker-shape');
-        this.currentSize = this.settings.get_int('tracker-size');
-        this.currentColor = this.settings.get_string('tracker-color');
-        this.currentColorLeft = this.settings.get_string('tracker-color-left');
-        this.currentColorMiddle = this.settings.get_string('tracker-color-middle');
-        this.currentColorRight = this.settings.get_string('tracker-color-right');
-        this.currentOpacity = this.settings.get_int('tracker-opacity');
-        this.currentRepaintInterval = this.settings.get_int('tracker-repaint-interval');
+        // Initialize settings values
+        this.shape = this.settings.get_string('tracker-shape');
+        this.size = this.settings.get_int('tracker-size');
+        this.colorDefault = this.settings.get_string('tracker-color-default');
+        this.colorLeft = this.settings.get_string('tracker-color-left');
+        this.colorMiddle = this.settings.get_string('tracker-color-middle');
+        this.colorRight = this.settings.get_string('tracker-color-right');
+        this.opacity = this.settings.get_int('tracker-opacity');
+        this.repaintInterval = this.settings.get_int('tracker-repaint-interval');
 
         // Create tracker icons in cache based on the initial settings
-        this.cacheDir = this.getCacheDir(this.gettext_domain);
-        this.updateCacheTrackers(this.currentShape, [
-            this.currentColor,
-            this.currentColorLeft,
-            this.currentColorMiddle,
-            this.currentColorRight,
+        this.cacheDir = this.getCacheDir(this.gettextDomain);
+        this.updateCacheTrackers(this.shape, [
+            this.colorDefault,
+            this.colorLeft,
+            this.colorMiddle,
+            this.colorRight,
         ]);
 
-        // Create the tracker
+        // Create the tracker icon
         this.trackerIcon = new St.Icon({
             reactive: false,
             can_focus: false,
             track_hover: false,
         });
-        this.trackerIcon.icon_size = this.currentSize;
-        this.trackerIcon.opacity = Math.ceil(this.currentOpacity * 2.55); // Go from 0-100 to 0-255 range
-        this.updateTrackerIcon(this.currentShape, this.currentColor);
+        this.trackerIcon.icon_size = this.size;
+        this.trackerIcon.opacity = Math.ceil(this.opacity * 2.55); // Convert from 0-100 to 0-255 range
+        this.updateTrackerIcon(this.shape, this.colorDefault);
 
         // Connect change in settings to update function
-        this.trackerSettings = [
-            'tracker-shape',
-            'tracker-size',
-            'tracker-color',
-            'tracker-color-left',
-            'tracker-color-middle',
-            'tracker-color-right',
-            'tracker-opacity',
-            'tracker-repaint-interval',
-        ];
-        this.settingConnections = [];
-        this.trackerSettings.forEach(key => {
-            this.settingConnections.push(
+        this.settingsHandlers = [];
+        TRACKER_SETTINGS.forEach(key => {
+            this.settingsHandlers.push(
                 this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this))
             );
         });
@@ -103,17 +119,15 @@ export class TrackerManager {
         );
 
         // Set up mouse click highlighting depending on display server
+        this.gdkBackend = this.getBackend();
         this.capturedEvent = null;
         this.mouseListener = null;
 
         this.activeClick = null;
         this.clickMaxTimeoutID = null;
         this.clickResetPending = false;
-        this.clickDebounce = 50; // Min delay to stop highlighting after receiving BUTTON RELEASED signal
-        this.clickMaxTimeout = 3000; // Max duration before highlighting is stopped without receiving BUTTON RELEASED signal
-        // For cases where the BUTTON RELEASED signal never arrives
 
-        if (this.gdkBackend === 'x11') {
+        if (this.gdkBackend === GTK_BACKEND_X11) {
             Atspi.init();
         }
     }
@@ -121,11 +135,11 @@ export class TrackerManager {
 
     //#region Cache icons functions
     // Create/return a cache directory for colored trackers
-    getCacheDir(gettext_domain) {
-        const cacheDirPath = `${GLib.get_user_cache_dir()}/${gettext_domain}/trackers`;
+    getCacheDir() {
+        const cacheDirPath = `${GLib.get_user_cache_dir()}/${this.gettextDomain}/trackers`;
         try {
             if (!GLib.file_test(cacheDirPath, GLib.FileTest.IS_DIR)) {
-                GLib.mkdir_with_parents(cacheDirPath, 0o755); // 'rwx' permissions for user, 'r_x' for others
+                GLib.mkdir_with_parents(cacheDirPath, CACHE_DIR_PERMISSIONS);
             }
         } catch (e) {
             throw new Error(`Failed to create cache dir at ${cacheDirPath}: ${e.message}`);
@@ -136,14 +150,14 @@ export class TrackerManager {
     // Update cached tracker for all colors
     updateCacheTrackers(shape, colorArray) {
         // Check cacheDir
-        this.cacheDir = this.getCacheDir(this.gettext_domain);
+        this.cacheDir = this.getCacheDir();
 
         colorArray.forEach(color => {
-            createCacheTracker(color, this.cacheDir, this.path);
+            createCacheTracker(color, this.cacheDir, this.glyphsDir);
         });
 
         // Create a cached tracker icon if it doesn't exist
-        function createCacheTracker(color, cacheDir, path) {
+        function createCacheTracker(color, cacheDir, sourceDir) {
             const cachedSVGpath = `${cacheDir}/${shape}_${color}.svg`;
             const cachedSVG = Gio.File.new_for_path(cachedSVGpath);
             if (!cachedSVG.query_exists(null)) {
@@ -152,7 +166,7 @@ export class TrackerManager {
                     cachedSVG.create(Gio.FileCreateFlags.NONE, null);
 
                     // Get template SVG
-                    const shapeSVG = Gio.File.new_for_path(`${path}/media/glyphs/${shape}.svg`);
+                    const shapeSVG = Gio.File.new_for_path(`${sourceDir}/${shape}.svg`);
 
                     // Load contents of the shape SVG
                     const [, contents] = shapeSVG.load_contents(null);
@@ -191,7 +205,7 @@ export class TrackerManager {
         // Get new settings
         const newShape = this.settings.get_string('tracker-shape');
         const newSize = this.settings.get_int('tracker-size');
-        const newColor = this.settings.get_string('tracker-color');
+        const newColorDefault = this.settings.get_string('tracker-color-default');
         const newColorLeft = this.settings.get_string('tracker-color-left');
         const newColorMiddle = this.settings.get_string('tracker-color-middle');
         const newColorRight = this.settings.get_string('tracker-color-right');
@@ -200,53 +214,55 @@ export class TrackerManager {
 
         // Update cache if shape or any color has changed
         if (
-            this.currentShape !== newShape ||
-            this.currentColor !== newColor ||
-            this.currentColorLeft !== newColorLeft ||
-            this.currentColorMiddle !== newColorMiddle ||
-            this.currentColorRight !== newColorRight
+            this.shape !== newShape ||
+            this.colorDefault !== newColorDefault ||
+            this.colorLeft !== newColorLeft ||
+            this.colorMiddle !== newColorMiddle ||
+            this.colorRight !== newColorRight
         ) {
             this.updateCacheTrackers(newShape, [
-                newColor,
+                newColorDefault,
                 newColorLeft,
                 newColorMiddle,
                 newColorRight,
             ]);
+
+            // Update current tracker if shape or default color has changed
+            if (this.shape !== newShape || this.colorDefault !== newColorDefault) {
+                this.updateTrackerIcon(newShape, newColorDefault);
+            }
+
+            this.shape = newShape;
+            this.colorDefault = newColorDefault;
+            this.colorLeft = newColorLeft;
+            this.colorMiddle = newColorMiddle;
+            this.colorRight = newColorRight;
         }
 
-        // Update current tracker if shape or main color has changed
-        if (this.currentShape !== newShape || this.currentColor !== newColor) {
-            this.updateTrackerIcon(newShape, newColor);
-        }
-
-        if (this.currentSize !== newSize) {
+        // Update size if changed
+        if (this.size !== newSize) {
             this.trackerIcon.icon_size = newSize;
+            this.size = newSize;
         }
 
-        if (this.currentOpacity !== newOpacity) {
-            this.trackerIcon.opacity = Math.ceil(newOpacity * 2.55); // Go from 0-100 to 0-255 range
+        // Update opacity if changed
+        if (this.opacity !== newOpacity) {
+            this.trackerIcon.opacity = Math.ceil(newOpacity * 2.55); // Convert from 0-100 to 0-255 range
+            this.opacity = newOpacity;
         }
 
         // If the position updater is currently running, stop it and start a new one with the updated interval
-        if (this.currentRepaintInterval !== newRepaintInterval && this.trackerPositionUpdater) {
+        if (this.repaintInterval !== newRepaintInterval && this.trackerPositionUpdater) {
             this.stopPositionUpdater();
             this.startPositionUpdater(newRepaintInterval);
+            this.repaintInterval = newRepaintInterval;
         }
-
-        // Update variables
-        this.currentShape = newShape;
-        this.currentSize = newSize;
-        this.currentColor = newColor;
-        this.currentColorLeft = newColorLeft;
-        this.currentColorMiddle = newColorMiddle;
-        this.currentColorRight = newColorRight;
-        this.currentOpacity = newOpacity;
-        this.currentRepaintInterval = newRepaintInterval;
     }
 
     // Change tracker icon
     updateTrackerIcon(shape, color) {
         this.trackerIcon.gicon = Gio.icon_new_for_string(`${this.cacheDir}/${shape}_${color}.svg`);
+        this.currentColor = color;
     }
     //#endregion
 
@@ -272,14 +288,14 @@ export class TrackerManager {
             const [mouseX, mouseY] = global.get_pointer();
 
             // Offset so that the cursor appears in the center of the tracker
-            const newPositionX = mouseX - this.currentSize / 2;
-            const newPositionY = mouseY - this.currentSize / 2;
+            const newPositionX = mouseX - this.size / 2;
+            const newPositionY = mouseY - this.size / 2;
 
             // If mouse has moved, update icon position
-            if (this.currentPositionX !== newPositionX || this.currentPositionY !== newPositionY) {
+            if (this.lastPositionX !== newPositionX || this.lastPositionY !== newPositionY) {
                 this.trackerIcon.set_position(newPositionX, newPositionY);
                 // Update last recorded position
-                [this.currentPositionX, this.currentPositionY] = [newPositionX, newPositionY];
+                [this.lastPositionX, this.lastPositionY] = [newPositionX, newPositionY];
             }
         }
     }
@@ -288,9 +304,9 @@ export class TrackerManager {
     //#region Monitor Click functions
     getBackend() {
         if (Meta.is_wayland_compositor()) {
-            return 'wayland';
+            return GTK_BACKEND_WAYLAND;
         } else {
-            return 'x11';
+            return GTK_BACKEND_X11;
         }
     }
 
@@ -301,13 +317,13 @@ export class TrackerManager {
             const button = event.get_button();
             switch (button) {
                 case 1:
-                    this.handleButtonPress(button, this.currentColorLeft);
+                    this.handleButtonPress(button, this.colorLeft);
                     break;
                 case 2:
-                    this.handleButtonPress(button, this.currentColorMiddle);
+                    this.handleButtonPress(button, this.colorMiddle);
                     break;
                 case 3:
-                    this.handleButtonPress(button, this.currentColorRight);
+                    this.handleButtonPress(button, this.colorRight);
                     break;
                 default:
                     return;
@@ -319,7 +335,7 @@ export class TrackerManager {
     }
 
     // Using `Atspi.EventListener` to monitor clicks on X11
-    // works on X11, but not at all on Wayland, and middle click is not registered
+    // Works on X11, but not at all on Wayland, and middle click is not registered
     onMouseEvent(event) {
         // Match button presses and releases
         const match = event.type.match(/mouse:button:(\d)([pr])/);
@@ -330,13 +346,13 @@ export class TrackerManager {
                 // Button presses
                 switch (button) {
                     case 1:
-                        this.handleButtonPress(button, this.currentColorLeft);
+                        this.handleButtonPress(button, this.colorLeft);
                         break;
                     case 2:
-                        this.handleButtonPress(button, this.currentColorMiddle);
+                        this.handleButtonPress(button, this.colorMiddle);
                         break;
                     case 3:
-                        this.handleButtonPress(button, this.currentColorRight);
+                        this.handleButtonPress(button, this.colorRight);
                         break;
                     default:
                         return;
@@ -357,7 +373,7 @@ export class TrackerManager {
         }
 
         // Update the tracker icon with the new color
-        this.updateTrackerIcon(this.currentShape, color);
+        this.updateTrackerIcon(this.shape, color);
 
         // Set the active button
         this.activeClick = button;
@@ -366,7 +382,7 @@ export class TrackerManager {
         // Set a maximum timeout to revert the color
         this.clickMaxTimeoutID = setTimeout(() => {
             this.resetColor();
-        }, this.clickMaxTimeout);
+        }, CLICK_MAX_TIMEOUT);
     }
 
     handleButtonRelease(button) {
@@ -376,14 +392,14 @@ export class TrackerManager {
             if (this.activeClick === button && this.clickResetPending) {
                 this.resetColor();
             }
-        }, this.clickDebounce);
+        }, CLICK_DEBOUNCE);
 
         this.clickResetPending = true;
     }
 
     resetColor() {
         // Reset the tracker icon to the default color
-        this.updateTrackerIcon(this.currentShape, this.currentColor);
+        this.updateTrackerIcon(this.shape, this.colorDefault);
         this.activeClick = null;
         this.clickResetPending = false;
 
@@ -398,7 +414,7 @@ export class TrackerManager {
 
     //#region Toggle tracker functions
     toggleTracker() {
-        if (!this.trackerEnabled) {
+        if (!this.enabled) {
             this.enableTracker();
         } else {
             this.disableTracker();
@@ -406,28 +422,28 @@ export class TrackerManager {
     }
 
     enableTracker() {
-        this.trackerEnabled = true;
+        this.enabled = true;
 
         // Start Updater
-        this.startPositionUpdater(this.currentRepaintInterval);
+        this.startPositionUpdater(this.repaintInterval);
 
         // Add tracker to desktop
         Main.uiGroup.add_child(this.trackerIcon);
 
         // Connect mouse click events
-        if (this.gdkBackend === 'wayland') {
+        if (this.gdkBackend === GTK_BACKEND_WAYLAND) {
             this.capturedEvent = global.stage.connect(
                 'captured-event',
                 this.onCapturedEvent.bind(this)
             );
-        } else if (this.gdkBackend === 'x11') {
+        } else if (this.gdkBackend === GTK_BACKEND_X11) {
             this.mouseListener = Atspi.EventListener.new(this.onMouseEvent.bind(this));
             this.mouseListener.register('mouse');
         }
     }
 
     disableTracker() {
-        this.trackerEnabled = false;
+        this.enabled = false;
 
         // Disconnect mouse click events
         if (this.capturedEvent) {
@@ -453,11 +469,11 @@ export class TrackerManager {
         // Disable tracker if active
         this.disableTracker();
 
-        // Remove all connections
-        this.settingConnections?.forEach(connection => {
+        // Disconnect settings signal handlers
+        this.settingsHandlers?.forEach(connection => {
             this.settings.disconnect(connection);
         });
-        this.settingConnections = null;
+        this.settingsHandlers = null;
 
         // Disconnect keybinding
         Main.wm.removeKeybinding('tracker-keybinding');
