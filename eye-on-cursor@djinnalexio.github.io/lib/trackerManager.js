@@ -423,6 +423,7 @@ export class TrackerManager {
 
     enableTracker() {
         this.enabled = true;
+        this.currentColor = this.colorDefault;
 
         // Start Updater
         this.startPositionUpdater(this.repaintInterval);
@@ -444,6 +445,7 @@ export class TrackerManager {
 
     disableTracker() {
         this.enabled = false;
+        this.currentColor = null;
 
         // Disconnect mouse click events
         if (this.capturedEvent) {

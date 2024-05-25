@@ -64,8 +64,7 @@ export const Eye = GObject.registerClass(
 
             // Attach mouse tracker
             this.mouseTracker = trackerManager;
-            this.trackerEnabled = this.mouseTracker.enabled;
-            this.trackerColor = this.mouseTracker.currentColor;
+            this.trackerColor = null;
 
             // Variables for initial state
             this.mousePositionX = 0;
@@ -136,7 +135,6 @@ export const Eye = GObject.registerClass(
             if (
                 this.mousePositionX !== mouseX ||
                 this.mousePositionY !== mouseY ||
-                this.trackerEnabled !== this.mouseTracker.enabled ||
                 this.trackerColor !== this.mouseTracker.currentColor
             ) {
                 [this.mousePositionX, this.mousePositionY] = [mouseX, mouseY];
@@ -145,8 +143,9 @@ export const Eye = GObject.registerClass(
             }
             // add or tracker is on and it's color has changed
         }
+        //#endregion
 
-        // Redraw the eye
+        //#region Draw function
         onRepaint(area) {
             function get_pos(self) {
                 let area_x = 0;
@@ -214,7 +213,7 @@ export const Eye = GObject.registerClass(
             ];
             const a = foreground_color.alpha / 255;
 
-            if (this.mouseTracker.enabled) {
+            if (this.mouseTracker.enabled && this.trackerColor) {
                 const colorValue = this.trackerColor.replace(/^#/, '');
                 r = parseInt(colorValue.substring(0, 2), 16) / 255;
                 g = parseInt(colorValue.substring(2, 4), 16) / 255;
