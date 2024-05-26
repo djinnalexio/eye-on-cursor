@@ -68,6 +68,18 @@
       <description>Sets the thickness of the lines used to draw the eyes.</description>
     </key>
 
+    <key name='eye-iris-color-enabled' type='b'>
+      <default>false</default>
+      <summary>Whether The custom iris color is used.</summary>
+      <description>Determines if the iris is drawn in the custom color or the foreground color.</description>
+    </key>
+
+    <key name='eye-iris-color' type='s'>
+      <default>'#00ffff'</default>
+      <summary>Color of the iris of the eyes.</summary>
+      <description>Sets a custom color for the iris of the eye.</description>
+    </key>
+
     <key name='eye-repaint-interval' type='i'>
       <default>16</default>
       <summary>Redraw interval for the eyes</summary>

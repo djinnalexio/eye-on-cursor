@@ -39,7 +39,8 @@ const EYE_SETTINGS = [
     'eye-shape',
     'eye-line-width',
     'eye-width',
-    'eye-color',
+    'eye-iris-color',
+    'eye-iris-color-enabled',
     'eye-repaint-interval',
 ];
 //#endregion
@@ -76,6 +77,8 @@ export const Eye = GObject.registerClass(
             this.shape = this.settings.get_string('eye-shape');
             this.lineWidth = this.settings.get_int('eye-line-width') / 10;
             this.width = this.settings.get_int('eye-width');
+            this.irisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
+            this.irisColor = this.settings.get_string('eye-iris-color');
             this.repaintInterval = this.settings.get_int('eye-repaint-interval');
 
             // Connect change in settings to update function
@@ -173,19 +176,23 @@ export const Eye = GObject.registerClass(
             const themeNode = this.area.get_theme_node();
             const foregroundColor = themeNode.get_foreground_color();
 
+            const [, irisColor] = Clutter.Color.from_string(this.irisColor);
+
+            let trackerColor;
+            if (this.mouseTracker.enabled) {
+                [, trackerColor] = Clutter.Color.from_string(this.trackerColor);
+            }
+
             const options = {
                 areaX,
                 areaY,
                 mainColor: foregroundColor,
+                irisColor,
+                trackerColor,
                 lineWidth: this.lineWidth,
+                irisColorEnabled: this.irisColorEnabled,
                 trackerEnabled: this.mouseTracker.enabled,
             };
-
-            // Get current tracker color if tracker in enabled
-            if (this.mouseTracker.enabled && this.trackerColor) {
-                const [, trackerColor] = Clutter.Color.from_string(this.trackerColor);
-                options.trackerColor = trackerColor;
-            }
 
             EyeRenderer.drawEye(this.shape, area, options);
         }
@@ -197,6 +204,8 @@ export const Eye = GObject.registerClass(
             const newShape = this.settings.get_string('eye-shape');
             const newLineWidth = this.settings.get_int('eye-line-width');
             const newWidth = this.settings.get_int('eye-width');
+            const newIrisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
+            const newIrisColor = this.settings.get_string('eye-iris-color');
             const newRepaintInterval = this.settings.get_int('eye-repaint-interval');
 
             // Update reactive property
@@ -217,6 +226,13 @@ export const Eye = GObject.registerClass(
             // Update line thickness
             if (this.lineWidth !== newLineWidth) {
                 this.lineWidth = newLineWidth / 10;
+                this.area.queue_repaint();
+            }
+
+            // Update iris color
+            if (this.irisColorEnabled !== newIrisColorEnabled || this.irisColor !== newIrisColor) {
+                this.irisColorEnabled = newIrisColorEnabled;
+                this.irisColor = newIrisColor;
                 this.area.queue_repaint();
             }
 

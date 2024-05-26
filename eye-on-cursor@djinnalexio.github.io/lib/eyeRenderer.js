@@ -102,9 +102,13 @@ class EyelidEye extends EyeShape {
         cr.rotate(mouse_ang);
         cr.setLineWidth(this.options.lineWidth / iris_rad);
 
-        this.options.trackerEnabled
-            ? cairoSetSourceClutterColor(cr, this.options.trackerColor)
-            : cairoSetSourceClutterColor(cr, this.options.mainColor);
+        if (this.options.trackerEnabled) {
+            cairoSetSourceClutterColor(cr, this.options.trackerColor);
+        } else if (this.options.irisColorEnabled) {
+            cairoSetSourceClutterColor(cr, this.options.irisColor);
+        } else {
+            cairoSetSourceClutterColor(cr, this.options.mainColor);
+        }
 
         cr.translate(iris_r * Math.sin(eye_ang), 0);
         cr.scale(iris_rad * Math.cos(eye_ang), iris_rad);
@@ -179,9 +183,13 @@ class RoundEye extends EyeShape {
         cr.rotate(mouse_ang);
         cr.setLineWidth(this.options.lineWidth / iris_rad);
 
-        this.options.trackerEnabled
-            ? cairoSetSourceClutterColor(cr, this.options.trackerColor)
-            : cairoSetSourceClutterColor(cr, this.options.mainColor);
+        if (this.options.trackerEnabled) {
+            cairoSetSourceClutterColor(cr, this.options.trackerColor);
+        } else if (this.options.irisColorEnabled) {
+            cairoSetSourceClutterColor(cr, this.options.irisColor);
+        } else {
+            cairoSetSourceClutterColor(cr, this.options.mainColor);
+        }
 
         cr.translate(iris_r * Math.sin(eye_ang), 0);
         cr.scale(iris_rad * Math.cos(eye_ang), iris_rad);

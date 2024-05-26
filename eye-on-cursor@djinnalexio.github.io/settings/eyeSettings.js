@@ -174,6 +174,70 @@ export const EyePage = GObject.registerClass(
             drawingGroup.add(lineRow);
             //#endregion
 
+            //#region Eye color
+            // Color picker
+            function newColorPicker(settings, key) {
+                const colorPicker = new Gtk.ColorDialogButton({
+                    dialog: new Gtk.ColorDialog({
+                        modal: true,
+                        with_alpha: false,
+                    }),
+                    hexpand: false,
+                    margin_end: 8,
+                    valign: Gtk.Align.CENTER,
+                    vexpand: false,
+                });
+                const currentColor = colorPicker.get_rgba();
+                currentColor.parse(settings.get_string(key));
+                colorPicker.set_rgba(currentColor);
+
+                colorPicker.connect('notify::rgba', widget => {
+                    // Convert 'rgb(255,255,255)' to '#ffffff'
+                    const rgbCode = widget.get_rgba().to_string();
+                    const hexCode =
+                        '#' +
+                        rgbCode
+                            .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
+                            .split(',') // Split numbers at ","
+                            .map(string => parseInt(string)) // Convert them to int
+                            .map(number => number.toString(16)) // Convert them to base16
+                            .map(string => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
+                            .join(''); // Join them back into a string
+                    settings.set_string(key, hexCode);
+                });
+                return colorPicker;
+            }
+
+            const colorRow = new Adw.ActionRow({
+                title: _('Color'),
+                subtitle: _('Custom iris color'),
+            });
+
+            const irisColorPicker = newColorPicker(this.settings, 'eye-iris-color');
+
+            // Iris Color Toggle
+            const irisColorToggle = new Gtk.CheckButton({
+                active: this.settings.get_boolean('eye-iris-color-enabled'),
+                hexpand: false,
+                margin_end: 8,
+                valign: Gtk.Align.CENTER,
+                vexpand: false,
+            });
+            irisColorToggle.connect('toggled', widget => {
+                this.settings.set_boolean('eye-iris-color-enabled', widget.active);
+                irisColorPicker.set_sensitive(widget.active);
+            });
+            irisColorPicker.set_sensitive(irisColorToggle.active);
+
+            const colorBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
+            colorBox.append(irisColorToggle);
+            colorBox.append(irisColorPicker);
+
+            colorRow.add_suffix(colorBox);
+
+            drawingGroup.add(colorRow);
+            //#endregion
+
             //#region Eye repaint interval
             const repaintRow = new Adw.SpinRow({
                 title: _('Refresh Interval'),
