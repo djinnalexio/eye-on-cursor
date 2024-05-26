@@ -83,10 +83,10 @@ export function makeAboutDialog(metadata, path, translatorCredits) {
         website: metadata['url'],
     });
 
-    /* / aboutPage.add_link(
+    aboutPage.add_link(
         'Extension Page',
-        'https://extensions.gnome.org/extension/gnome_ext_code/eye-on-cursor/'
-    ); */
+        'https://extensions.gnome.org/extension/7036/eye-on-cursor/'
+    );
 
     aboutPage.add_acknowledgement_section('Forked from', [
         'Eye and Mouse Extended https://extensions.gnome.org/extension/3139/eye-extended/',

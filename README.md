@@ -3,7 +3,7 @@
     <img alt="GitHub License" src="https://img.shields.io/github/license/djinnalexio/eye-on-cursor?style=for-the-badge">
     <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/djinnalexio/eye-on-cursor?style=for-the-badge">
     <img alt="GNOME versions" src="https://img.shields.io/badge/supported_shell_version-46-green?style=for-the-badge">
-    <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2Fgnome_ext_code%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&logo=gnome&label=GNOME%20extensions&cacheSeconds=86400&style=for-the-badge">
+    <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2F7036%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&logo=gnome&label=GNOME%20extensions&cacheSeconds=86400&style=for-the-badge">
 </p>
 <p align="center">
   <img alt="logo" height="100" src="./eye-on-cursor@djinnalexio.github.io/media/eye-on-cursor-logo.svg">
@@ -28,7 +28,7 @@
 
 ### From the GNOME Extensions Website (recommended)
 
-[<img alt="EGO page" height="100" src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true">](https://extensions.gnome.org/extension/gnome_ext_code/eye-on-cursor/)
+[<img alt="EGO page" height="100" src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true">](https://extensions.gnome.org/extension/7036/eye-on-cursor/)
 
 *Note: The extension is not yet available on the GNOME Extensions website.*
 
