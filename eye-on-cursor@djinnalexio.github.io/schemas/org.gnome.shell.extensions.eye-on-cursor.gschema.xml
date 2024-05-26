@@ -25,95 +25,118 @@
 
     <key name='eye-position' enum='org.gnome.shell.extensions.eye-on-cursor.eye-position'>
       <default>'center'</default>
-      <summary>Eye position</summary>
-      <description>Supported values 'left', 'center' and 'right'</description>
+      <summary>Position of the eyes on the screen</summary>
+      <description>Defines the position of the eyes on the panel. Supported values are 'left',
+        'center', and 'right'.</description>
     </key>
 
     <key name='eye-index' type='i'>
       <default>1</default>
-      <summary>Eye position index</summary>
+      <summary>Index of the eye in panel section</summary>
+      <description>Indicates the priority of the eyes in the panel section order.</description>
     </key>
 
     <key name='eye-count' type='i'>
       <default>2</default>
-      <summary>Number of eyes to intantiate</summary>
+      <summary>Number of eyes to instantiate</summary>
+      <description>Specifies the total number of eye instances to be displayed on the screen.</description>
+    </key>
+
+    <key name='eye-width' type='i'>
+      <default>60</default>
+      <summary>Width of the eye button</summary>
+      <description>Defines the width of each eye button, affecting drawing space and padding.</description>
     </key>
 
     <key name='eye-reactive' type='b'>
       <default>true</default>
-      <summary>Whether eyes are actionable or not</summary>
+      <summary>Whether eyes are interactive</summary>
+      <description>Determines if the eyes respond to clicks.</description>
     </key>
 
     <!-- Eye Drawing Settings -->
 
     <key name='eye-shape' enum='org.gnome.shell.extensions.eye-on-cursor.eye-shape'>
       <default>'eyelid'</default>
-      <summary>Eye shape</summary>
-      <description>Supported values 'eyelid' and 'round'</description>
+      <summary>Shape of the eyes</summary>
+      <description>Specifies the shape of the eyes. Supported values are 'eyelid' and 'round'.</description>
     </key>
 
-    <key name='eye-line-width' type='d'>
-      <default>1.5</default>
-      <summary>Eye line width</summary>
-    </key>
-
-    <key name='eye-margin' type='d'>
-      <default>1.5</default>
-      <summary>Eye margin</summary>
+    <key name='eye-line-width' type='i'>
+      <default>20</default>
+      <summary>Line width of the eye drawing</summary>
+      <description>Sets the thickness of the lines used to draw the eyes.</description>
     </key>
 
     <key name='eye-repaint-interval' type='i'>
       <default>16</default>
-      <summary>Milliseconds between redraws of the eye</summary>
-      <description>Default of 16ms = 62.5fps</description>
+      <summary>Redraw interval for the eyes</summary>
+      <description>Specifies the time interval in milliseconds between each redraw of the eyes.
+        Default is 16ms, equivalent to 62.5fps.</description>
     </key>
 
     <!-- Tracker Drawing Settings -->
 
     <key name='tracker-shape' type='s'>
       <default>'Crosshair_1'</default>
-      <summary>tracker shape</summary>
-      <description>Filename of the image to use as tracker</description>
+      <summary>Shape of the tracker</summary>
+      <description>The filename of the image used as the tracker shape. This image is displayed as
+        the tracker cursor.</description>
     </key>
 
     <key name='tracker-size' type='i'>
       <default>256</default>
-      <summary>tracker size</summary>
+      <summary>Size of the tracker</summary>
+      <description>Defines the dimensions of the tracker element in pixels.</description>
     </key>
 
     <key name='tracker-color-default' type='s'>
       <default>'#ffff00'</default>
-      <summary>default tracker color</summary>
+      <summary>Default color of the tracker</summary>
+      <description>Sets the default color of the tracker. The value is specified in hexadecimal
+        format.</description>
     </key>
 
     <key name='tracker-color-left' type='s'>
       <default>'#ff0000'</default>
-      <summary>tracker color on left click</summary>
+      <summary>Color of the tracker on left click</summary>
+      <description>Specifies the color of the tracker when a left-click event is detected. The value
+        is in hexadecimal format.</description>
     </key>
 
     <key name='tracker-color-middle' type='s'>
       <default>'#00ff00'</default>
-      <summary>tracker color on middle click</summary>
+      <summary>Color of the tracker on middle click</summary>
+      <description>Specifies the color of the tracker when a middle-click event is detected. The
+        value is in hexadecimal format.</description>
     </key>
 
     <key name='tracker-color-right' type='s'>
       <default>'#0000ff'</default>
-      <summary>tracker color on right click</summary>
+      <summary>Color of the tracker on right click</summary>
+      <description>Specifies the color of the tracker when a right-click event is detected. The
+        value is in hexadecimal format.</description>
     </key>
 
     <key name='tracker-opacity' type='i'>
       <default>40</default>
-      <summary>tracker opacity</summary>
+      <summary>Opacity of the tracker</summary>
+      <description>Sets the opacity level of the tracker. The value is an integer between 0
+        (completely transparent) and 100 (fully opaque).</description>
     </key>
 
     <key name='tracker-repaint-interval' type='i'>
       <default>16</default>
-      <summary>Milliseconds between redraws of the tracker</summary>
+      <summary>Redraw interval for the tracker</summary>
+      <description>Specifies the time interval in milliseconds between each redraw of the tracker.
+        Default is 16ms, equivalent to 62.5fps.</description>
     </key>
 
     <key name='tracker-keybinding' type='as'>
       <default><![CDATA[['']]]></default>
-      <summary>Keyboard shorcut to toggle the tracker</summary>
+      <summary>Keyboard shortcut for toggling the tracker</summary>
+      <description>Defines the keyboard shortcut that toggles the visibility or functionality of the
+        tracker.</description>
     </key>
 
   </schema>

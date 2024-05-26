@@ -105,6 +105,23 @@ export const EyePage = GObject.registerClass(
             placementGroup.add(countRow);
             //#endregion
 
+            //#region Eye margin
+            const widthRow = new Adw.SpinRow({
+                title: _('Width'),
+                subtitle: _('Drawing space and padding of the eye'),
+                adjustment: new Gtk.Adjustment({
+                    lower: 20,
+                    upper: 1000,
+                    step_increment: 1,
+                }),
+                value: this.settings.get_int('eye-width'),
+            });
+            widthRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_int('eye-width', widget.value);
+            });
+            placementGroup.add(widthRow);
+            //#endregion
+
             //#region Eye reactivity
             const reactiveRow = new Adw.SwitchRow({
                 title: _('Interactivity'),
@@ -142,38 +159,19 @@ export const EyePage = GObject.registerClass(
 
             //#region Eye line width
             const lineRow = new Adw.SpinRow({
-                title: _('Drawing Thickness'),
+                title: _('Stroke'),
                 subtitle: _('Thickness of the strokes'),
                 adjustment: new Gtk.Adjustment({
-                    lower: 1.0,
-                    upper: 5.0,
-                    step_increment: 0.1,
+                    lower: 0,
+                    upper: 50,
+                    step_increment: 1,
                 }),
-                digits: 1,
-                value: this.settings.get_double('eye-line-width'),
+                value: this.settings.get_int('eye-line-width'),
             });
             lineRow.adjustment.connect('value-changed', widget => {
-                this.settings.set_double('eye-line-width', widget.value);
+                this.settings.set_int('eye-line-width', widget.value);
             });
             drawingGroup.add(lineRow);
-            //#endregion
-
-            //#region Eye margin
-            const marginRow = new Adw.SpinRow({
-                title: _('Margin'),
-                subtitle: _('Margins around the eye'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 0.0,
-                    upper: 10.0,
-                    step_increment: 0.1,
-                }),
-                digits: 1,
-                value: this.settings.get_double('eye-margin'),
-            });
-            marginRow.adjustment.connect('value-changed', widget => {
-                this.settings.set_double('eye-margin', widget.value);
-            });
-            drawingGroup.add(marginRow);
             //#endregion
 
             //#region Eye repaint interval
