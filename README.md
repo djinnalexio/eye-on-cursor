@@ -1,24 +1,28 @@
 <h1 align="center">Eye on Cursor</h1>
-<h3 align="center">Let your desktop "keep an eye" on your mouse!</h3>
-
 <p align="center">
     <img alt="GitHub License" src="https://img.shields.io/github/license/djinnalexio/eye-on-cursor?style=for-the-badge">
-    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/djinnalexio/eye-on-cursor?style=for-the-badge">
     <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/djinnalexio/eye-on-cursor?style=for-the-badge">
     <img alt="GNOME versions" src="https://img.shields.io/badge/supported_shell_version-46-green?style=for-the-badge">
     <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2Fgnome_ext_code%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&logo=gnome&label=GNOME%20extensions&cacheSeconds=86400&style=for-the-badge">
 </p>
+<p align="center">
+  <img alt="logo" height="100" src="./eye-on-cursor@djinnalexio.github.io/media/eye-on-cursor-logo.svg">
+</p>
+<h3 align="center">Let your desktop "keep an eye" on your mouse!</h3>
 
 ## Overview
 
 **Eye on Cursor** is a fun and practical extension that gives your panel eyes that constantly follow your mouse. This quirky feature, combined with a highly customizable mouse tracker that highlights clicks, makes it easier than ever to monitor your mouse movements, ensuring your pointer gets all the attention it needs.
+
+![blueEyes](assets/blueEyes.png) ![classic](assets/classic.png) ![default](assets/default.png)
+![biblicallyAccurate](assets/biblicallyAccurate.png)
+![tracker](assets/tracker.png) ![round](assets/round.png)
 
 ## Features
 
 - **Eyes Follow Cursor:** As many eyes as you want in the panel to follow the cursor movements, providing a fun and interactive experience.
 - **Customizable Mouse Tracker:** Highlights clicks and tracks mouse movements with customizable settings to fit your preferences.
 - **Click Highlighting:** Visual feedback for mouse clicks, making it easier to keep track of your actions, especially useful for presentations or demonstrations.
-  - **Wayland Compatibility:** On Wayland, mouse tracker click highlighting does not work on windows.
 
 ## Installation
 
@@ -64,3 +68,8 @@ Resources to get you started:
 - [GJS Guide](https://gjs.guide/)
 - [GNOME Shell Extensions Review Guidelines](https://gjs.guide/extensions/review-guidelines/review-guidelines.html)
 - [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/)
+
+### Known Issues
+
+- On Wayland, mouse tracker click highlighting does not work on windows.
+- On x11, middle click is not registered.

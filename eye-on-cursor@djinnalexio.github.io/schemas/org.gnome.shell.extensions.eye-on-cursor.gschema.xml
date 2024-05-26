@@ -90,7 +90,7 @@
     <!-- Tracker Drawing Settings -->
 
     <key name='tracker-shape' type='s'>
-      <default>'Crosshair_1'</default>
+      <default>'Circle'</default>
       <summary>Shape of the tracker</summary>
       <description>The filename of the image used as the tracker shape. This image is displayed as
         the tracker cursor.</description>

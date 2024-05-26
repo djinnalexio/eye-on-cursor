@@ -44,10 +44,7 @@ const developerName = 'djinnalexio';
 const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
     <ol> ordered and <ul> unordered lists with <li> list items, and <code> code. */
-const releaseNotes =
-    '\
-    <p>This extension is currently under development.</p>\
-    ';
+const releaseNotes = '';
 const supportUrl = '';
 //#endregion
 
