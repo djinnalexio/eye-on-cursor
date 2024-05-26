@@ -51,21 +51,21 @@ const TRACKER_SETTINGS = [
 
 //#region Defining Tracker
 export class TrackerManager {
+    /**
+     * Creates an instance of TrackerManager, which controls an icon that follows
+     * and reacts to the cursor.
+     *
+     * @param {Extension} extensionObject - The extension object.
+     */
+
     //#region Constructor
     constructor(extensionObject) {
-        /**
-         * Creates an instance of TrackerManager, which controls an icon that follows
-         * and reacts to the cursor.
-         *
-         * @param {Extension} extensionObject - The extension object.
-         */
-
         // Get extension object properties
         this.gettextDomain = extensionObject.metadata['gettext-domain'];
         this.glyphsDir = `${extensionObject.path}/media/glyphs`;
         this.settings = extensionObject.getSettings();
 
-        // Variables for initial state
+        // Initialize state variables
         this.enabled = false;
         this.currentColor = null;
         this.lastPositionX = null;
@@ -83,7 +83,7 @@ export class TrackerManager {
         this.repaintInterval = this.settings.get_int('tracker-repaint-interval');
 
         // Create tracker icons in cache based on the initial settings
-        this.cacheDir = this.getCacheDir(this.gettextDomain);
+        this.cacheDir = this.getCacheDir();
         this.updateCacheTrackers(this.shape, [
             this.colorDefault,
             this.colorLeft,
@@ -102,12 +102,9 @@ export class TrackerManager {
         this.updateTrackerIcon(this.shape, this.colorDefault);
 
         // Connect change in settings to update function
-        this.settingsHandlers = [];
-        TRACKER_SETTINGS.forEach(key => {
-            this.settingsHandlers.push(
-                this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this))
-            );
-        });
+        this.settingsHandlers = TRACKER_SETTINGS.map(key =>
+            this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this))
+        );
 
         // Connect toggle tracker shortcut
         Main.wm.addKeybinding(
@@ -149,52 +146,51 @@ export class TrackerManager {
 
     // Update cached tracker for all colors
     updateCacheTrackers(shape, colorArray) {
-        // Check cacheDir
+        // Ensure cache directory exists
         this.cacheDir = this.getCacheDir();
 
+        // Update or create cache tracker for each color
         colorArray.forEach(color => {
-            createCacheTracker(color, this.cacheDir, this.glyphsDir);
+            this.createCacheTracker(shape, color, this.cacheDir, this.glyphsDir);
         });
+    }
 
-        // Create a cached tracker icon if it doesn't exist
-        function createCacheTracker(color, cacheDir, sourceDir) {
-            const cachedSVGpath = `${cacheDir}/${shape}_${color}.svg`;
-            const cachedSVG = Gio.File.new_for_path(cachedSVGpath);
-            if (!cachedSVG.query_exists(null)) {
-                try {
-                    // Create empty file
-                    cachedSVG.create(Gio.FileCreateFlags.NONE, null);
+    // Create a cached tracker icon if it doesn't exist
+    createCacheTracker(shape, color, cacheDir, sourceDir) {
+        const cachedSVGpath = `${cacheDir}/${shape}_${color}.svg`;
+        const cachedSVG = Gio.File.new_for_path(cachedSVGpath);
+        if (!cachedSVG.query_exists(null)) {
+            try {
+                // Create empty file
+                cachedSVG.create(Gio.FileCreateFlags.NONE, null);
 
-                    // Get template SVG
-                    const shapeSVG = Gio.File.new_for_path(`${sourceDir}/${shape}.svg`);
+                // Get template SVG
+                const shapeSVG = Gio.File.new_for_path(`${sourceDir}/${shape}.svg`);
 
-                    // Load contents of the shape SVG
-                    const [, contents] = shapeSVG.load_contents(null);
+                // Load contents of the shape SVG
+                const [, contents] = shapeSVG.load_contents(null);
 
-                    // Decode SVG contents
-                    const decoder = new TextDecoder();
-                    let decodedContents = decoder.decode(contents);
+                // Decode SVG contents
+                const decoder = new TextDecoder();
+                let decodedContents = decoder.decode(contents);
 
-                    // Replace color in SVG contents
-                    decodedContents = decodedContents.replace('#000000', color);
+                // Replace color in SVG contents
+                decodedContents = decodedContents.replace('#000000', color);
 
-                    // Encode SVG contents back to bytes
-                    const encoder = new TextEncoder();
-                    const encodedContents = encoder.encode(decodedContents);
+                // Encode SVG contents back to bytes
+                const encoder = new TextEncoder();
+                const encodedContents = encoder.encode(decodedContents);
 
-                    // Fill cachedSVG with modified contents
-                    cachedSVG.replace_contents(
-                        encodedContents,
-                        null,
-                        false,
-                        Gio.FileCreateFlags.REPLACE_DESTINATION,
-                        null
-                    );
-                } catch (e) {
-                    throw new Error(
-                        `Failed to create cache tracker at ${cachedSVGpath}: ${e.message}`
-                    );
-                }
+                // Fill cachedSVG with modified contents
+                cachedSVG.replace_contents(
+                    encodedContents,
+                    null,
+                    false,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                    null
+                );
+            } catch (e) {
+                throw new Error(`Failed to create cache tracker at ${cachedSVGpath}: ${e.message}`);
             }
         }
     }
