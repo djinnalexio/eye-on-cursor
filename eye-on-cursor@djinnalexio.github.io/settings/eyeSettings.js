@@ -260,7 +260,7 @@ export const EyePage = GObject.registerClass(
 
             //#region About group
             const aboutGroup = new Adw.PreferencesGroup();
-            this.add(aboutGroup);
+            if (!Adw.VERSION_S.startsWith('1.4')) this.add(aboutGroup); //AboutDialog is not available in 1.4.*
 
             const aboutRow = new Adw.ActionRow({
                 title: _('About'),

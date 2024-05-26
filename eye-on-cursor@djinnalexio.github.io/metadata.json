@@ -2,9 +2,9 @@
     "uuid": "eye-on-cursor@djinnalexio.github.io",
     "name": "Eye on Cursor",
     "description": "Let your desktop \"keep an eye\" on your mouse! And with the included cursor indicator, keep track of your pointer's every action!\n\nTry Eye on Cursor, a fun and practical extension that gives your panel eyes that constantly follow your mouse. This quirky feature, combined with a highly customizable mouse tracker that highlights clicks, makes it easier than ever to monitor your mouse movements, ensuring your pointer gets all the attention it needs.\n\nThis extension is the latest version of 'Eye and Mouse Extended' by Alexey Lovchikov.",
-    "shell-version": ["46"],
+    "shell-version": ["45","46"],
     "url": "https://github.com/djinnalexio/eye-on-cursor/",
     "gettext-domain": "eye-on-cursor",
     "settings-schema": "org.gnome.shell.extensions.eye-on-cursor",
-    "version-name": "1.0.0"
+    "version-name": "1.0.1"
 }
