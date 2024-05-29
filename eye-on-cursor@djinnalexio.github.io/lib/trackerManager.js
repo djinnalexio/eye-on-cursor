@@ -45,7 +45,7 @@ const TRACKER_SETTINGS = [
     'tracker-color-middle',
     'tracker-color-right',
     'tracker-opacity',
-    'tracker-repaint-interval',
+    'tracker-refresh-rate',
 ];
 //#endregion
 
@@ -80,7 +80,7 @@ export class TrackerManager {
         this.colorMiddle = this.settings.get_string('tracker-color-middle');
         this.colorRight = this.settings.get_string('tracker-color-right');
         this.opacity = this.settings.get_int('tracker-opacity');
-        this.repaintInterval = this.settings.get_int('tracker-repaint-interval');
+        this.repaintInterval = this.settings.get_int('tracker-refresh-rate');
 
         // Create tracker icons in cache based on the initial settings
         this.cacheDir = this.getCacheDir();
@@ -206,7 +206,7 @@ export class TrackerManager {
         const newColorMiddle = this.settings.get_string('tracker-color-middle');
         const newColorRight = this.settings.get_string('tracker-color-right');
         const newOpacity = this.settings.get_int('tracker-opacity');
-        const newRepaintInterval = this.settings.get_int('tracker-repaint-interval');
+        const newRepaintInterval = this.settings.get_int('tracker-refresh-rate');
 
         // Update cache if shape or any color has changed
         if (
@@ -264,10 +264,14 @@ export class TrackerManager {
 
     //#region Position updater functions
     startPositionUpdater(interval) {
-        this.trackerPositionUpdater = GLib.timeout_add(GLib.PRIORITY_DEFAULT, interval, () => {
-            this.updateTrackerPosition();
-            return GLib.SOURCE_CONTINUE;
-        });
+        this.trackerPositionUpdater = GLib.timeout_add(
+            GLib.PRIORITY_DEFAULT,
+            1000 / interval,
+            () => {
+                this.updateTrackerPosition();
+                return GLib.SOURCE_CONTINUE;
+            }
+        );
     }
 
     stopPositionUpdater() {

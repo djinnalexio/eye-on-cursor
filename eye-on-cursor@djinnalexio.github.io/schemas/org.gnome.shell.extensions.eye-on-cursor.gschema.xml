@@ -80,11 +80,10 @@
       <description>Sets a custom color for the iris of the eye.</description>
     </key>
 
-    <key name='eye-repaint-interval' type='i'>
-      <default>16</default>
-      <summary>Redraw interval for the eyes</summary>
-      <description>Specifies the time interval in milliseconds between each redraw of the eyes.
-        Default is 16ms, equivalent to 62.5fps.</description>
+    <key name='eye-refresh-rate' type='i'>
+      <default>60</default>
+      <summary>Refresh rate of the eyes</summary>
+      <description>Specifies the refresh rate of the eyes.</description>
     </key>
 
     <!-- Tracker Drawing Settings -->
@@ -137,11 +136,10 @@
         (completely transparent) and 100 (fully opaque).</description>
     </key>
 
-    <key name='tracker-repaint-interval' type='i'>
-      <default>16</default>
-      <summary>Redraw interval for the tracker</summary>
-      <description>Specifies the time interval in milliseconds between each redraw of the tracker.
-        Default is 16ms, equivalent to 62.5fps.</description>
+    <key name='tracker-refresh-rate' type='i'>
+      <default>60</default>
+      <summary>Refresh rate of the tracker</summary>
+      <description>Specifies the refresh rate of the tracker.</description>
     </key>
 
     <key name='tracker-keybinding' type='as'>

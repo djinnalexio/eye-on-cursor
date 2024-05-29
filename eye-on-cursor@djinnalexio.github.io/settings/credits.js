@@ -44,7 +44,12 @@ const developerName = 'djinnalexio';
 const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
     <ol> ordered and <ul> unordered lists with <li> list items, and <code> code. */
-const releaseNotes = '';
+const releaseNotes =
+    '<p>Changes:</p>\
+    <ul>\
+        <li>replaced <em>Refresh interval</em> with <em>Refresh rate</em></li>\
+    </ul >\
+    ';
 const supportUrl = '';
 //#endregion
 
@@ -67,7 +72,7 @@ export function makeAboutDialog(metadata, path, translatorCredits) {
         application_icon: 'eye-on-cursor-logo',
         application_name: metadata['name'],
         artists: artists,
-        comments: metadata['description'],
+        // comments: metadata['description'],
         copyright: copyright,
         designers: designers,
         developer_name: developerName,

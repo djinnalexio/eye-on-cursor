@@ -181,23 +181,21 @@ export const TrackerPage = GObject.registerClass(
             drawingGroup.add(opacityRow);
             //#endregion
 
-            //#region Tracker repaint interval
-            const repaintRow = new Adw.SpinRow({
-                title: _('Refresh Interval'),
-                subtitle: _(
-                    'Milliseconds between redraws of the tracker. Lower is faster, but more CPU intensive.'
-                ),
+            //#region Tracker refresh rate
+            const refreshRow = new Adw.SpinRow({
+                title: _('Refresh Rate'),
+                subtitle: _('Tracker FPS (Frames Per Second)'),
                 adjustment: new Gtk.Adjustment({
-                    lower: 5, // Min 5ms interval => max 200fps
-                    upper: 1000, // Max 1000ms interval => min 1fps
+                    lower: 1,
+                    upper: 360,
                     step_increment: 1,
                 }),
-                value: this.settings.get_int('tracker-repaint-interval'),
+                value: this.settings.get_int('tracker-refresh-rate'),
             });
-            repaintRow.adjustment.connect('value-changed', widget => {
-                this.settings.set_int('tracker-repaint-interval', widget.value);
+            refreshRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_int('tracker-refresh-rate', widget.value);
             });
-            drawingGroup.add(repaintRow);
+            drawingGroup.add(refreshRow);
             //#endregion
             //#endregion
 

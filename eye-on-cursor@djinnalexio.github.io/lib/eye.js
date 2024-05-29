@@ -41,7 +41,7 @@ const EYE_SETTINGS = [
     'eye-width',
     'eye-iris-color',
     'eye-iris-color-enabled',
-    'eye-repaint-interval',
+    'eye-refresh-rate',
 ];
 //#endregion
 
@@ -79,7 +79,7 @@ export const Eye = GObject.registerClass(
             this.width = this.settings.get_int('eye-width');
             this.irisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
             this.irisColor = this.settings.get_string('eye-iris-color');
-            this.repaintInterval = this.settings.get_int('eye-repaint-interval');
+            this.repaintInterval = this.settings.get_int('eye-refresh-rate');
 
             // Connect change in settings to update function
             this.settingsHandlers = EYE_SETTINGS.map(key =>
@@ -112,7 +112,7 @@ export const Eye = GObject.registerClass(
             // Start periodic redraw
             this.updateHandler = GLib.timeout_add(
                 GLib.PRIORITY_DEFAULT,
-                this.repaintInterval,
+                1000 / this.repaintInterval,
                 () => {
                     this.updateEyeFrame();
                     return GLib.SOURCE_CONTINUE;
@@ -206,7 +206,7 @@ export const Eye = GObject.registerClass(
             const newWidth = this.settings.get_int('eye-width');
             const newIrisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
             const newIrisColor = this.settings.get_string('eye-iris-color');
-            const newRepaintInterval = this.settings.get_int('eye-repaint-interval');
+            const newRepaintInterval = this.settings.get_int('eye-refresh-rate');
 
             // Update reactive property
             if (this.reactive !== newReactive) this.reactive = newReactive;
@@ -243,7 +243,7 @@ export const Eye = GObject.registerClass(
                 }
                 this.updateHandler = GLib.timeout_add(
                     GLib.PRIORITY_DEFAULT,
-                    newRepaintInterval,
+                    1000 / newRepaintInterval,
                     () => {
                         this.updateEyeFrame();
                         return GLib.SOURCE_CONTINUE;
