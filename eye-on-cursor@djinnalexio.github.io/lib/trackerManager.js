@@ -63,7 +63,7 @@ export class TrackerManager {
         // Get extension object properties
         this.gettextDomain = extensionObject.metadata['gettext-domain'];
         this.glyphsDir = `${extensionObject.path}/media/glyphs`;
-        this.settings = extensionObject.getSettings();
+        this.settings = extensionObject.settings;
 
         // Initialize state variables
         this.enabled = false;

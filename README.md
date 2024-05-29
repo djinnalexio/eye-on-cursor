@@ -61,6 +61,11 @@ Here are a few steps to get you set up:
 3. In the root of the repo, run `npm install` to enable linting and formatting (you need the `nodejs` package installed on your system). You will then be able to run `npm run lint` and `npm run format` to check the code.
 4. Run `make install && make enable` to use the extension or `make test` to debug it. The `Makefile` contains a few other commands that should be useful for debugging.
 
+### Known Issues
+
+- On Wayland, mouse tracker click highlighting does not work apps.
+- On x11, middle click is not registered.
+
 ### Documentation on Developing GNOME Extensions
 
 Resources to get you started:
@@ -68,8 +73,3 @@ Resources to get you started:
 - [GJS Guide](https://gjs.guide/)
 - [GNOME Shell Extensions Review Guidelines](https://gjs.guide/extensions/review-guidelines/review-guidelines.html)
 - [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/)
-
-### Known Issues
-
-- On Wayland, mouse tracker click highlighting does not work on windows.
-- On x11, middle click is not registered.

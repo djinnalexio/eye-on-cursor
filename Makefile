@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: djinnalexio
 
-EXTENSION_UUID = eye-on-cursor@djinnalexio.github.io
 EXTENSION_GETTEXT_DOMAIN = eye-on-cursor
+EXTENSION_UUID = $(EXTENSION_GETTEXT_DOMAIN)@djinnalexio.github.io
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
 
 .phony: pack install uninstall prefs test-wayland test-prefs-settings test-prefs-window update-pot

@@ -62,7 +62,7 @@ export const Eye = GObject.registerClass(
 
             // Get extension object properties
             this.path = extensionObject.path;
-            this.settings = extensionObject.getSettings();
+            this.settings = extensionObject.settings;
 
             // Attach mouse tracker
             this.mouseTracker = trackerManager;
