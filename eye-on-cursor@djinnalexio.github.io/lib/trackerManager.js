@@ -294,7 +294,8 @@ export class TrackerManager {
             // If mouse has moved, update icon position
             if (this.lastPositionX !== newPositionX || this.lastPositionY !== newPositionY) {
                 this.trackerIcon.set_position(newPositionX, newPositionY);
-                // Update last recorded position
+                // Move tracker on top of elements
+                Main.uiGroup.set_child_above_sibling(this.trackerIcon, null);
                 [this.lastPositionX, this.lastPositionY] = [newPositionX, newPositionY];
             }
         }
@@ -430,6 +431,7 @@ export class TrackerManager {
 
         // Add tracker to desktop
         Main.uiGroup.add_child(this.trackerIcon);
+        Main.uiGroup.set_child_above_sibling(this.trackerIcon, null);
 
         // Connect mouse click events
         if (this.gdkBackend === GTK_BACKEND_WAYLAND) {
