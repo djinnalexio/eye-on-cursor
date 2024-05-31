@@ -284,11 +284,7 @@ export const EyePage = GObject.registerClass(
             aboutRow.add_suffix(new Gtk.Image({icon_name: 'go-next-symbolic'}));
 
             aboutRow.connect('activated', () => {
-                this.aboutWindow = makeAboutDialog(
-                    this.metadata,
-                    this.path,
-                    _('translator_credits')
-                );
+                this.aboutWindow = makeAboutDialog(this.metadata, this.path);
                 this.aboutWindow.present(this);
             });
             aboutGroup.add(aboutRow);

@@ -23,6 +23,8 @@
 import Adw from 'gi://Adw';
 import Gdk from 'gi://Gdk';
 import Gtk from 'gi://Gtk';
+
+import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 //#endregion
 
 //#region Credits
@@ -63,7 +65,7 @@ const supportUrl = '';
 //#endregion
 
 //#region About dialog
-export function makeAboutDialog(metadata, path, translatorCredits) {
+export function makeAboutDialog(metadata, path) {
     /**
      * Returns an AboutDialog window with information about the extension filled out.
      *
@@ -92,7 +94,7 @@ export function makeAboutDialog(metadata, path, translatorCredits) {
         release_notes: releaseNotes,
         release_notes_version: metadata['version-name'],
         support_url: supportUrl,
-        translator_credits: translatorCredits,
+        translator_credits: _('translator_credits'),
         version: metadata['version-name'],
         website: metadata['url'],
     });
