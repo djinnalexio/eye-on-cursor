@@ -48,6 +48,7 @@ const releaseNotes =
     '<p>Fixes:</p>\
     <ul>\
         <li>made tracker stay above UI elements</li>\
+        <li>tracker now immediately appears at the current mouse position upon being enabled</li>\
     </ul >\
     <p>New:</p>\
     <ul>\

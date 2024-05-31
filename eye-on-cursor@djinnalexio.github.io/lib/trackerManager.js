@@ -37,6 +37,7 @@ const CLICK_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON 
 const CLICK_MAX_TIMEOUT = 3000; // Max highlighting duration after receiving BUTTON PRESSED signal
 const GTK_BACKEND_WAYLAND = 'wayland';
 const GTK_BACKEND_X11 = 'x11';
+const TRACKER_UPDATE_DELAY = 20;
 const TRACKER_SETTINGS = [
     'tracker-shape',
     'tracker-size',
@@ -376,6 +377,11 @@ export class TrackerManager {
         // Update the tracker icon with the new color
         this.updateTrackerIcon(this.shape, color);
 
+        // Move the tracker on top of any new UI element that appears after click
+        setTimeout(() => {
+            Main.uiGroup.set_child_above_sibling(this.trackerIcon, null);
+        }, TRACKER_UPDATE_DELAY);
+
         // Set the active button
         this.activeClick = button;
         this.clickResetPending = false;
@@ -430,8 +436,10 @@ export class TrackerManager {
         this.startPositionUpdater(this.repaintInterval);
 
         // Add tracker to desktop
-        Main.uiGroup.add_child(this.trackerIcon);
-        Main.uiGroup.set_child_above_sibling(this.trackerIcon, null);
+        // Delayed so that tracker doesn't appear in a previous location before position is updated
+        setTimeout(() => {
+            Main.uiGroup.add_child(this.trackerIcon);
+        }, TRACKER_UPDATE_DELAY);
 
         // Connect mouse click events
         if (this.gdkBackend === GTK_BACKEND_WAYLAND) {
