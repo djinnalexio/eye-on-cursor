@@ -88,7 +88,7 @@ class EyelidEye extends EyeShape {
         amp = eye_rad * BOTTOM_LID_SCALE;
         cr.curveTo(x_def + iris_rad, y_def - amp, x_def - iris_rad, y_def - amp, -eye_rad, 0);
 
-        this.options.trackerEnabled ? cr.fill() : cr.stroke();
+        this.options.lineMode ? cr.stroke() : cr.fill();
 
         amp = eye_rad * TOP_LID_SCALE;
         cr.moveTo(-eye_rad, 0);
@@ -114,15 +114,13 @@ class EyelidEye extends EyeShape {
         cr.scale(iris_rad * Math.cos(eye_ang), iris_rad);
         cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
 
-        this.options.trackerEnabled ? cr.fill() : cr.stroke();
+        this.options.lineMode ? cr.stroke() : cr.fill();
 
         cr.scale(1 / (iris_rad * Math.cos(eye_ang)), 1 / iris_rad);
         cr.translate(-iris_r * Math.sin(eye_ang), 0);
 
         // -- Drawing the pupil of the eye
-        if (this.options.trackerEnabled) {
-            cr.setSourceRGBA(0, 0, 0, 255);
-        }
+        if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 255);
 
         cr.translate(eye_rad * Math.sin(eye_ang), 0);
         cr.scale(pupil_rad * Math.cos(eye_ang), pupil_rad);
@@ -177,7 +175,7 @@ class RoundEye extends EyeShape {
         cr.setLineWidth(this.options.lineWidth);
         cr.arc(0, 0, eye_rad, 0, 2 * Math.PI);
 
-        this.options.trackerEnabled ? cr.fill() : cr.stroke();
+        this.options.lineMode ? cr.stroke() : cr.fill();
 
         // -- Drawing the iris of the eye
         cr.rotate(mouse_ang);
@@ -195,15 +193,13 @@ class RoundEye extends EyeShape {
         cr.scale(iris_rad * Math.cos(eye_ang), iris_rad);
         cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
 
-        this.options.trackerEnabled ? cr.fill() : cr.stroke();
+        this.options.lineMode ? cr.stroke() : cr.fill();
 
         cr.scale(1 / (iris_rad * Math.cos(eye_ang)), 1 / iris_rad);
         cr.translate(-iris_r * Math.sin(eye_ang), 0);
 
         // -- Drawing the pupil of the eye
-        if (this.options.trackerEnabled) {
-            cr.setSourceRGBA(0, 0, 0, 255);
-        }
+        if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 255);
 
         cr.translate(eye_rad * Math.sin(eye_ang), 0);
         cr.scale(pupil_rad * Math.cos(eye_ang), pupil_rad);
@@ -216,8 +212,8 @@ class RoundEye extends EyeShape {
     }
 }
 
-export function drawEye(shape, area, options) {
-    switch (shape) {
+export function drawEye(area, options) {
+    switch (options.shape) {
         case 'eyelid':
             return new EyelidEye(area, options);
         case 'round':

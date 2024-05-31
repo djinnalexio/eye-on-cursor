@@ -157,8 +157,23 @@ export const EyePage = GObject.registerClass(
             drawingGroup.add(shapeRow);
             //#endregion
 
+            //#region Eye outline mode
+            const lineModeRow = new Adw.ExpanderRow({
+                title: _('Outline Mode'),
+                subtitle: _('Draw the eye as outline only'),
+                show_enable_switch: true,
+                expanded: this.settings.get_boolean('eye-line-mode'),
+                enable_expansion: this.settings.get_boolean('eye-line-mode'),
+            });
+            lineModeRow.connect('notify::expanded', widget => {
+                lineModeRow.enable_expansion = widget.expanded;
+                this.settings.set_boolean('eye-line-mode', widget.expanded);
+            });
+            drawingGroup.add(lineModeRow);
+            //#endregion
+
             //#region Eye line width
-            const lineRow = new Adw.SpinRow({
+            const lineWidthRow = new Adw.SpinRow({
                 title: _('Stroke'),
                 subtitle: _('Thickness of the strokes'),
                 adjustment: new Gtk.Adjustment({
@@ -168,10 +183,10 @@ export const EyePage = GObject.registerClass(
                 }),
                 value: this.settings.get_int('eye-line-width'),
             });
-            lineRow.adjustment.connect('value-changed', widget => {
+            lineWidthRow.adjustment.connect('value-changed', widget => {
                 this.settings.set_int('eye-line-width', widget.value);
             });
-            drawingGroup.add(lineRow);
+            lineModeRow.add_row(lineWidthRow);
             //#endregion
 
             //#region Eye color
@@ -241,7 +256,7 @@ export const EyePage = GObject.registerClass(
             //#region Eye refresh rate
             const refreshRow = new Adw.SpinRow({
                 title: _('Refresh Rate'),
-                subtitle: _('Eyes FPS (Frames Per Second)'),
+                subtitle: _('Hz'),
                 adjustment: new Gtk.Adjustment({
                     lower: 1,
                     upper: 360,

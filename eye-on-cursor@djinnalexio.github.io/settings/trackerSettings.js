@@ -184,7 +184,7 @@ export const TrackerPage = GObject.registerClass(
             //#region Tracker refresh rate
             const refreshRow = new Adw.SpinRow({
                 title: _('Refresh Rate'),
-                subtitle: _('Tracker FPS (Frames Per Second)'),
+                subtitle: _('Hz'),
                 adjustment: new Gtk.Adjustment({
                     lower: 1,
                     upper: 360,

@@ -45,9 +45,17 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
     <ol> ordered and <ul> unordered lists with <li> list items, and <code> code. */
 const releaseNotes =
-    '<p>Changes:</p>\
+    '<p>Fixes:</p>\
     <ul>\
-        <li>replaced <em>Refresh interval</em> with <em>Refresh rate</em></li>\
+        <li>made tracker stay above UI elements</li>\
+    </ul >\
+    <p>New:</p>\
+    <ul>\
+        <li>added outline mode option</li>\
+    </ul >\
+    <p>Changes:</p>\
+    <ul>\
+        <li>replaced <em>Refresh interval</em> option with <em>Refresh rate</em></li>\
     </ul >\
     ';
 const supportUrl = '';

@@ -37,6 +37,7 @@ import * as EyeRenderer from './eyeRenderer.js';
 const EYE_SETTINGS = [
     'eye-reactive',
     'eye-shape',
+    'eye-line-mode',
     'eye-line-width',
     'eye-width',
     'eye-iris-color',
@@ -75,6 +76,7 @@ export const Eye = GObject.registerClass(
             // Initialize settings values
             this.reactive = this.settings.get_boolean('eye-reactive');
             this.shape = this.settings.get_string('eye-shape');
+            this.lineMode = this.settings.get_boolean('eye-line-mode') / 10;
             this.lineWidth = this.settings.get_int('eye-line-width') / 10;
             this.width = this.settings.get_int('eye-width');
             this.irisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
@@ -186,15 +188,17 @@ export const Eye = GObject.registerClass(
             const options = {
                 areaX,
                 areaY,
-                mainColor: foregroundColor,
                 irisColor,
-                trackerColor,
-                lineWidth: this.lineWidth,
                 irisColorEnabled: this.irisColorEnabled,
+                lineMode: this.lineMode,
+                lineWidth: this.lineWidth,
+                mainColor: foregroundColor,
+                shape: this.shape,
+                trackerColor,
                 trackerEnabled: this.mouseTracker.enabled,
             };
 
-            EyeRenderer.drawEye(this.shape, area, options);
+            EyeRenderer.drawEye(area, options);
         }
         //#endregion
 
@@ -202,6 +206,7 @@ export const Eye = GObject.registerClass(
         updateEyeProperties() {
             const newReactive = this.settings.get_boolean('eye-reactive');
             const newShape = this.settings.get_string('eye-shape');
+            const newLineMode = this.settings.get_boolean('eye-line-mode');
             const newLineWidth = this.settings.get_int('eye-line-width');
             const newWidth = this.settings.get_int('eye-width');
             const newIrisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
@@ -217,9 +222,15 @@ export const Eye = GObject.registerClass(
                 this.width = newWidth;
             }
 
-            // Update shape and line thickness
+            // Update shape
             if (this.shape !== newShape) {
                 this.shape = newShape;
+                this.area.queue_repaint();
+            }
+
+            // Update drawing mode
+            if (this.lineMode !== newLineMode) {
+                this.lineMode = newLineMode;
                 this.area.queue_repaint();
             }
 
