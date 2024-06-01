@@ -55,6 +55,7 @@ const releaseNotes =
     <p>New:</p>\
     <ul>\
         <li>added outline mode option</li>\
+        <li>added <em>Comic eye shape</em></li>\
     </ul >\
     <p>Changes:</p>\
     <ul>\

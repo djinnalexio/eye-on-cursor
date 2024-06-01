@@ -13,7 +13,8 @@
 
   <enum id='org.gnome.shell.extensions.eye-on-cursor.eye-shape'>
     <value value='0' nick='eyelid' />
-    <value value='1' nick='round' />
+    <value value='1' nick='comic' />
+    <value value='2' nick='round' />
   </enum>
 
   <!-- Settings -->
@@ -59,7 +60,7 @@
     <key name='eye-shape' enum='org.gnome.shell.extensions.eye-on-cursor.eye-shape'>
       <default>'eyelid'</default>
       <summary>Shape of the eyes</summary>
-      <description>Specifies the shape of the eyes. Supported values are 'eyelid' and 'round'.</description>
+      <description>Specifies the shape of the eyes.</description>
     </key>
 
     <key name='eye-line-mode' type='b'>

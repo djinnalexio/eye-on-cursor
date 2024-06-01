@@ -19,11 +19,16 @@
  */
 'use strict';
 
+//#region Constants
 const IRIS_SCALE = 0.5;
 const PUPIL_SCALE = 0.4;
 const TOP_LID_SCALE = 0.8;
 const BOTTOM_LID_SCALE = 0.6;
+const COMIC_EYE_SCALE_X = 0.5;
+const COMIC_EYE_SCALE_Y = 0.9;
+//#endregion
 
+//#region Main class
 class EyeShape {
     /**
      * Draws the eye on the panel
@@ -36,7 +41,9 @@ class EyeShape {
         this.options = options;
     }
 }
+//#endregion
 
+//#region Eyelid class
 class EyelidEye extends EyeShape {
     constructor(area, options) {
         super(area, options);
@@ -132,10 +139,14 @@ class EyelidEye extends EyeShape {
         cr.$dispose();
     }
 }
+//#endregion
 
+//#region Round class
 class RoundEye extends EyeShape {
-    constructor(area, options) {
+    constructor(area, options, scaleX = 0.95, scaleY = 0.95) {
         super(area, options);
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
         this.drawRoundEye();
     }
 
@@ -172,6 +183,9 @@ class RoundEye extends EyeShape {
         cairoSetSourceClutterColor(cr, this.options.mainColor);
 
         cr.translate(area_width * 0.5, area_height * 0.5);
+
+        cr.scale(this.scaleX, this.scaleY);
+
         cr.setLineWidth(this.options.lineWidth);
         cr.arc(0, 0, eye_rad, 0, 2 * Math.PI);
 
@@ -211,17 +225,23 @@ class RoundEye extends EyeShape {
         cr.$dispose();
     }
 }
+//#endregion
 
+//#region Draw function
 export function drawEye(area, options) {
     switch (options.shape) {
         case 'eyelid':
             return new EyelidEye(area, options);
+        case 'comic':
+            return new RoundEye(area, options, COMIC_EYE_SCALE_X, COMIC_EYE_SCALE_Y);
         case 'round':
         default:
             return new RoundEye(area, options);
     }
 }
+//#endregion
 
+//#region Helper function
 function cairoSetSourceClutterColor(cr, clutterColor) {
     const r = clutterColor.red / 255.0;
     const g = clutterColor.green / 255.0;
@@ -230,3 +250,4 @@ function cairoSetSourceClutterColor(cr, clutterColor) {
 
     cr.setSourceRGBA(r, g, b, a);
 }
+//#endregion

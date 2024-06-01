@@ -143,7 +143,7 @@ export const EyePage = GObject.registerClass(
 
             //#region Eye shape
             const shapeLabelList = new Gtk.StringList();
-            [_('Eyelid'), _('Round')].forEach(shape => shapeLabelList.append(shape));
+            [_('Eyelid'), _('Comic'), _('Round')].forEach(shape => shapeLabelList.append(shape));
 
             const shapeRow = new Adw.ComboRow({
                 title: _('Shape'),
