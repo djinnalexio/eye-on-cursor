@@ -51,63 +51,91 @@ class EyelidEye extends EyeShape {
     }
 
     drawEyelidEye() {
-        let [mouse_x, mouse_y] = global.get_pointer();
-        const [area_width, area_height] = this.area.get_surface_size();
-        let [area_x, area_y] = [this.options.areaX, this.options.areaY];
+        let [mouseX, mouseY] = global.get_pointer();
+        const [areaWidth, areaHeight] = this.area.get_surface_size();
+        let [areaX, areaY] = [this.options.areaX, this.options.areaY];
 
-        area_x += area_width / 2;
-        area_y += area_height / 2;
+        areaX += areaWidth / 2;
+        areaY += areaHeight / 2;
 
-        mouse_x -= area_x;
-        mouse_y -= area_y;
+        mouseX -= areaX;
+        mouseY -= areaY;
 
-        const mouse_ang = Math.atan2(mouse_y, mouse_x);
-        let mouse_rad = Math.sqrt(mouse_x * mouse_x + mouse_y * mouse_y);
+        const mouseAngle = Math.atan2(mouseY, mouseX);
+        let mouseRadius = Math.sqrt(mouseX * mouseX + mouseY * mouseY);
 
-        const eye_rad = area_height / 2;
-        const iris_rad = eye_rad * IRIS_SCALE;
-        const pupil_rad = iris_rad * PUPIL_SCALE;
+        const eyeRadius = areaHeight / 2;
+        const irisRadius = eyeRadius * IRIS_SCALE;
+        const pupilRadius = irisRadius * PUPIL_SCALE;
 
-        const max_rad = eye_rad * (Math.pow(Math.cos(mouse_ang), 4) * 0.5 + 0.25);
+        const maxRadius = eyeRadius * (Math.pow(Math.cos(mouseAngle), 4) * 0.5 + 0.25);
 
-        if (mouse_rad > max_rad) mouse_rad = max_rad;
+        if (mouseRadius > maxRadius) mouseRadius = maxRadius;
 
-        const iris_arc = Math.asin(iris_rad / eye_rad);
-        const iris_r = eye_rad * Math.cos(iris_arc);
+        const irisArc = Math.asin(irisRadius / eyeRadius);
+        const irisX = eyeRadius * Math.cos(irisArc);
 
-        const eye_ang = Math.atan(mouse_rad / iris_r);
+        const eyeAngle = Math.atan(mouseRadius / irisX);
 
         const cr = this.area.get_context();
 
         // -- Drawing the base of the eye
         cairoSetSourceClutterColor(cr, this.options.mainColor);
 
-        cr.translate(area_width * 0.5, area_height * 0.5);
+        cr.translate(areaWidth * 0.5, areaHeight * 0.5);
         cr.setLineWidth(this.options.lineWidth);
 
-        const x_def = iris_rad * Math.cos(mouse_ang) * Math.sin(eye_ang);
-        const y_def = iris_rad * Math.sin(mouse_ang) * Math.sin(eye_ang);
+        const offsetX = irisRadius * Math.cos(mouseAngle) * Math.sin(eyeAngle);
+        const offsetY = irisRadius * Math.sin(mouseAngle) * Math.sin(eyeAngle);
 
-        let amp = eye_rad * TOP_LID_SCALE;
-        cr.moveTo(-eye_rad, 0);
-        cr.curveTo(x_def - iris_rad, y_def + amp, x_def + iris_rad, y_def + amp, eye_rad, 0);
+        let amplitude = eyeRadius * TOP_LID_SCALE;
+        cr.moveTo(-eyeRadius, 0);
+        cr.curveTo(
+            offsetX - irisRadius,
+            offsetY + amplitude,
+            offsetX + irisRadius,
+            offsetY + amplitude,
+            eyeRadius,
+            0
+        );
 
-        amp = eye_rad * BOTTOM_LID_SCALE;
-        cr.curveTo(x_def + iris_rad, y_def - amp, x_def - iris_rad, y_def - amp, -eye_rad, 0);
+        amplitude = eyeRadius * BOTTOM_LID_SCALE;
+        cr.curveTo(
+            offsetX + irisRadius,
+            offsetY - amplitude,
+            offsetX - irisRadius,
+            offsetY - amplitude,
+            -eyeRadius,
+            0
+        );
 
         this.options.lineMode ? cr.stroke() : cr.fill();
 
-        amp = eye_rad * TOP_LID_SCALE;
-        cr.moveTo(-eye_rad, 0);
-        cr.curveTo(x_def - iris_rad, y_def + amp, x_def + iris_rad, y_def + amp, eye_rad, 0);
+        amplitude = eyeRadius * TOP_LID_SCALE;
+        cr.moveTo(-eyeRadius, 0);
+        cr.curveTo(
+            offsetX - irisRadius,
+            offsetY + amplitude,
+            offsetX + irisRadius,
+            offsetY + amplitude,
+            eyeRadius,
+            0
+        );
 
-        amp = eye_rad * BOTTOM_LID_SCALE;
-        cr.curveTo(x_def + iris_rad, y_def - amp, x_def - iris_rad, y_def - amp, -eye_rad, 0);
+        amplitude = eyeRadius * BOTTOM_LID_SCALE;
+        cr.curveTo(
+            offsetX + irisRadius,
+            offsetY - amplitude,
+            offsetX - irisRadius,
+            offsetY - amplitude,
+            -eyeRadius,
+            0
+        );
         cr.clip();
 
         // -- Drawing the iris of the eye
-        cr.rotate(mouse_ang);
-        cr.setLineWidth(this.options.lineWidth / iris_rad);
+        cr.rotate(mouseAngle);
+        cr.setLineWidth(this.options.lineWidth / irisRadius);
 
         if (this.options.trackerEnabled) {
             cairoSetSourceClutterColor(cr, this.options.trackerColor);
@@ -117,20 +145,20 @@ class EyelidEye extends EyeShape {
             cairoSetSourceClutterColor(cr, this.options.mainColor);
         }
 
-        cr.translate(iris_r * Math.sin(eye_ang), 0);
-        cr.scale(iris_rad * Math.cos(eye_ang), iris_rad);
+        cr.translate(irisX * Math.sin(eyeAngle), 0);
+        cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
         cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
 
         this.options.lineMode ? cr.stroke() : cr.fill();
 
-        cr.scale(1 / (iris_rad * Math.cos(eye_ang)), 1 / iris_rad);
-        cr.translate(-iris_r * Math.sin(eye_ang), 0);
+        cr.scale(1 / (irisRadius * Math.cos(eyeAngle)), 1 / irisRadius);
+        cr.translate(-irisX * Math.sin(eyeAngle), 0);
 
         // -- Drawing the pupil of the eye
         if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 255);
 
-        cr.translate(eye_rad * Math.sin(eye_ang), 0);
-        cr.scale(pupil_rad * Math.cos(eye_ang), pupil_rad);
+        cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
+        cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
         cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
         cr.fill();
 
@@ -151,49 +179,50 @@ class RoundEye extends EyeShape {
     }
 
     drawRoundEye() {
-        let [mouse_x, mouse_y] = global.get_pointer();
-        const [area_width, area_height] = this.area.get_surface_size();
-        let [area_x, area_y] = [this.options.areaX, this.options.areaY];
+        let [mouseX, mouseY] = global.get_pointer();
+        const [areaWidth, areaHeight] = this.area.get_surface_size();
+        let [areaX, areaY] = [this.options.areaX, this.options.areaY];
 
-        area_x += area_width / 2;
-        area_y += area_height / 2;
+        areaX += areaWidth / 2;
+        areaY += areaHeight / 2;
 
-        mouse_x -= area_x;
-        mouse_y -= area_y;
+        mouseX -= areaX;
+        mouseY -= areaY;
 
-        const mouse_ang = Math.atan2(mouse_y, mouse_x);
-        let mouse_rad = Math.sqrt(mouse_x * mouse_x + mouse_y * mouse_y);
+        const mouseAngle = Math.atan2(mouseY, mouseX);
+        let mouseRadius = Math.sqrt(mouseX * mouseX + mouseY * mouseY);
 
-        const eye_rad = area_height / 2.3;
-        const iris_rad = eye_rad * IRIS_SCALE;
-        const pupil_rad = iris_rad * PUPIL_SCALE;
+        const eyeRadius = areaHeight / 2.3;
+        const irisRadius = eyeRadius * IRIS_SCALE;
+        const pupilRadius = irisRadius * PUPIL_SCALE;
 
-        const max_rad = eye_rad * Math.cos(Math.asin(iris_rad / eye_rad)) - this.options.lineWidth;
+        const maxRadius =
+            eyeRadius * Math.cos(Math.asin(irisRadius / eyeRadius)) - this.options.lineWidth;
 
-        if (mouse_rad > max_rad) mouse_rad = max_rad;
+        if (mouseRadius > maxRadius) mouseRadius = maxRadius;
 
-        const iris_arc = Math.asin(iris_rad / eye_rad);
-        const iris_r = eye_rad * Math.cos(iris_arc);
+        const irisArc = Math.asin(irisRadius / eyeRadius);
+        const irisX = eyeRadius * Math.cos(irisArc);
 
-        const eye_ang = Math.atan(mouse_rad / iris_r);
+        const eyeAngle = Math.atan(mouseRadius / irisX);
 
         const cr = this.area.get_context();
 
         // -- Drawing the base of the eye
         cairoSetSourceClutterColor(cr, this.options.mainColor);
 
-        cr.translate(area_width * 0.5, area_height * 0.5);
+        cr.translate(areaWidth * 0.5, areaHeight * 0.5);
 
         cr.scale(this.scaleX, this.scaleY);
 
         cr.setLineWidth(this.options.lineWidth);
-        cr.arc(0, 0, eye_rad, 0, 2 * Math.PI);
+        cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
 
         this.options.lineMode ? cr.stroke() : cr.fill();
 
         // -- Drawing the iris of the eye
-        cr.rotate(mouse_ang);
-        cr.setLineWidth(this.options.lineWidth / iris_rad);
+        cr.rotate(mouseAngle);
+        cr.setLineWidth(this.options.lineWidth / irisRadius);
 
         if (this.options.trackerEnabled) {
             cairoSetSourceClutterColor(cr, this.options.trackerColor);
@@ -203,20 +232,20 @@ class RoundEye extends EyeShape {
             cairoSetSourceClutterColor(cr, this.options.mainColor);
         }
 
-        cr.translate(iris_r * Math.sin(eye_ang), 0);
-        cr.scale(iris_rad * Math.cos(eye_ang), iris_rad);
+        cr.translate(irisX * Math.sin(eyeAngle), 0);
+        cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
         cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
 
         this.options.lineMode ? cr.stroke() : cr.fill();
 
-        cr.scale(1 / (iris_rad * Math.cos(eye_ang)), 1 / iris_rad);
-        cr.translate(-iris_r * Math.sin(eye_ang), 0);
+        cr.scale(1 / (irisRadius * Math.cos(eyeAngle)), 1 / irisRadius);
+        cr.translate(-irisX * Math.sin(eyeAngle), 0);
 
         // -- Drawing the pupil of the eye
         if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 255);
 
-        cr.translate(eye_rad * Math.sin(eye_ang), 0);
-        cr.scale(pupil_rad * Math.cos(eye_ang), pupil_rad);
+        cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
+        cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
         cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
         cr.fill();
 
