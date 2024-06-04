@@ -33,8 +33,9 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
 //#region Constants
 const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
-const CLICK_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
-const CLICK_MAX_TIMEOUT = 3000; // Max highlighting duration after receiving BUTTON PRESSED signal
+const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
+const CLICK_MAX_DEBOUNCE = 3000; // Max highlighting duration after receiving BUTTON PRESSED signal
+const CLICK_RIPPLE_SCALE = 2;
 const GTK_BACKEND_WAYLAND = 'wayland';
 const GTK_BACKEND_X11 = 'x11';
 const TRACKER_UPDATE_DELAY = 20;
@@ -292,11 +293,13 @@ export class TrackerManager {
             const newPositionX = mouseX - this.size / 2;
             const newPositionY = mouseY - this.size / 2;
 
-            // If mouse has moved, update icon position
-            if (this.lastPositionX !== newPositionX || this.lastPositionY !== newPositionY) {
+            // If mouse has moved and tracker is on screen, update icon position
+            if (
+                this.trackerIcon.get_parent() &&
+                (this.lastPositionX !== newPositionX || this.lastPositionY !== newPositionY)
+            ) {
                 this.trackerIcon.set_position(newPositionX, newPositionY);
-                // Move tracker on top of elements
-                Main.uiGroup.set_child_above_sibling(this.trackerIcon, null);
+                Main.uiGroup.set_child_above_sibling(this.trackerIcon, null); // Keep tracker on top of UI elements
                 [this.lastPositionX, this.lastPositionY] = [newPositionX, newPositionY];
             }
         }
@@ -389,7 +392,41 @@ export class TrackerManager {
         // Set a maximum timeout to revert the color
         this.clickMaxTimeoutID = setTimeout(() => {
             this.resetColor();
-        }, CLICK_MAX_TIMEOUT);
+        }, CLICK_MAX_DEBOUNCE);
+
+        // Create an animated icon
+        let animatedIcon = new St.Icon({
+            x: this.trackerIcon.x,
+            y: this.trackerIcon.y,
+            reactive: false,
+            can_focus: false,
+            track_hover: false,
+            icon_size: this.trackerIcon.icon_size,
+            opacity: this.trackerIcon.opacity,
+            gicon: Gio.icon_new_for_string(`${this.cacheDir}/${this.shape}_${color}.svg`),
+        });
+
+        // Add animated icon to the UI group
+        Main.uiGroup.add_child(animatedIcon);
+
+        // Offset so that the center of the animated icon stays on the tracker
+        const rippleOffset = (animatedIcon.icon_size * (CLICK_RIPPLE_SCALE - 1)) / 2;
+
+        // Play ripple effect
+        animatedIcon.ease({
+            x: animatedIcon.x - rippleOffset,
+            y: animatedIcon.y - rippleOffset,
+            scale_x: CLICK_RIPPLE_SCALE,
+            scale_y: CLICK_RIPPLE_SCALE,
+            opacity: 0,
+            duration: CLICK_MIN_DEBOUNCE * 2,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            onComplete: function () {
+                Main.uiGroup.remove_child(animatedIcon);
+                animatedIcon.destroy();
+                animatedIcon = null;
+            },
+        });
     }
 
     handleButtonRelease(button) {
@@ -399,7 +436,7 @@ export class TrackerManager {
             if (this.activeClick === button && this.clickResetPending) {
                 this.resetColor();
             }
-        }, CLICK_DEBOUNCE);
+        }, CLICK_MIN_DEBOUNCE);
 
         this.clickResetPending = true;
     }
@@ -436,10 +473,8 @@ export class TrackerManager {
         this.startPositionUpdater(this.repaintInterval);
 
         // Add tracker to desktop
-        // Delayed so that tracker doesn't appear in a previous location before position is updated
-        setTimeout(() => {
-            Main.uiGroup.add_child(this.trackerIcon);
-        }, TRACKER_UPDATE_DELAY);
+        Main.uiGroup.add_child(this.trackerIcon);
+        this.updateTrackerPosition();
 
         // Connect mouse click events
         if (this.gdkBackend === GTK_BACKEND_WAYLAND) {
