@@ -141,8 +141,10 @@ class EyelidEye extends EyeShape {
             cairoSetSourceClutterColor(cr, this.options.trackerColor);
         } else if (this.options.irisColorEnabled) {
             cairoSetSourceClutterColor(cr, this.options.irisColor);
-        } else {
+        } else if (this.options.lineMode) {
             cairoSetSourceClutterColor(cr, this.options.mainColor);
+        } else {
+            cr.setSourceRGBA(0.7, 0.7, 0.7, 1);
         }
 
         cr.translate(irisX * Math.sin(eyeAngle), 0);
@@ -155,7 +157,7 @@ class EyelidEye extends EyeShape {
         cr.translate(-irisX * Math.sin(eyeAngle), 0);
 
         // -- Drawing the pupil of the eye
-        if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 255);
+        if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 1);
 
         cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
         cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
@@ -193,7 +195,7 @@ class RoundEye extends EyeShape {
         let mouseRadius = Math.sqrt(mouseX * mouseX + mouseY * mouseY);
 
         const eyeRadius = areaHeight / 2.3;
-        const irisRadius = eyeRadius * IRIS_SCALE;
+        const irisRadius = eyeRadius * IRIS_SCALE * 1.3;
         const pupilRadius = irisRadius * PUPIL_SCALE;
 
         const maxRadius =
@@ -228,8 +230,10 @@ class RoundEye extends EyeShape {
             cairoSetSourceClutterColor(cr, this.options.trackerColor);
         } else if (this.options.irisColorEnabled) {
             cairoSetSourceClutterColor(cr, this.options.irisColor);
-        } else {
+        } else if (this.options.lineMode) {
             cairoSetSourceClutterColor(cr, this.options.mainColor);
+        } else {
+            cr.setSourceRGBA(0.7, 0.7, 0.7, 1);
         }
 
         cr.translate(irisX * Math.sin(eyeAngle), 0);
@@ -242,7 +246,7 @@ class RoundEye extends EyeShape {
         cr.translate(-irisX * Math.sin(eyeAngle), 0);
 
         // -- Drawing the pupil of the eye
-        if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 255);
+        if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 1);
 
         cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
         cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
