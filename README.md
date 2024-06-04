@@ -32,11 +32,20 @@
 
 [<img alt="EGO page" height="100" src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true">](https://extensions.gnome.org/extension/7036/eye-on-cursor/)
 
-### Manually
+### From GitHub
 
-1. Clone or download and unzip the repository.
-2. At the root of the repository, run `make install`. The command will pack the extension and place it in `~/.local/share/gnome-shell/extensions`.
-3. Log out, log back in, then enable the extension in your extensions app.
+1. Go to [the latest release](https://github.com/djinnalexio/eye-on-cursor/releases/latest) and download the extension zip file.
+2. At the location of the downloaded zip file, run:
+
+   ```bash
+   gnome-extensions install eye-on-cursor@djinnalexio.github.io.shell-extension.zip
+   ```
+
+3. Log out and back in, then enable the extension in your extensions app or with:
+
+    ```bash
+    gnome-extensions enable eye-on-cursor@djinnalexio.github.io
+    ```
 
 ## Acknowledgements
 
