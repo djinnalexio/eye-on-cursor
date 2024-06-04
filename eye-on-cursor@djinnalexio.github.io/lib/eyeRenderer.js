@@ -24,7 +24,7 @@ const IRIS_SCALE = 0.5;
 const PUPIL_SCALE = 0.4;
 const TOP_LID_SCALE = 0.8;
 const BOTTOM_LID_SCALE = 0.6;
-const COMIC_EYE_SCALE_X = 0.5;
+const COMIC_EYE_SCALE_X = 0.6;
 const COMIC_EYE_SCALE_Y = 0.9;
 //#endregion
 
