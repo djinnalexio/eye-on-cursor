@@ -76,7 +76,7 @@ export const Eye = GObject.registerClass(
             // Initialize settings values
             this.reactive = this.settings.get_boolean('eye-reactive');
             this.shape = this.settings.get_string('eye-shape');
-            this.lineMode = this.settings.get_boolean('eye-line-mode') / 10;
+            this.lineMode = this.settings.get_boolean('eye-line-mode');
             this.lineWidth = this.settings.get_int('eye-line-width') / 10;
             this.width = this.settings.get_int('eye-width');
             this.irisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
