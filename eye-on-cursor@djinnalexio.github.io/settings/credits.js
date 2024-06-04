@@ -24,7 +24,10 @@ import Adw from 'gi://Adw';
 import Gdk from 'gi://Gdk';
 import Gtk from 'gi://Gtk';
 
-import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import {
+    gettext as _,
+    pgettext,
+} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 //#endregion
 
 //#region Credits
@@ -97,21 +100,24 @@ export function makeAboutDialog(metadata, path) {
         release_notes: releaseNotes,
         release_notes_version: metadata['version-name'],
         support_url: supportUrl,
-        translator_credits: _('translator_credits'),
+        translator_credits: pgettext(
+            'Translator Credits: enter your (user)name and email/url',
+            'translator_credits'
+        ),
         version: metadata['version-name'],
         website: metadata['url'],
     });
 
     aboutPage.add_link(
-        'Extension Page',
+        _('Extension Page'),
         'https://extensions.gnome.org/extension/7036/eye-on-cursor/'
     );
 
-    aboutPage.add_acknowledgement_section('Forked from', [
+    aboutPage.add_acknowledgement_section(_('Forked from'), [
         'Eye and Mouse Extended https://extensions.gnome.org/extension/3139/eye-extended/',
     ]);
 
-    aboutPage.add_acknowledgement_section('Cinnamon Fork', [
+    aboutPage.add_acknowledgement_section(_('Cinnamon Fork'), [
         'C-eyes https://github.com/anaximeno/c-eyes',
     ]);
 

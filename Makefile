@@ -46,4 +46,10 @@ test-prefs-window: install prefs
 	journalctl -f -o cat /usr/bin/gjs
 
 update-pot:
-	find $(EXTENSION_UUID)/ -iname "*.js" | xargs xgettext --from-code=UTF-8 --output=po/$(EXTENSION_GETTEXT_DOMAIN).pot
+	find $(EXTENSION_UUID)/ -iname "*.js" | xargs xgettext \
+		--output=po/$(EXTENSION_GETTEXT_DOMAIN).pot \
+		--from-code=UTF-8 \
+		--package-name=$(EXTENSION_GETTEXT_DOMAIN)  \
+		--package-version=1.1.0 \
+		--copyright-holder=djinnalexio \
+		--msgid-bugs-address=https://github.com/djinnalexio/$(EXTENSION_GETTEXT_DOMAIN)/issues
