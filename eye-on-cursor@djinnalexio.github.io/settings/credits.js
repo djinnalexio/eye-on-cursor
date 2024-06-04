@@ -52,6 +52,7 @@ const releaseNotes =
         <li>added <em>Outline</em> mode</li>\
         <li>added <em>Comic</em> eye shape</li>\
         <li>added <em>Ripple effect</em> to tracker on click</li>\
+        <li>added tooltip about click highlighting issues</li>\
     </ul >\
     <p>Fixes:</p>\
     <ul>\

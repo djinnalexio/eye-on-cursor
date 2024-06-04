@@ -36,8 +36,6 @@ const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for gr
 const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
 const CLICK_MAX_DEBOUNCE = 3000; // Max highlighting duration after receiving BUTTON PRESSED signal
 const CLICK_RIPPLE_SCALE = 2;
-const GTK_BACKEND_WAYLAND = 'wayland';
-const GTK_BACKEND_X11 = 'x11';
 const TRACKER_UPDATE_DELAY = 20;
 const TRACKER_SETTINGS = [
     'tracker-shape',
@@ -118,7 +116,7 @@ export class TrackerManager {
         );
 
         // Set up mouse click highlighting depending on display server
-        this.gdkBackend = this.getBackend();
+        this.isWayland = Meta.is_wayland_compositor();
         this.capturedEvent = null;
         this.mouseListener = null;
 
@@ -126,9 +124,7 @@ export class TrackerManager {
         this.clickMaxTimeoutID = null;
         this.clickResetPending = false;
 
-        if (this.gdkBackend === GTK_BACKEND_X11) {
-            Atspi.init();
-        }
+        if (!this.isWayland) Atspi.init();
     }
     //#endregion
 
@@ -307,16 +303,7 @@ export class TrackerManager {
     //#endregion
 
     //#region Monitor Click functions
-    getBackend() {
-        if (Meta.is_wayland_compositor()) {
-            return GTK_BACKEND_WAYLAND;
-        } else {
-            return GTK_BACKEND_X11;
-        }
-    }
-
-    // Using `global.stage` to monitor mouse clicks on Wayland
-    // While it works on both x11 and Wayland, signals are only caught on the desktop and Shell
+    // Using `global.stage` to monitor mouse clicks on Wayland (doesn't work on applications)
     onCapturedEvent(actor, event) {
         if (event.type() === Clutter.EventType.BUTTON_PRESS) {
             const button = event.get_button();
@@ -339,8 +326,7 @@ export class TrackerManager {
         }
     }
 
-    // Using `Atspi.EventListener` to monitor clicks on X11
-    // Works on X11, but not at all on Wayland, and middle click is not registered
+    // Using `Atspi.EventListener` to monitor clicks on X11 (middle click is not registered)
     onMouseEvent(event) {
         // Match button presses and releases
         const match = event.type.match(/mouse:button:(\d)([pr])/);
@@ -477,12 +463,12 @@ export class TrackerManager {
         this.updateTrackerPosition();
 
         // Connect mouse click events
-        if (this.gdkBackend === GTK_BACKEND_WAYLAND) {
+        if (this.isWayland) {
             this.capturedEvent = global.stage.connect(
                 'captured-event',
                 this.onCapturedEvent.bind(this)
             );
-        } else if (this.gdkBackend === GTK_BACKEND_X11) {
+        } else {
             this.mouseListener = Atspi.EventListener.new(this.onMouseEvent.bind(this));
             this.mouseListener.register('mouse');
         }

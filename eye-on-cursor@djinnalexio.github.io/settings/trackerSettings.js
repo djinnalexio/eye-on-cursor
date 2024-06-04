@@ -22,8 +22,8 @@
 //#region Import libraries
 import Adw from 'gi://Adw';
 import GObject from 'gi://GObject';
-import Gio from 'gi://Gio';
 import Gdk from 'gi://Gdk';
+import Gio from 'gi://Gio';
 import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
@@ -155,6 +155,17 @@ export const TrackerPage = GObject.registerClass(
                 title: _('Colors on Click'),
                 subtitle: _('Colors when left, middle, and right-clicking'),
             });
+
+            const isWayland = Gdk.Display.get_default().constructor.name.includes('Wayland');
+            if (isWayland) {
+                colorClickRow.set_tooltip_text(
+                    _('Click highlighting does not work in applications on Wayland. See README.')
+                );
+            } else {
+                colorClickRow.set_tooltip_text(
+                    _('Middle-click highlighting does not work on x11. See README.')
+                );
+            }
 
             const colorClickBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
             ['tracker-color-left', 'tracker-color-middle', 'tracker-color-right'].forEach(key => {

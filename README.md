@@ -63,8 +63,13 @@ Here are a few steps to get you set up:
 
 ### Known Issues
 
-- On Wayland, mouse tracker click highlighting does not work apps.
+- On Wayland, the mouse tracker click highlighting feature does not function within application windows.
+
+  Wayland handles events differently compared to X11, isolating them to the window where they occur. On x11, **Eye on Cursor** uses `Atspi` to listen to mouse clicks, which doesn't work at all on Wayland. On Wayland, the extension thus resorts to listening with `globe.stage` instead, with its caveat that only clicks in the Shell (background, panel, etc.) are registered.
+
 - On x11, middle click is not registered.
+
+  `Atspi` does not register middle clicks.
 
 ### Documentation on Developing GNOME Extensions
 
