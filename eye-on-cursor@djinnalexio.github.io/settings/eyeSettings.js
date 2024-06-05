@@ -272,22 +272,26 @@ export const EyePage = GObject.registerClass(
             //#endregion
 
             //#region About group
-            const aboutGroup = new Adw.PreferencesGroup();
-            if (!Adw.VERSION_S.startsWith('1.4')) this.add(aboutGroup); //AboutDialog is not available in 1.4.*
+            const adwVersion = parseFloat(Adw.VERSION_S.substring(0, 3));
+            //AboutDialog is available since 1.5.0
+            if (adwVersion >= 1.5) {
+                const aboutGroup = new Adw.PreferencesGroup();
+                this.add(aboutGroup);
 
-            const aboutRow = new Adw.ActionRow({
-                title: _('About'),
-                subtitle: _('Development information and credits'),
-                activatable: true,
-            });
-            aboutRow.add_prefix(new Gtk.Image({icon_name: 'help-about-symbolic'}));
-            aboutRow.add_suffix(new Gtk.Image({icon_name: 'go-next-symbolic'}));
+                const aboutRow = new Adw.ActionRow({
+                    title: _('About'),
+                    subtitle: _('Development information and credits'),
+                    activatable: true,
+                });
+                aboutRow.add_prefix(new Gtk.Image({icon_name: 'help-about-symbolic'}));
+                aboutRow.add_suffix(new Gtk.Image({icon_name: 'go-next-symbolic'}));
 
-            aboutRow.connect('activated', () => {
-                this.aboutWindow = makeAboutDialog(this.metadata, this.path);
-                this.aboutWindow.present(this);
-            });
-            aboutGroup.add(aboutRow);
+                aboutRow.connect('activated', () => {
+                    this.aboutWindow = makeAboutDialog(this.metadata, this.path);
+                    this.aboutWindow.present(this);
+                });
+                aboutGroup.add(aboutRow);
+            }
             //#endregion
         }
     }
