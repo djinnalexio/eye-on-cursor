@@ -1,9 +1,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # SPDX-FileCopyrightText: djinnalexio
 
+COPYRIGHT_HOLDER = djinnalexio
 EXTENSION_GETTEXT_DOMAIN = eye-on-cursor
-EXTENSION_UUID = $(EXTENSION_GETTEXT_DOMAIN)@djinnalexio.github.io
+EXTENSION_UUID = eye-on-cursor@djinnalexio.github.io
+ISSUES_URL = https://github.com/djinnalexio/eye-on-cursor/issues
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
+VERSION = 1.1.1
 
 .phony: pack install uninstall prefs test-wayland test-prefs-settings test-prefs-window update-pot
 
@@ -50,6 +53,6 @@ update-pot:
 		--output=po/$(EXTENSION_GETTEXT_DOMAIN).pot \
 		--from-code=UTF-8 \
 		--package-name=$(EXTENSION_GETTEXT_DOMAIN)  \
-		--package-version=1.1.0 \
-		--copyright-holder=djinnalexio \
-		--msgid-bugs-address=https://github.com/djinnalexio/$(EXTENSION_GETTEXT_DOMAIN)/issues
+		--package-version=$(VERSION) \
+		--copyright-holder=$(COPYRIGHT_HOLDER) \
+		--msgid-bugs-address=$(ISSUES_URL)

@@ -89,7 +89,7 @@ export function makeAboutDialog(metadata, path) {
         application_icon: 'eye-on-cursor-logo',
         application_name: metadata['name'],
         artists: artists,
-        // comments: metadata['description'],
+        comments: metadata['description'],
         copyright: copyright,
         designers: designers,
         developer_name: developerName,
