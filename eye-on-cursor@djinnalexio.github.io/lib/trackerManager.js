@@ -36,7 +36,7 @@ const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for gr
 const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
 const CLICK_MAX_DEBOUNCE = 3000; // Max highlighting duration after receiving BUTTON PRESSED signal
 const CLICK_RIPPLE_SCALE = 2;
-const TRACKER_UPDATE_DELAY = 20;
+const TRACKER_RAISE_DELAY = 20;
 const TRACKER_SETTINGS = [
     'tracker-shape',
     'tracker-size',
@@ -115,14 +115,15 @@ export class TrackerManager {
             this.toggleTracker.bind(this)
         );
 
-        // Set up mouse click highlighting depending on display server
+        // Set up mouse click highlighting
         this.isWayland = Meta.is_wayland_compositor();
         this.capturedEvent = null;
         this.mouseListener = null;
-
         this.activeClick = null;
-        this.clickMaxTimeoutID = null;
         this.clickResetPending = false;
+        this.clickMaxTimeoutID = null;
+        this.clickReleaseTimeoutID = null;
+        this.trackerRaiseTimeoutID = null;
 
         if (!this.isWayland) Atspi.init();
     }
@@ -357,25 +358,21 @@ export class TrackerManager {
 
     //#region Handle click functions
     handleButtonPress(button, color) {
-        // Clear any existing timeout if a new button press occurs
-        if (this.clickMaxTimeoutID) {
-            clearTimeout(this.clickMaxTimeoutID);
-            this.clickMaxTimeoutID = null;
-        }
+        // Set the active button
+        this.activeClick = button;
+        this.clickResetPending = false;
 
         // Update the tracker icon with the new color
         this.updateTrackerIcon(this.shape, color);
 
         // Move the tracker on top of any new UI element that appears after click
-        setTimeout(() => {
+        this.clearTimeout(this.trackerRaiseTimeoutID);
+        this.trackerRaiseTimeoutID = setTimeout(() => {
             Main.uiGroup.set_child_above_sibling(this.trackerIcon, null);
-        }, TRACKER_UPDATE_DELAY);
-
-        // Set the active button
-        this.activeClick = button;
-        this.clickResetPending = false;
+        }, TRACKER_RAISE_DELAY);
 
         // Set a maximum timeout to revert the color
+        this.clearTimeout(this.clickMaxTimeoutID);
         this.clickMaxTimeoutID = setTimeout(() => {
             this.resetColor();
         }, CLICK_MAX_DEBOUNCE);
@@ -417,7 +414,8 @@ export class TrackerManager {
 
     handleButtonRelease(button) {
         // Debounce the release event
-        setTimeout(() => {
+        this.clearTimeout(this.clickReleaseTimeoutID);
+        this.clickReleaseTimeoutID = setTimeout(() => {
             // Only reset if no new click event has occurred in the meantime
             if (this.activeClick === button && this.clickResetPending) {
                 this.resetColor();
@@ -434,9 +432,13 @@ export class TrackerManager {
         this.clickResetPending = false;
 
         // Clear timeout
-        if (this.clickMaxTimeoutID) {
-            clearTimeout(this.clickMaxTimeoutID);
-            this.clickMaxTimeoutID = null;
+        this.clearTimeout(this.clickMaxTimeoutID);
+    }
+
+    clearTimeout(timeout) {
+        if (timeout) {
+            clearTimeout(timeout);
+            timeout = null;
         }
     }
     //#endregion
@@ -478,14 +480,20 @@ export class TrackerManager {
         this.enabled = false;
         this.currentColor = null;
 
+        // Clear timeouts
+        [this.clickMaxTimeoutID, this.clickReleaseTimeoutID, this.trackerRaiseTimeoutID].forEach(
+            timeout => this.clearTimeout(timeout)
+        );
+
         // Disconnect mouse click events
         if (this.capturedEvent) {
             global.stage.disconnect(this.capturedEvent);
             this.capturedEvent = null;
         }
-
-        this.mouseListener?.deregister('mouse');
-        this.mouseListener = null;
+        if (this.mouseListener) {
+            this.mouseListener.deregister('mouse');
+            this.mouseListener = null;
+        }
 
         // Remove tracker from desktop
         if (this.trackerIcon && this.trackerIcon.get_parent() === Main.uiGroup) {
