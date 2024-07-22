@@ -30,7 +30,7 @@
 
 ### From the GNOME Extensions Website (recommended)
 
-[<img alt="EGO page" height="100" src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true">](https://extensions.gnome.org/extension/7036/eye-on-cursor/)
+[<img alt="EGO page" height="100" src="assets/get-it-on-ego.svg">](https://extensions.gnome.org/extension/7036/eye-on-cursor/)
 
 ### From GitHub
 
