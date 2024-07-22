@@ -15,7 +15,7 @@
     "scripts": {
         "format": "prettier ./eye-on-cursor@djinnalexio.github.io/ --write",
         "lint": "eslint ./eye-on-cursor@djinnalexio.github.io/ --fix",
-        "test": "make test-wayland"
+        "test": "make test"
     },
     "prettier": {
         "arrowParens": "avoid",
