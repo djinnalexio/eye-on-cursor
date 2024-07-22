@@ -49,24 +49,7 @@ const developerName = 'djinnalexio';
 const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
     <ol> ordered and <ul> unordered lists with <li> list items, and <code> code. */
-const releaseNotes =
-    '<p>New:</p>\
-    <ul>\
-        <li>added <em>Outline</em> mode</li>\
-        <li>added <em>Comic</em> eye shape</li>\
-        <li>added <em>Ripple effect</em> to tracker on click</li>\
-        <li>added tooltip about click highlighting issues</li>\
-    </ul >\
-    <p>Fixes:</p>\
-    <ul>\
-        <li>made tracker stay above UI elements</li>\
-        <li>tracker now immediately appears at the current mouse position upon being enabled</li>\
-    </ul >\
-    <p>Changes:</p>\
-    <ul>\
-        <li>replaced <em>Refresh interval</em> option with <em>Refresh rate</em></li>\
-    </ul >\
-    ';
+const releaseNotes = '';
 const supportUrl = '';
 //#endregion
 
