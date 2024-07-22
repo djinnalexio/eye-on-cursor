@@ -124,8 +124,8 @@ export const EyePage = GObject.registerClass(
 
             //#region Eye reactivity
             const reactiveRow = new Adw.SwitchRow({
-                title: _('Interactivity'),
-                subtitle: _('Allow eyes to respond to clicks'),
+                title: _('Menu'),
+                subtitle: _('Enable the eye submenu'),
                 active: this.settings.get_boolean('eye-reactive'),
             });
             reactiveRow.connect('notify::active', widget => {
