@@ -58,7 +58,7 @@ export const EyeAboutRow = GObject.registerClass(
     class EyeAboutRow extends Adw.ActionRow {
         constructor(metadata, path) {
             /**
-             * Returns an AboutDialog window with information about the extension filled out.
+             * A row that opens an AboutDialog window with information about the extension filled out.
              *
              * @param {Object} metadata - metadata of the extension
              * @param {string} path - path to the extension folder

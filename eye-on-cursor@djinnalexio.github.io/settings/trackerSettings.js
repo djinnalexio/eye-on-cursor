@@ -27,6 +27,8 @@ import Gio from 'gi://Gio';
 import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+
+import {KeybindingRow} from './keybinding.js';
 //#endregion
 
 export const TrackerPage = GObject.registerClass(
@@ -215,174 +217,13 @@ export const TrackerPage = GObject.registerClass(
             this.add(keybindGroup);
 
             // Create row
-            const keybindRow = new Adw.ActionRow({
-                title: _('Toggle Tracker'),
-                subtitle: _('Set a shortcut'),
-                activatable: true,
-            });
+            const keybindRow = new KeybindingRow(
+                this.settings,
+                'tracker-keybinding',
+                _('Toggle Tracker')
+            );
 
-            // Display current keybinding
-            const keybindLabel = new Gtk.ShortcutLabel({
-                disabled_text: _('New shortcut…'),
-                valign: Gtk.Align.CENTER,
-                hexpand: false,
-                vexpand: false,
-                accelerator: this.settings.get_strv('tracker-keybinding')[0],
-            });
-
-            const keybindBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
-            keybindBox.append(keybindLabel);
-            keybindRow.add_suffix(keybindBox);
-
-            // Connect row to launch capture window
-            keybindRow.connect('activated', openCaptureWindow.bind(this));
-
-            // Connect change in accelerator to update setting
-            keybindLabel.connect('notify::accelerator', widget => {
-                this.settings.set_strv('tracker-keybinding', [widget.accelerator]);
-                // Main.wm.addKeybinding takes string arrays, not strings
-            });
-
-            // Button to reset keybinding
-            const resetKeybindButton = new Gtk.Button({
-                icon_name: 'edit-delete-symbolic',
-                css_classes: ['error'],
-                hexpand: false,
-                vexpand: false,
-            });
-
-            resetKeybindButton.connect('clicked', resetKeybind.bind(this));
-            function resetKeybind() {
-                keybindLabel.accelerator = '';
-                resetKeybindButton.visible = false;
-            }
-            // Hide it if no shortcut is set
-            if (!keybindLabel.accelerator) resetKeybindButton.visible = false;
-
-            keybindGroup.set_header_suffix(resetKeybindButton);
-
-            //#region Keybinding Capture
-            let captureWindow;
-            function openCaptureWindow(row) {
-                const controller = new Gtk.EventControllerKey();
-
-                const content = new Adw.StatusPage({
-                    title: _('Toggle Tracker'),
-                    description: _('Press Esc to cancel or Backspace to disable the shortcut'),
-                    icon_name: 'preferences-desktop-keyboard-shortcuts-symbolic',
-                });
-
-                captureWindow = new Adw.Window({
-                    modal: true,
-                    hide_on_close: true,
-                    transient_for: row.get_root(),
-                    width_request: 480,
-                    height_request: 320,
-                    content,
-                });
-
-                captureWindow.add_controller(controller);
-                controller.connect('key-pressed', registerKey.bind(this));
-                captureWindow.present();
-            }
-
-            function registerKey(widget, keyval, keycode, state) {
-                // Get default modifier mask (keys) that are currently pressed
-                let mask = state & Gtk.accelerator_get_default_mod_mask();
-                // Filter out CAPS LOCK
-                mask &= ~Gdk.ModifierType.LOCK_MASK;
-
-                // If Esc is pressed without modifiers, close capture window
-                if (!mask && keyval === Gdk.KEY_Escape) {
-                    captureWindow.close();
-                    return Gdk.EVENT_STOP;
-                }
-
-                // If Backspace is pressed, reset keybinding
-                if (keyval === Gdk.KEY_BackSpace) {
-                    resetKeybind();
-                    captureWindow.destroy();
-                    return Gdk.EVENT_STOP;
-                }
-
-                // If the key combination is not acceptable, ignore it
-                if (!isValidBinding(mask, keycode, keyval) || !isValidAccel(mask, keyval)) {
-                    return Gdk.EVENT_STOP;
-                }
-
-                // Save shortcut
-                keybindLabel.accelerator = Gtk.accelerator_name_with_keycode(
-                    null,
-                    keyval,
-                    keycode,
-                    mask
-                );
-                resetKeybindButton.visible = true;
-                captureWindow.destroy();
-                return Gdk.EVENT_STOP;
-            }
-            //#endregion
-
-            //#region Keybinding Validation
-            // Validating functions from https://gitlab.gnome.org/GNOME/gnome-control-center/-/blob/main/panels/keyboard/keyboard-shortcuts.c
-
-            function keyvalIsForbidden(keyval) {
-                return [
-                    // Navigation keys
-                    Gdk.KEY_Home,
-                    Gdk.KEY_Left,
-                    Gdk.KEY_Up,
-                    Gdk.KEY_Right,
-                    Gdk.KEY_Down,
-                    Gdk.KEY_Page_Up,
-                    Gdk.KEY_Page_Down,
-                    Gdk.KEY_End,
-                    Gdk.KEY_Tab,
-
-                    // Return
-                    Gdk.KEY_KP_Enter,
-                    Gdk.KEY_Return,
-
-                    Gdk.KEY_Mode_switch,
-                ].includes(keyval);
-            }
-
-            function isValidBinding(mask, keycode, keyval) {
-                if (mask === 0) return false;
-
-                if (mask === Gdk.ModifierType.SHIFT_MASK && keycode !== 0) {
-                    if (
-                        isKeyInRange(keyval, Gdk.KEY_a, Gdk.KEY_z) ||
-                        isKeyInRange(keyval, Gdk.KEY_A, Gdk.KEY_Z) ||
-                        isKeyInRange(keyval, Gdk.KEY_0, Gdk.KEY_9) ||
-                        isKeyInRange(keyval, Gdk.KEY_kana_fullstop, Gdk.KEY_semivoicedsound) ||
-                        isKeyInRange(keyval, Gdk.KEY_Arabic_comma, Gdk.KEY_Arabic_sukun) ||
-                        isKeyInRange(keyval, Gdk.KEY_Serbian_dje, Gdk.KEY_Cyrillic_HARDSIGN) ||
-                        isKeyInRange(keyval, Gdk.KEY_Greek_ALPHAaccent, Gdk.KEY_Greek_omega) ||
-                        isKeyInRange(keyval, Gdk.KEY_hebrew_doublelowline, Gdk.KEY_hebrew_taf) ||
-                        isKeyInRange(keyval, Gdk.KEY_Thai_kokai, Gdk.KEY_Thai_lekkao) ||
-                        isKeyInRange(keyval, Gdk.KEY_Hangul_Kiyeog, Gdk.KEY_Hangul_J_YeorinHieuh) ||
-                        (keyval === Gdk.KEY_space && mask === 0) ||
-                        keyvalIsForbidden(keyval)
-                    ) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            function isKeyInRange(keyval, start, end) {
-                return keyval >= start && keyval <= end;
-            }
-
-            function isValidAccel(mask, keyval) {
-                return (
-                    Gtk.accelerator_valid(keyval, mask) || (keyval === Gdk.KEY_Tab && mask !== 0)
-                );
-            }
-            //#endregion
-
+            keybindGroup.set_header_suffix(keybindRow.resetButton);
             keybindGroup.add(keybindRow);
             //#endregion
         }
