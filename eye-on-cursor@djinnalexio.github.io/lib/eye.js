@@ -20,7 +20,6 @@
 'use strict';
 
 //#region Import libraries
-import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
@@ -176,26 +175,25 @@ export const Eye = GObject.registerClass(
 
             // Get the foreground color from the theme
             const themeNode = this.area.get_theme_node();
-            const foregroundColor = themeNode.get_foreground_color();
+            const themeForeground = themeNode.get_foreground_color();
+            this.foregroundColor = '#';
+            ['red', 'green', 'blue'].forEach(color => {
+                this.foregroundColor = `${this.foregroundColor}${themeForeground[color].toString(16).padStart(2, '0')}`;
+            });
 
-            const [, irisColor] = Clutter.Color.from_string(this.irisColor);
-
-            let trackerColor;
-            if (this.mouseTracker.enabled) {
-                [, trackerColor] = Clutter.Color.from_string(this.trackerColor);
-            }
+            // TODO add accent color
 
             const options = {
                 areaX,
                 areaY,
-                irisColor,
-                irisColorEnabled: this.irisColorEnabled,
+                shape: this.shape,
                 lineMode: this.lineMode,
                 lineWidth: this.lineWidth,
-                mainColor: foregroundColor,
-                shape: this.shape,
-                trackerColor,
+                irisColorEnabled: this.irisColorEnabled,
                 trackerEnabled: this.mouseTracker.enabled,
+                irisColor: this.irisColor,
+                trackerColor: this.trackerColor,
+                mainColor: this.foregroundColor,
             };
 
             EyeRenderer.drawEye(area, options);

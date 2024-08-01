@@ -80,7 +80,7 @@ class EyelidEye extends EyeShape {
         const cr = this.area.get_context();
 
         // -- Drawing the base of the eye
-        cairoSetSourceClutterColor(cr, this.options.mainColor);
+        cairoSetColorFromHex(cr, this.options.mainColor);
 
         cr.translate(areaWidth * 0.5, areaHeight * 0.5);
         cr.setLineWidth(this.options.lineWidth);
@@ -138,11 +138,11 @@ class EyelidEye extends EyeShape {
         cr.setLineWidth(this.options.lineWidth / irisRadius);
 
         if (this.options.trackerEnabled) {
-            cairoSetSourceClutterColor(cr, this.options.trackerColor);
+            cairoSetColorFromHex(cr, this.options.trackerColor);
         } else if (this.options.irisColorEnabled) {
-            cairoSetSourceClutterColor(cr, this.options.irisColor);
+            cairoSetColorFromHex(cr, this.options.irisColor);
         } else if (this.options.lineMode) {
-            cairoSetSourceClutterColor(cr, this.options.mainColor);
+            cairoSetColorFromHex(cr, this.options.mainColor);
         } else {
             cr.setSourceRGBA(0.7, 0.7, 0.7, 1);
         }
@@ -211,7 +211,7 @@ class RoundEye extends EyeShape {
         const cr = this.area.get_context();
 
         // -- Drawing the base of the eye
-        cairoSetSourceClutterColor(cr, this.options.mainColor);
+        cairoSetColorFromHex(cr, this.options.mainColor);
 
         cr.translate(areaWidth * 0.5, areaHeight * 0.5);
 
@@ -227,11 +227,11 @@ class RoundEye extends EyeShape {
         cr.setLineWidth(this.options.lineWidth / irisRadius);
 
         if (this.options.trackerEnabled) {
-            cairoSetSourceClutterColor(cr, this.options.trackerColor);
+            cairoSetColorFromHex(cr, this.options.trackerColor);
         } else if (this.options.irisColorEnabled) {
-            cairoSetSourceClutterColor(cr, this.options.irisColor);
+            cairoSetColorFromHex(cr, this.options.irisColor);
         } else if (this.options.lineMode) {
-            cairoSetSourceClutterColor(cr, this.options.mainColor);
+            cairoSetColorFromHex(cr, this.options.mainColor);
         } else {
             cr.setSourceRGBA(0.7, 0.7, 0.7, 1);
         }
@@ -274,13 +274,14 @@ export function drawEye(area, options) {
 }
 //#endregion
 
-//#region Helper function
-function cairoSetSourceClutterColor(cr, clutterColor) {
-    const r = clutterColor.red / 255.0;
-    const g = clutterColor.green / 255.0;
-    const b = clutterColor.blue / 255.0;
-    const a = clutterColor.alpha / 255.0;
+//#region Helper functions
+function cairoSetColorFromHex(cr, hex) {
+    hex = hex.slice(1);
 
-    cr.setSourceRGBA(r, g, b, a);
+    const [r, g, b] = [hex.slice(0, 2), hex.slice(2, 4), hex.slice(4, 6)].map(
+        value => parseInt(value, 16) / 255.0
+    );
+
+    cr.setSourceRGBA(r, g, b, 1);
 }
 //#endregion
