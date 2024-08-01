@@ -20,6 +20,7 @@
 'use strict';
 
 //#region Import libraries
+import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
@@ -33,6 +34,19 @@ import * as EyeRenderer from './eyeRenderer.js';
 //#endregion
 
 //#region Constants
+const ACCENT_COLORS = {
+    blue: '#3584e4',
+    teal: '#2190a4',
+    green: '#3a944a',
+    yellow: '#c88800',
+    orange: '#ed5b00',
+    red: '#e62d42',
+    pink: '#d56199',
+    purple: '#9141ac',
+    slate: '#6f8396',
+};
+const ACCENT_COLORS_KEY = 'accent-color';
+const DEFAULT_COLOR = '#b5b5b5';
 const EYE_SETTINGS = [
     'eye-reactive',
     'eye-shape',
@@ -106,6 +120,27 @@ export const Eye = GObject.registerClass(
             // Create the eye canvas
             this.area = new St.DrawingArea({width: this.width});
             this.add_child(this.area);
+
+            // Get desktop accent color if supported (GNOME 47+) else use default
+            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+            this.accentColorKeyFound = this.interfaceSettings
+                .list_keys()
+                .includes(ACCENT_COLORS_KEY);
+
+            if (this.accentColorKeyFound) {
+                this.defaultColor =
+                    ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                this.defaultColorHandler = this.interfaceSettings.connect(
+                    `changed::${ACCENT_COLORS_KEY}`,
+                    () => {
+                        this.defaultColor =
+                            ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                        this.area.queue_repaint();
+                    }
+                );
+            } else {
+                this.defaultColor = DEFAULT_COLOR;
+            }
 
             // Connect repaint signal of the area to repaint function
             this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
@@ -181,8 +216,6 @@ export const Eye = GObject.registerClass(
                 this.foregroundColor = `${this.foregroundColor}${themeForeground[color].toString(16).padStart(2, '0')}`;
             });
 
-            // TODO add accent color
-
             const options = {
                 areaX,
                 areaY,
@@ -194,6 +227,7 @@ export const Eye = GObject.registerClass(
                 irisColor: this.irisColor,
                 trackerColor: this.trackerColor,
                 mainColor: this.foregroundColor,
+                defaultColor: this.defaultColor,
             };
 
             EyeRenderer.drawEye(area, options);
@@ -283,6 +317,11 @@ export const Eye = GObject.registerClass(
                 this.settings.disconnect(connection);
             });
             this.settingsHandlers = null;
+
+            if (this.defaultColorHandler) {
+                this.interfaceSettings.disconnect(this.defaultColorHandler);
+            }
+            this.defaultColorHandler = null;
 
             // Destroy popups
             this.menuItems.forEach(menuItem => menuItem?.destroy());

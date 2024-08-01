@@ -64,8 +64,8 @@
     </key>
 
     <key name='eye-line-mode' type='b'>
-      <default>true</default>
-      <summary>Whether eyes are filled</summary>
+      <default>false</default>
+      <summary>Whether eyes are only outlined</summary>
       <description>Determines if the eyes are drawn as outlines or filled in.</description>
     </key>
 

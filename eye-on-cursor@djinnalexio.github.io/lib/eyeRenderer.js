@@ -144,7 +144,7 @@ class EyelidEye extends EyeShape {
         } else if (this.options.lineMode) {
             cairoSetColorFromHex(cr, this.options.mainColor);
         } else {
-            cr.setSourceRGBA(0.7, 0.7, 0.7, 1);
+            cairoSetColorFromHex(cr, this.options.defaultColor);
         }
 
         cr.translate(irisX * Math.sin(eyeAngle), 0);
@@ -233,7 +233,7 @@ class RoundEye extends EyeShape {
         } else if (this.options.lineMode) {
             cairoSetColorFromHex(cr, this.options.mainColor);
         } else {
-            cr.setSourceRGBA(0.7, 0.7, 0.7, 1);
+            cairoSetColorFromHex(cr, this.options.defaultColor);
         }
 
         cr.translate(irisX * Math.sin(eyeAngle), 0);
