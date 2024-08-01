@@ -26,7 +26,7 @@ import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {makeAboutDialog} from './credits.js';
+import {EyeAboutRow} from './about.js';
 //#endregion
 
 export const EyePage = GObject.registerClass(
@@ -278,18 +278,7 @@ export const EyePage = GObject.registerClass(
                 const aboutGroup = new Adw.PreferencesGroup();
                 this.add(aboutGroup);
 
-                const aboutRow = new Adw.ActionRow({
-                    title: _('About'),
-                    subtitle: _('Development information and credits'),
-                    activatable: true,
-                });
-                aboutRow.add_prefix(new Gtk.Image({icon_name: 'help-about-symbolic'}));
-                aboutRow.add_suffix(new Gtk.Image({icon_name: 'go-next-symbolic'}));
-
-                aboutRow.connect('activated', () => {
-                    this.aboutWindow = makeAboutDialog(this.metadata, this.path);
-                    this.aboutWindow.present(this);
-                });
+                const aboutRow = new EyeAboutRow(this.metadata, this.path);
                 aboutGroup.add(aboutRow);
             }
             //#endregion
