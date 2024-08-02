@@ -34,6 +34,8 @@ import * as EyeRenderer from './eyeRenderer.js';
 //#endregion
 
 //#region Constants
+// See https://gitlab.gnome.org/GNOME/libadwaita/-/blob/main/src/adw-accent-color.c?ref_type=heads#L15
+// And https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas/-/blob/master/schemas/org.gnome.desktop.interface.gschema.xml.in?ref_type=heads#L314
 const ACCENT_COLORS = {
     blue: '#3584e4',
     teal: '#2190a4',
