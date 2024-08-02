@@ -58,6 +58,7 @@ const releaseNotes =
     <ul>\
         <li>resized settings window</li>\
         <li>changed <em>interactivity</em> label to <em>submenu</em></li>\
+        <li>eyes are now generated with ordered IDs for compatibility with external programs</li>\
     </ul >\
     ';
 const supportUrl = '';
