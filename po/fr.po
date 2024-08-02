@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: eye-on-cursor 1.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/"
 "issues\n"
-"POT-Creation-Date: 2024-08-01 22:35+0100\n"
+"POT-Creation-Date: 2024-08-02 03:20+0100\n"
 "PO-Revision-Date: 2024-08-01 22:38+0100\n"
 "Last-Translator: djinnalexio\n"
 "Language-Team: \n"
@@ -28,28 +28,28 @@ msgstr "Activer/Désactiver le Traqueur"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:68
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:78
 msgid "About"
 msgstr "À propos"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:69
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:79
 msgid "Development information and credits"
 msgstr "Informations de développement et crédits"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:101
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:111
 msgctxt "(USER)NAME EMAIL/URL"
 msgid "translator_credits"
 msgstr "djinnalexio https://github.com/djinnalexio/"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:107
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:117
 msgid "Extension Page"
 msgstr "Page de l'extension"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:110
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:120
 msgid "Forked from"
 msgstr "Dérivé de"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:113
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:123
 msgid "Cinnamon Fork"
 msgstr "Branche Cinnamon"
 

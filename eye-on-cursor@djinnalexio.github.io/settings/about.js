@@ -49,7 +49,17 @@ const developerName = 'djinnalexio';
 const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
     <ol> ordered and <ul> unordered lists with <li> list items, and <code> code. */
-const releaseNotes = '';
+const releaseNotes =
+    '<p>New:</p>\
+    <ul>\
+        <li>added support for <em>accent colors</em> starting in GNOME 47</li>\
+    </ul >\
+    <p>Fixes &amp; Improvements:</p>\
+    <ul>\
+        <li>resized settings window</li>\
+        <li>changed <em>interactivity</em> label to <em>submenu</em></li>\
+    </ul >\
+    ';
 const supportUrl = '';
 //#endregion
 
