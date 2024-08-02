@@ -74,7 +74,7 @@ export const Eye = GObject.registerClass(
 
         //#region Constructor
         constructor(extensionObject, trackerManager) {
-            super(0, `Eye.${extensionObject.uuid}`, false);
+            super(0, extensionObject.uuid, false);
 
             // Get extension object properties
             this.path = extensionObject.path;
@@ -338,17 +338,17 @@ export const Eye = GObject.registerClass(
 //#endregion
 
 //#region Creating eyes
-export function spawnEyes(eyeArray, settings, extensionObject, trackerManager) {
+export function spawnEyes(extensionObject, eyeArray, trackerManager) {
     // Remove current eyes
     destroyEyes(eyeArray);
 
-    for (let count = 0; count < settings.get_int('eye-count'); count++) {
+    for (let count = 0; count < extensionObject.settings.get_int('eye-count'); count++) {
         eyeArray.push(new Eye(extensionObject, trackerManager));
         Main.panel.addToStatusArea(
-            extensionObject.uuid + Math.random(),
+            `${extensionObject.metadata['gettext-domain']}-${count}`,
             eyeArray[count],
-            settings.get_int('eye-index'),
-            settings.get_string('eye-position')
+            extensionObject.settings.get_int('eye-index'),
+            extensionObject.settings.get_string('eye-position')
         );
     }
 }

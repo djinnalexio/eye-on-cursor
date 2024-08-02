@@ -52,14 +52,14 @@ export default class EyeOnCursorExtension extends Extension {
 
         // Create eyes based in starting settings
         this.eyeArray = [];
-        spawnEyes(this.eyeArray, this.settings, this, this.mouseTracker);
+        spawnEyes(this, this.eyeArray, this.mouseTracker);
 
         // Connect eye placement settings
         this.placementSettings = ['eye-position', 'eye-index', 'eye-count'];
         this.placementSettingHandlers = this.placementSettings.map(key =>
             this.settings.connect(
                 `changed::${key}`,
-                spawnEyes.bind(this, this.eyeArray, this.settings, this, this.mouseTracker)
+                spawnEyes.bind(this, this, this.eyeArray, this.mouseTracker)
             )
         );
     }
