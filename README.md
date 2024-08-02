@@ -14,11 +14,13 @@
 
 **Eye on Cursor** is a fun and practical extension that gives your panel eyes that constantly follow your mouse. This quirky feature, combined with a highly customizable mouse tracker that highlights clicks, makes it easier than ever to monitor your mouse movements, ensuring your pointer gets all the attention it needs.
 
-![blueEyes](assets/blueEyes.png) ![classic](assets/classic.png) ![default](assets/default.png)
+![tracking](assets/tracking.gif)
+
+![default](assets/default.png) ![tracker](assets/tracker.png) ![comic](assets/comic.png)
+
+![blueEyes](assets/blueEyes.png) ![round](assets/round.png)
 
 ![biblicallyAccurate](assets/biblicallyAccurate.png)
-
-![tracker](assets/tracker.png) ![round](assets/round.png)
 
 ## Features
 
