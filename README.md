@@ -14,11 +14,9 @@
 
 **Eye on Cursor** is a fun and practical extension that gives your panel eyes that constantly follow your mouse. This quirky feature, combined with a highly customizable mouse tracker that highlights clicks, makes it easier than ever to monitor your mouse movements, ensuring your pointer gets all the attention it needs.
 
-![tracking](assets/tracking.gif)
+![tracking](assets/tracking.gif) ![tracker](assets/tracker.png)
 
-![default](assets/default.png) ![tracker](assets/tracker.png) ![comic](assets/comic.png)
-
-![blueEyes](assets/blueEyes.png) ![round](assets/round.png)
+![comic](assets/comic.png) ![round](assets/round.png) ![blueEyes](assets/blueEyes.png)
 
 ![biblicallyAccurate](assets/biblicallyAccurate.png)
 
@@ -40,7 +38,7 @@
 2. At the location of the downloaded zip file, run:
 
    ```bash
-   gnome-extensions install eye-on-cursor@djinnalexio.github.io.shell-extension.zip
+   gnome-extensions install --force eye-on-cursor@djinnalexio.github.io.shell-extension.zip
    ```
 
 3. Log out and back in, then enable the extension in your extensions app or with:
