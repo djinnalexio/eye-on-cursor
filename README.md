@@ -63,12 +63,7 @@ If you have contributed in any way, feel free to add yourself to the `credits.js
 
 ### Development
 
-Here are a few steps to get you set up:
-
-1. Create a fork to start working on the changes you want to implement.
-2. Clone your repository.
-3. In the root of the repo, run `npm install` to enable linting and formatting (you need the `nodejs` package installed on your system). You will then be able to run `npm run lint` and `npm run format` to check the code.
-4. Run `make install && make enable` to use the extension or `make test` to debug it. The `Makefile` contains a few other commands that should be useful for debugging.
+In the root of the repo, run `make install && make enable` to use the extension or `make test` to debug it. The `Makefile` contains a few other commands that should be useful for debugging.
 
 ### Known Issues
 
