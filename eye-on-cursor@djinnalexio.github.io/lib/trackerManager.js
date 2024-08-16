@@ -80,7 +80,7 @@ export class TrackerManager {
         this.colorMiddle = this.settings.get_string('tracker-color-middle');
         this.colorRight = this.settings.get_string('tracker-color-right');
         this.opacity = this.settings.get_int('tracker-opacity');
-        this.repaintInterval = this.settings.get_int('tracker-refresh-rate');
+        this.refreshRate = this.settings.get_int('tracker-refresh-rate');
 
         // Create tracker icons in cache based on the initial settings
         this.cacheDir = this.getCacheDir();
@@ -205,7 +205,7 @@ export class TrackerManager {
         const newColorMiddle = this.settings.get_string('tracker-color-middle');
         const newColorRight = this.settings.get_string('tracker-color-right');
         const newOpacity = this.settings.get_int('tracker-opacity');
-        const newRepaintInterval = this.settings.get_int('tracker-refresh-rate');
+        const newRefreshRate = this.settings.get_int('tracker-refresh-rate');
 
         // Update cache if shape or any color has changed
         if (
@@ -246,11 +246,11 @@ export class TrackerManager {
             this.opacity = newOpacity;
         }
 
-        // If the position updater is currently running, stop it and start a new one with the updated interval
-        if (this.repaintInterval !== newRepaintInterval && this.trackerPositionUpdater) {
+        // If the position updater is currently running, stop it and start a new one with the updated refresh rate
+        if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdater) {
             this.stopPositionUpdater();
-            this.startPositionUpdater(newRepaintInterval);
-            this.repaintInterval = newRepaintInterval;
+            this.startPositionUpdater(newRefreshRate);
+            this.refreshRate = newRefreshRate;
         }
     }
 
@@ -262,10 +262,10 @@ export class TrackerManager {
     //#endregion
 
     //#region Position updater functions
-    startPositionUpdater(interval) {
+    startPositionUpdater(refreshRate) {
         this.trackerPositionUpdater = GLib.timeout_add(
             GLib.PRIORITY_DEFAULT,
-            1000 / interval,
+            1000 / refreshRate,
             () => {
                 this.updateTrackerPosition();
                 return GLib.SOURCE_CONTINUE;
@@ -458,7 +458,7 @@ export class TrackerManager {
         this.currentColor = this.colorDefault;
 
         // Start Updater
-        this.startPositionUpdater(this.repaintInterval);
+        this.startPositionUpdater(this.refreshRate);
 
         // Add tracker to desktop
         Main.uiGroup.add_child(this.trackerIcon);

@@ -96,7 +96,7 @@ export const Eye = GObject.registerClass(
             this.width = this.settings.get_int('eye-width');
             this.irisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
             this.irisColor = this.settings.get_string('eye-iris-color');
-            this.repaintInterval = this.settings.get_int('eye-refresh-rate');
+            this.refreshRate = this.settings.get_int('eye-refresh-rate');
 
             // Connect change in settings to update function
             this.settingsHandlers = EYE_SETTINGS.map(key =>
@@ -150,7 +150,7 @@ export const Eye = GObject.registerClass(
             // Start periodic redraw
             this.updateHandler = GLib.timeout_add(
                 GLib.PRIORITY_DEFAULT,
-                1000 / this.repaintInterval,
+                1000 / this.refreshRate,
                 () => {
                     this.updateEyeFrame();
                     return GLib.SOURCE_CONTINUE;
@@ -245,7 +245,7 @@ export const Eye = GObject.registerClass(
             const newWidth = this.settings.get_int('eye-width');
             const newIrisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
             const newIrisColor = this.settings.get_string('eye-iris-color');
-            const newRepaintInterval = this.settings.get_int('eye-refresh-rate');
+            const newRefreshRate = this.settings.get_int('eye-refresh-rate');
 
             // Update reactive property
             if (this.reactive !== newReactive) this.reactive = newReactive;
@@ -281,20 +281,20 @@ export const Eye = GObject.registerClass(
                 this.area.queue_repaint();
             }
 
-            // Update repaint interval
-            if (this.repaintInterval !== newRepaintInterval) {
+            // Update refresh rate
+            if (this.refreshRate !== newRefreshRate) {
                 if (this.updateHandler) {
                     GLib.source_remove(this.updateHandler);
                 }
                 this.updateHandler = GLib.timeout_add(
                     GLib.PRIORITY_DEFAULT,
-                    1000 / newRepaintInterval,
+                    1000 / newRefreshRate,
                     () => {
                         this.updateEyeFrame();
                         return GLib.SOURCE_CONTINUE;
                     }
                 );
-                this.repaintInterval = newRepaintInterval;
+                this.refreshRate = newRefreshRate;
             }
         }
         //#endregion
