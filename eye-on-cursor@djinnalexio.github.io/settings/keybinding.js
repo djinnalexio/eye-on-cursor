@@ -80,7 +80,7 @@ export const KeybindingRow = GObject.registerClass(
 
             // Connect change in accelerator to update setting
             this.label.connect('notify::accelerator', widget => {
-                this.settings.set_strv('tracker-keybinding', [widget.accelerator]);
+                this.settings.set_strv(this.key, [widget.accelerator]);
                 // Main.wm.addKeybinding takes string arrays, not strings
             });
         }
