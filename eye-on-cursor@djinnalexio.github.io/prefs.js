@@ -28,8 +28,8 @@ import {TrackerPage} from './settings/trackerSettings.js';
 
 export default class EyeOnCursorPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
-        window.default_width = 465;
-        window.default_height = 700;
+        window.default_width = 460;
+        window.default_height = 800;
 
         window.add(new EyePage(this));
         window.add(new TrackerPage(this));

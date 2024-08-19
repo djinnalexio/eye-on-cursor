@@ -22,11 +22,12 @@
 //#region Import libraries
 import Adw from 'gi://Adw';
 import GObject from 'gi://GObject';
+import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {EyeAboutRow} from './about.js';
+import {KeybindingRow} from './keybinding.js';
 //#endregion
 
 export const EyePage = GObject.registerClass(
@@ -43,8 +44,6 @@ export const EyePage = GObject.registerClass(
                 icon_name: 'view-reveal-symbolic',
             });
 
-            this.metadata = extensionObject.metadata;
-            this.path = extensionObject.path;
             this.settings = extensionObject.getSettings();
 
             //#region Eye placement group
@@ -228,18 +227,18 @@ export const EyePage = GObject.registerClass(
                 subtitle: _('Custom iris color'),
             });
 
-            const irisColorPicker = newColorPicker(this.settings, 'eye-iris-color');
+            const irisColorPicker = newColorPicker(this.settings, 'eye-color-iris');
 
             // Iris Color Toggle
             const irisColorToggle = new Gtk.CheckButton({
-                active: this.settings.get_boolean('eye-iris-color-enabled'),
+                active: this.settings.get_boolean('eye-color-iris-enabled'),
                 hexpand: false,
                 margin_end: 8,
                 valign: Gtk.Align.CENTER,
                 vexpand: false,
             });
             irisColorToggle.connect('toggled', widget => {
-                this.settings.set_boolean('eye-iris-color-enabled', widget.active);
+                this.settings.set_boolean('eye-color-iris-enabled', widget.active);
                 irisColorPicker.set_sensitive(widget.active);
             });
             irisColorPicker.set_sensitive(irisColorToggle.active);
@@ -249,7 +248,6 @@ export const EyePage = GObject.registerClass(
             colorBox.append(irisColorPicker);
 
             colorRow.add_suffix(colorBox);
-
             drawingGroup.add(colorRow);
             //#endregion
 
@@ -271,16 +269,147 @@ export const EyePage = GObject.registerClass(
             //#endregion
             //#endregion
 
-            //#region About group
-            const adwVersion = parseFloat(Adw.VERSION_S.substring(0, 3));
-            //AboutDialog is available since 1.5.0
-            if (adwVersion >= 1.5) {
-                const aboutGroup = new Adw.PreferencesGroup();
-                this.add(aboutGroup);
+            //#region Eye Blink group
+            const blinkGroup = new Adw.PreferencesGroup({
+                title: _('Eye Blink'),
+            });
+            this.add(blinkGroup);
 
-                const aboutRow = new EyeAboutRow(this.metadata, this.path);
-                aboutGroup.add(aboutRow);
+            //#region Eyelid Color
+            const colorEyelidRow = new Adw.ActionRow({
+                title: _('Eyelid Color'),
+                subtitle: _('Color of the eyelid'),
+            });
+
+            const colorEyelidBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
+            colorEyelidBox.append(newColorPicker(this.settings, 'eye-color-eyelid'));
+
+            colorEyelidRow.add_suffix(colorEyelidBox);
+            blinkGroup.add(colorEyelidRow);
+            //#endregion
+
+            //#region Blink Mode
+            const blinkModeList = new Gtk.StringList();
+            [_('Manual'), _('Synced'), _('Unsynced')].forEach(mode => blinkModeList.append(mode));
+            // Each option enables the corresponding row
+            const blinkModeRow = new Adw.ComboRow({
+                title: _('Blink Mode'),
+                subtitle: _('Blink Control Method'),
+                model: blinkModeList,
+                selected: this.settings.get_enum('eye-blink-mode'),
+            });
+            blinkModeRow.connect('notify::selected', widget => {
+                this.settings.set_enum('eye-blink-mode', widget.selected);
+            });
+            blinkGroup.add(blinkModeRow);
+            //#endregion
+
+            //#region Blink Keybinding
+            const blinkKeybindRow = new KeybindingRow(
+                this.settings,
+                'eye-blink-keybinding',
+                _('Manual Blink Key')
+            );
+
+            blinkGroup.set_header_suffix(blinkKeybindRow.resetButton);
+            blinkGroup.add(blinkKeybindRow);
+            //#endregion
+
+            //#region Blink Interval
+            const blinkIntervalRow = new Adw.SpinRow({
+                title: _('Synced Blinking Interval'),
+                subtitle: _('Seconds between blinks'),
+                adjustment: new Gtk.Adjustment({
+                    lower: 0.5,
+                    upper: 60,
+                    step_increment: 0.1,
+                }),
+                digits: 1,
+                value: this.settings.get_double('eye-blink-interval'),
+            });
+            blinkIntervalRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_double('eye-blink-interval', widget.value);
+            });
+            blinkGroup.add(blinkIntervalRow);
+            //#endregion
+
+            //#region Blink Interval Range
+            const blinkIntervalRangeRow = new Adw.ActionRow({
+                title: _('Unsynced Blinking Interval'),
+                subtitle: _('Range of seconds between blinks'),
+            });
+
+            const blinkIntervalRange = this.settings
+                .get_value('eye-blink-interval-range')
+                .deep_unpack();
+
+            const minIntervalButton = new Gtk.SpinButton({
+                adjustment: new Gtk.Adjustment({
+                    lower: 0.5,
+                    upper: 59.9,
+                    step_increment: 0.1,
+                }),
+                digits: 1,
+                hexpand: false,
+                margin_end: 8,
+                margin_top: 8,
+                valign: Gtk.Align.CENTER,
+                vexpand: false,
+                value: blinkIntervalRange[0],
+            });
+            const maxIntervalButton = new Gtk.SpinButton({
+                adjustment: new Gtk.Adjustment({
+                    lower: 0.6,
+                    upper: 60,
+                    step_increment: 0.1,
+                }),
+                digits: 1,
+                hexpand: false,
+                margin_end: 8,
+                margin_bottom: 8,
+                valign: Gtk.Align.CENTER,
+                vexpand: false,
+                value: blinkIntervalRange[1],
+            });
+
+            // Function to validate and correct interval range values
+            function validateIntervals(valueChanged) {
+                let minValue = minIntervalButton.get_value();
+                let maxValue = maxIntervalButton.get_value();
+
+                // Ensure a minimum gap of 0.1 between min and max
+                if (maxValue - minValue < 0.1) {
+                    switch (valueChanged) {
+                        case 'min':
+                            minValue = maxValue - 0.1;
+                            minIntervalButton.set_value(minValue);
+                            break;
+                        case 'max':
+                        default:
+                            maxValue = minValue + 0.1;
+                            maxIntervalButton.set_value(maxValue);
+                            break;
+                    }
+                }
+
+                // Update the settings with validated values
+                this.settings.set_value(
+                    'eye-blink-interval-range',
+                    new GLib.Variant('ad', [minValue, maxValue])
+                );
             }
+
+            minIntervalButton.connect('value-changed', validateIntervals.bind(this, 'min'));
+            maxIntervalButton.connect('value-changed', validateIntervals.bind(this, 'max'));
+
+            const box = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL});
+            box.append(minIntervalButton);
+            box.append(new Gtk.Label({label: _('to'), margin_end: 8}));
+            box.append(maxIntervalButton);
+
+            blinkIntervalRangeRow.add_suffix(box);
+            blinkGroup.add(blinkIntervalRangeRow);
+            //#endregion
             //#endregion
         }
     }

@@ -28,6 +28,8 @@ import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
+import {EyeAboutRow} from './about.js';
+
 import {KeybindingRow} from './keybinding.js';
 //#endregion
 
@@ -45,6 +47,7 @@ export const TrackerPage = GObject.registerClass(
                 icon_name: 'input-mouse-symbolic',
             });
 
+            this.metadata = extensionObject.metadata;
             this.path = extensionObject.path;
             this.settings = extensionObject.getSettings();
 
@@ -225,6 +228,18 @@ export const TrackerPage = GObject.registerClass(
 
             keybindGroup.set_header_suffix(keybindRow.resetButton);
             keybindGroup.add(keybindRow);
+            //#endregion
+
+            //#region About group
+            const adwVersion = parseFloat(Adw.VERSION_S.substring(0, 3));
+            //AboutDialog is available since 1.5.0
+            if (adwVersion >= 1.5) {
+                const aboutGroup = new Adw.PreferencesGroup({title: _('Credits')});
+                this.add(aboutGroup);
+
+                const aboutRow = new EyeAboutRow(this.metadata, this.path);
+                aboutGroup.add(aboutRow);
+            }
             //#endregion
         }
     }

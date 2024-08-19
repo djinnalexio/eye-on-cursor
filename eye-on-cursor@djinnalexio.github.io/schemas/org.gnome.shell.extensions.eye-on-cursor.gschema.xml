@@ -17,6 +17,12 @@
     <value value='2' nick='round' />
   </enum>
 
+  <enum id='org.gnome.shell.extensions.eye-on-cursor.eye-blink-mode'>
+    <value value='0' nick='manual' />
+    <value value='1' nick='synced' />
+    <value value='2' nick='unsynced' />
+  </enum>
+
   <!-- Settings -->
 
   <schema id='org.gnome.shell.extensions.eye-on-cursor'
@@ -75,13 +81,13 @@
       <description>Sets the thickness of the lines used to draw the eyes.</description>
     </key>
 
-    <key name='eye-iris-color-enabled' type='b'>
+    <key name='eye-color-iris-enabled' type='b'>
       <default>false</default>
       <summary>Whether The custom iris color is used.</summary>
       <description>Determines if the iris is drawn in the custom color or the foreground color.</description>
     </key>
 
-    <key name='eye-iris-color' type='s'>
+    <key name='eye-color-iris' type='s'>
       <default>'#00ffff'</default>
       <summary>Color of the iris of the eyes.</summary>
       <description>Sets a custom color for the iris of the eye.</description>
@@ -91,6 +97,39 @@
       <default>60</default>
       <summary>Refresh rate of the eyes</summary>
       <description>Specifies the refresh rate of the eyes.</description>
+    </key>
+
+    <!-- Eye Blink Settings -->
+
+    <key name='eye-color-eyelid' type='s'>
+      <default>'#000000'</default>
+      <summary>Color of the eyelid.</summary>
+      <description>Sets a custom color for the eyelid.</description>
+    </key>
+
+    <key name='eye-blink-mode' enum='org.gnome.shell.extensions.eye-on-cursor.eye-blink-mode'>
+      <default>'synced'</default>
+      <summary>Method of eye blinking</summary>
+      <description>Determines the blinking mode: 'manual', 'synced', or 'unsynced'.</description>
+    </key>
+
+    <key name='eye-blink-keybinding' type='as'>
+      <default><![CDATA[['']]]></default>
+      <summary>Keyboard shortcut for blinking</summary>
+      <description>Defines the keyboard shortcut that makes the eyes blink.</description>
+    </key>
+
+    <key name='eye-blink-interval' type='d'>
+      <default>6.0</default>
+      <summary>Default blink interval</summary>
+      <description>The time interval in seconds between blinks when in synced mode.</description>
+    </key>
+
+    <key name='eye-blink-interval-range' type='ad'>
+      <default>[2.0, 10.0]</default>
+      <summary>Range for unsynced blink intervals</summary>
+      <description>The minimum and maximum intervals in seconds between blinks when in unsynced
+        mode.</description>
     </key>
 
     <!-- Tracker Drawing Settings -->
