@@ -52,7 +52,7 @@ export const TrackerPage = GObject.registerClass(
             this.settings = extensionObject.getSettings();
 
             //#region Tracker drawing group
-            const drawingGroup = new Adw.PreferencesGroup({title: _('Tracker Drawing')});
+            const drawingGroup = new Adw.PreferencesGroup({title: _('Appearance')});
             this.add(drawingGroup);
 
             //#region Tracker shape
@@ -146,7 +146,7 @@ export const TrackerPage = GObject.registerClass(
             }
 
             const colorDefaultRow = new Adw.ActionRow({
-                title: _('Default Color'),
+                title: _('Color'),
                 subtitle: _('Default color of the tracker'),
             });
 
@@ -216,7 +216,7 @@ export const TrackerPage = GObject.registerClass(
             //#endregion
 
             //#region Tracker keybinding
-            const keybindGroup = new Adw.PreferencesGroup({title: _('Tracker keybinding')});
+            const keybindGroup = new Adw.PreferencesGroup({title: _('Keybinding')});
             this.add(keybindGroup);
 
             // Create row

@@ -43,14 +43,14 @@ class EyeShape {
 }
 //#endregion
 
-//#region Eyelid class
-class EyelidEye extends EyeShape {
+//#region Natural class
+class NaturalEye extends EyeShape {
     constructor(area, options) {
         super(area, options);
-        this.drawEyelidEye();
+        this.drawNaturalEye();
     }
 
-    drawEyelidEye() {
+    drawNaturalEye() {
         let [mouseX, mouseY] = global.get_pointer();
         const [areaWidth, areaHeight] = this.area.get_surface_size();
         let [areaX, areaY] = [this.options.areaX, this.options.areaY];
@@ -263,13 +263,13 @@ class RoundEye extends EyeShape {
 //#region Draw function
 export function drawEye(area, options) {
     switch (options.shape) {
-        case 'eyelid':
-            return new EyelidEye(area, options);
+        case 'round':
+            return new RoundEye(area, options);
         case 'comic':
             return new RoundEye(area, options, COMIC_EYE_SCALE_X, COMIC_EYE_SCALE_Y);
-        case 'round':
+        case 'natural':
         default:
-            return new RoundEye(area, options);
+            return new NaturalEye(area, options);
     }
 }
 //#endregion

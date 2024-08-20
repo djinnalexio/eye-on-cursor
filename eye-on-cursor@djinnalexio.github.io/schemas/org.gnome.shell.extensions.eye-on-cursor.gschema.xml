@@ -12,9 +12,9 @@
   </enum>
 
   <enum id='org.gnome.shell.extensions.eye-on-cursor.eye-shape'>
-    <value value='0' nick='eyelid' />
-    <value value='1' nick='comic' />
-    <value value='2' nick='round' />
+    <value value='0' nick='natural' />
+    <value value='1' nick='round' />
+    <value value='2' nick='comic' />
   </enum>
 
   <enum id='org.gnome.shell.extensions.eye-on-cursor.eye-blink-mode'>
@@ -32,46 +32,45 @@
 
     <key name='eye-position' enum='org.gnome.shell.extensions.eye-on-cursor.eye-position'>
       <default>'center'</default>
-      <summary>Position of the eyes on the screen</summary>
-      <description>Defines the position of the eyes on the panel. Supported values are 'left',
-        'center', and 'right'.</description>
+      <summary>Position of the eyes on the panel</summary>
+      <description>Sets the position of the eyes on the panel: 'left', 'center', or 'right'.</description>
     </key>
 
     <key name='eye-index' type='i'>
       <default>1</default>
       <summary>Index of the eye in panel section</summary>
-      <description>Indicates the priority of the eyes in the panel section order.</description>
+      <description>Sets the priority of the eyes in the panel section order.</description>
     </key>
 
     <key name='eye-count' type='i'>
       <default>2</default>
       <summary>Number of eyes to instantiate</summary>
-      <description>Specifies the total number of eye instances to be displayed on the screen.</description>
+      <description>Sets the number of eye instances to be displayed on the panel.</description>
     </key>
 
     <key name='eye-width' type='i'>
       <default>60</default>
       <summary>Width of the eye button</summary>
-      <description>Defines the width of each eye button, affecting drawing space and padding.</description>
+      <description>Sets the width of each eye button, affecting drawing space and padding.</description>
     </key>
 
     <key name='eye-reactive' type='b'>
       <default>true</default>
       <summary>Whether eyes are interactive</summary>
-      <description>Determines if the eyes respond to clicks.</description>
+      <description>Determines if the eyes respond to clicks (open the menu).</description>
     </key>
 
     <!-- Eye Drawing Settings -->
 
     <key name='eye-shape' enum='org.gnome.shell.extensions.eye-on-cursor.eye-shape'>
-      <default>'eyelid'</default>
+      <default>'natural'</default>
       <summary>Shape of the eyes</summary>
-      <description>Specifies the shape of the eyes.</description>
+      <description>Sets the shape of the eyes: 'natural', 'round', or 'comic'.</description>
     </key>
 
     <key name='eye-line-mode' type='b'>
       <default>false</default>
-      <summary>Whether eyes are only outlined</summary>
+      <summary>Whether eyes are drawn as outlines</summary>
       <description>Determines if the eyes are drawn as outlines or filled in.</description>
     </key>
 
@@ -83,53 +82,52 @@
 
     <key name='eye-color-iris-enabled' type='b'>
       <default>false</default>
-      <summary>Whether The custom iris color is used.</summary>
-      <description>Determines if the iris is drawn in the custom color or the foreground color.</description>
+      <summary>Whether the custom iris color is used</summary>
+      <description>Determines if the iris is drawn in the custom or foreground color.</description>
     </key>
 
     <key name='eye-color-iris' type='s'>
       <default>'#00ffff'</default>
-      <summary>Color of the iris of the eyes.</summary>
-      <description>Sets a custom color for the iris of the eye.</description>
+      <summary>Color of the iris</summary>
+      <description>Sets the color of iris.</description>
     </key>
 
     <key name='eye-refresh-rate' type='i'>
       <default>60</default>
       <summary>Refresh rate of the eyes</summary>
-      <description>Specifies the refresh rate of the eyes.</description>
+      <description>Sets the refresh rate of the eyes.</description>
     </key>
 
     <!-- Eye Blink Settings -->
 
     <key name='eye-color-eyelid' type='s'>
       <default>'#000000'</default>
-      <summary>Color of the eyelid.</summary>
-      <description>Sets a custom color for the eyelid.</description>
+      <summary>Color of the eyelid</summary>
+      <description>Sets the color of the eyelid.</description>
     </key>
 
     <key name='eye-blink-mode' enum='org.gnome.shell.extensions.eye-on-cursor.eye-blink-mode'>
       <default>'synced'</default>
       <summary>Method of eye blinking</summary>
-      <description>Determines the blinking mode: 'manual', 'synced', or 'unsynced'.</description>
+      <description>Sets the blinking mode: 'manual', 'synced', or 'unsynced'.</description>
     </key>
 
     <key name='eye-blink-keybinding' type='as'>
       <default><![CDATA[['']]]></default>
       <summary>Keyboard shortcut for blinking</summary>
-      <description>Defines the keyboard shortcut that makes the eyes blink.</description>
+      <description>Sets the keyboard shortcut that makes the eyes blink.</description>
     </key>
 
     <key name='eye-blink-interval' type='d'>
       <default>6.0</default>
       <summary>Default blink interval</summary>
-      <description>The time interval in seconds between blinks when in synced mode.</description>
+      <description>Sets the interval in seconds between blinks when in synced mode.</description>
     </key>
 
     <key name='eye-blink-interval-range' type='ad'>
       <default>[2.0, 10.0]</default>
       <summary>Range for unsynced blink intervals</summary>
-      <description>The minimum and maximum intervals in seconds between blinks when in unsynced
-        mode.</description>
+      <description>Sets the range of intervals in seconds between blinks when in unsynced mode.</description>
     </key>
 
     <!-- Tracker Drawing Settings -->
@@ -137,62 +135,55 @@
     <key name='tracker-shape' type='s'>
       <default>'Circle'</default>
       <summary>Shape of the tracker</summary>
-      <description>The filename of the image used as the tracker shape. This image is displayed as
-        the tracker cursor.</description>
+      <description>Sets the filename of the image to be used as the tracker shape.</description>
     </key>
 
     <key name='tracker-size' type='i'>
       <default>256</default>
       <summary>Size of the tracker</summary>
-      <description>Defines the dimensions of the tracker element in pixels.</description>
+      <description>Sets the size of the tracker element in pixels.</description>
     </key>
 
     <key name='tracker-color-default' type='s'>
       <default>'#ffff00'</default>
       <summary>Default color of the tracker</summary>
-      <description>Sets the default color of the tracker. The value is specified in hexadecimal
-        format.</description>
+      <description>Sets the default color of the tracker.</description>
     </key>
 
     <key name='tracker-color-left' type='s'>
       <default>'#ff0000'</default>
       <summary>Color of the tracker on left click</summary>
-      <description>Specifies the color of the tracker when a left-click event is detected. The value
-        is in hexadecimal format.</description>
+      <description>Sets the color of the tracker when a left-click event is detected.</description>
     </key>
 
     <key name='tracker-color-middle' type='s'>
       <default>'#00ff00'</default>
       <summary>Color of the tracker on middle click</summary>
-      <description>Specifies the color of the tracker when a middle-click event is detected. The
-        value is in hexadecimal format.</description>
+      <description>Sets the color of the tracker when a middle-click event is detected.</description>
     </key>
 
     <key name='tracker-color-right' type='s'>
       <default>'#0000ff'</default>
       <summary>Color of the tracker on right click</summary>
-      <description>Specifies the color of the tracker when a right-click event is detected. The
-        value is in hexadecimal format.</description>
+      <description>Sets the color of the tracker when a right-click event is detected.</description>
     </key>
 
     <key name='tracker-opacity' type='i'>
       <default>40</default>
       <summary>Opacity of the tracker</summary>
-      <description>Sets the opacity level of the tracker. The value is an integer between 0
-        (completely transparent) and 100 (fully opaque).</description>
+      <description>Sets the opacity of the tracker from 0 (transparent) to 100 (opaque).</description>
     </key>
 
     <key name='tracker-refresh-rate' type='i'>
       <default>60</default>
       <summary>Refresh rate of the tracker</summary>
-      <description>Specifies the refresh rate of the tracker.</description>
+      <description>Sets the refresh rate of the tracker.</description>
     </key>
 
     <key name='tracker-keybinding' type='as'>
       <default><![CDATA[['']]]></default>
       <summary>Keyboard shortcut for toggling the tracker</summary>
-      <description>Defines the keyboard shortcut that toggles the visibility or functionality of the
-        tracker.</description>
+      <description>Sets the keyboard shortcut that toggles the tracker.</description>
     </key>
 
   </schema>

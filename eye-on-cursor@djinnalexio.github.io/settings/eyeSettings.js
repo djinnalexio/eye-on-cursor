@@ -48,7 +48,7 @@ export const EyePage = GObject.registerClass(
 
             //#region Eye placement group
             const placementGroup = new Adw.PreferencesGroup({
-                title: _('Eye Placement'),
+                title: _('Layout'),
             });
             this.add(placementGroup);
 
@@ -60,7 +60,7 @@ export const EyePage = GObject.registerClass(
 
             const positionRow = new Adw.ComboRow({
                 title: _('Position'),
-                subtitle: _('Position of the eye on the panel'),
+                subtitle: _('Position of the eyes on the panel'),
                 model: positionLabelList,
                 selected: this.settings.get_enum('eye-position'),
             });
@@ -73,7 +73,7 @@ export const EyePage = GObject.registerClass(
             //#region Eye index
             const indexRow = new Adw.SpinRow({
                 title: _('Index'),
-                subtitle: _('Index of the eye on the panel segment'),
+                subtitle: _('Index of the eyes on the panel segment'),
                 adjustment: new Gtk.Adjustment({
                     lower: 0,
                     upper: 100,
@@ -90,7 +90,7 @@ export const EyePage = GObject.registerClass(
             //#region Eye count
             const countRow = new Adw.SpinRow({
                 title: _('Count'),
-                subtitle: _('Number of eyes to be spawned'),
+                subtitle: _('Number of eyes'),
                 adjustment: new Gtk.Adjustment({
                     lower: 1,
                     upper: 100,
@@ -107,7 +107,7 @@ export const EyePage = GObject.registerClass(
             //#region Eye margin
             const widthRow = new Adw.SpinRow({
                 title: _('Width'),
-                subtitle: _('Drawing space and padding of the eye'),
+                subtitle: _('Drawing space and padding'),
                 adjustment: new Gtk.Adjustment({
                     lower: 20,
                     upper: 1000,
@@ -136,17 +136,17 @@ export const EyePage = GObject.registerClass(
 
             //#region Eye Drawing group
             const drawingGroup = new Adw.PreferencesGroup({
-                title: _('Eye Drawing'),
+                title: _('Appearance'),
             });
             this.add(drawingGroup);
 
             //#region Eye shape
             const shapeLabelList = new Gtk.StringList();
-            [_('Eyelid'), _('Comic'), _('Round')].forEach(shape => shapeLabelList.append(shape));
+            [_('Natural'), _('Round'), _('Comic')].forEach(shape => shapeLabelList.append(shape));
 
             const shapeRow = new Adw.ComboRow({
                 title: _('Shape'),
-                subtitle: _('Shape of the eye'),
+                subtitle: _('Shape of the eyes'),
                 model: shapeLabelList,
                 selected: this.settings.get_enum('eye-shape'),
             });
@@ -159,7 +159,7 @@ export const EyePage = GObject.registerClass(
             //#region Eye outline mode
             const lineModeRow = new Adw.ExpanderRow({
                 title: _('Outline Mode'),
-                subtitle: _('Draw the eye as outline only'),
+                subtitle: _('Draw the eyes as outline only'),
                 show_enable_switch: true,
                 expanded: this.settings.get_boolean('eye-line-mode'),
                 enable_expansion: this.settings.get_boolean('eye-line-mode'),
@@ -224,7 +224,7 @@ export const EyePage = GObject.registerClass(
 
             const colorRow = new Adw.ActionRow({
                 title: _('Color'),
-                subtitle: _('Custom iris color'),
+                subtitle: _('Color of the iris'),
             });
 
             const irisColorPicker = newColorPicker(this.settings, 'eye-color-iris');
@@ -271,7 +271,7 @@ export const EyePage = GObject.registerClass(
 
             //#region Eye Blink group
             const blinkGroup = new Adw.PreferencesGroup({
-                title: _('Eye Blink'),
+                title: _('Blinking'),
             });
             this.add(blinkGroup);
 
