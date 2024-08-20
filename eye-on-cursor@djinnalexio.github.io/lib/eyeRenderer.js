@@ -39,6 +39,20 @@ class EyeShape {
     constructor(area, options) {
         this.area = area;
         this.options = options;
+
+        // Color Assignment
+        this.scleraColor = this.options.mainColor;
+        if (this.options.trackerEnabled) {
+            this.irisColor = this.options.trackerColor;
+        } else if (this.options.irisColorEnabled) {
+            this.irisColor = this.options.irisColor;
+        } else if (this.options.lineMode) {
+            this.irisColor = this.options.mainColor;
+        } else {
+            this.irisColor = this.options.defaultColor;
+        }
+        this.pupilColor = this.options.pupilColor;
+        this.eyelidColor = this.options.eyelidColor;
     }
 }
 //#endregion
@@ -77,95 +91,85 @@ class NaturalEye extends EyeShape {
 
         const eyeAngle = Math.atan(mouseRadius / irisX);
 
-        const cr = this.area.get_context();
-
-        // -- Drawing the base of the eye
-        cairoSetColorFromHex(cr, this.options.mainColor);
-
-        cr.translate(areaWidth * 0.5, areaHeight * 0.5);
-        cr.setLineWidth(this.options.lineWidth);
-
         const offsetX = irisRadius * Math.cos(mouseAngle) * Math.sin(eyeAngle);
         const offsetY = irisRadius * Math.sin(mouseAngle) * Math.sin(eyeAngle);
 
-        let amplitude = eyeRadius * TOP_LID_SCALE;
-        cr.moveTo(-eyeRadius, 0);
-        cr.curveTo(
-            offsetX - irisRadius,
-            offsetY + amplitude,
-            offsetX + irisRadius,
-            offsetY + amplitude,
-            eyeRadius,
-            0
-        );
+        const eyelidHeight = eyeRadius * (TOP_LID_SCALE + BOTTOM_LID_SCALE);
 
-        amplitude = eyeRadius * BOTTOM_LID_SCALE;
-        cr.curveTo(
-            offsetX + irisRadius,
-            offsetY - amplitude,
-            offsetX - irisRadius,
-            offsetY - amplitude,
-            -eyeRadius,
-            0
-        );
+        const cr = this.area.get_context();
 
-        this.options.lineMode ? cr.stroke() : cr.fill();
+        function drawEyelidShape() {
+            cr.moveTo(-eyeRadius, 0);
+            cr.curveTo(
+                offsetX - irisRadius,
+                offsetY + eyeRadius * TOP_LID_SCALE,
+                offsetX + irisRadius,
+                offsetY + eyeRadius * TOP_LID_SCALE,
+                eyeRadius,
+                0
+            );
 
-        amplitude = eyeRadius * TOP_LID_SCALE;
-        cr.moveTo(-eyeRadius, 0);
-        cr.curveTo(
-            offsetX - irisRadius,
-            offsetY + amplitude,
-            offsetX + irisRadius,
-            offsetY + amplitude,
-            eyeRadius,
-            0
-        );
-
-        amplitude = eyeRadius * BOTTOM_LID_SCALE;
-        cr.curveTo(
-            offsetX + irisRadius,
-            offsetY - amplitude,
-            offsetX - irisRadius,
-            offsetY - amplitude,
-            -eyeRadius,
-            0
-        );
-        cr.clip();
-
-        // -- Drawing the iris of the eye
-        cr.rotate(mouseAngle);
-        cr.setLineWidth(this.options.lineWidth / irisRadius);
-
-        if (this.options.trackerEnabled) {
-            cairoSetColorFromHex(cr, this.options.trackerColor);
-        } else if (this.options.irisColorEnabled) {
-            cairoSetColorFromHex(cr, this.options.irisColor);
-        } else if (this.options.lineMode) {
-            cairoSetColorFromHex(cr, this.options.mainColor);
-        } else {
-            cairoSetColorFromHex(cr, this.options.defaultColor);
+            cr.curveTo(
+                offsetX + irisRadius,
+                offsetY - eyeRadius * BOTTOM_LID_SCALE,
+                offsetX - irisRadius,
+                offsetY - eyeRadius * BOTTOM_LID_SCALE,
+                -eyeRadius,
+                0
+            );
         }
 
+        // -- Drawing the base of the eye
+        cr.translate(areaWidth * 0.5, areaHeight * 0.5);
+
+        cairoSetColorFromHex(cr, this.scleraColor);
+        cr.setLineWidth(this.options.lineWidth);
+
+        drawEyelidShape();
+        this.options.lineMode ? cr.stroke() : cr.fill();
+
+        drawEyelidShape();
+        cr.clip();
+
+        // -- Drawing the iris
+        cr.rotate(mouseAngle);
         cr.translate(irisX * Math.sin(eyeAngle), 0);
         cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
-        cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
 
+        cairoSetColorFromHex(cr, this.irisColor);
+        cr.setLineWidth(this.options.lineWidth / irisRadius);
+
+        cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
         this.options.lineMode ? cr.stroke() : cr.fill();
 
         cr.scale(1 / (irisRadius * Math.cos(eyeAngle)), 1 / irisRadius);
         cr.translate(-irisX * Math.sin(eyeAngle), 0);
 
-        // -- Drawing the pupil of the eye
-        if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 1);
-
+        // -- Drawing the pupil
         cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
         cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
+
+        if (!this.options.lineMode) cairoSetColorFromHex(cr, this.pupilColor);
+
         cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
         cr.fill();
 
-        cr.save();
-        cr.restore();
+        // -- Drawing the eyelid
+        if (this.options.eyelidLevel > 0) {
+            cr.identityMatrix();
+            cr.translate(areaWidth * 0.5, areaHeight * 0.5);
+
+            cairoSetColorFromHex(cr, this.eyelidColor);
+
+            drawEyelidShape();
+            cr.clip();
+
+            cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
+
+            cr.rectangle(0, areaHeight * 0.2, areaWidth, eyelidHeight * this.options.eyelidLevel);
+            cr.fill();
+        }
+
         cr.$dispose();
     }
 }
@@ -211,50 +215,58 @@ class RoundEye extends EyeShape {
         const cr = this.area.get_context();
 
         // -- Drawing the base of the eye
-        cairoSetColorFromHex(cr, this.options.mainColor);
-
         cr.translate(areaWidth * 0.5, areaHeight * 0.5);
-
         cr.scale(this.scaleX, this.scaleY);
 
+        cairoSetColorFromHex(cr, this.scleraColor);
         cr.setLineWidth(this.options.lineWidth);
-        cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
 
+        cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
         this.options.lineMode ? cr.stroke() : cr.fill();
 
-        // -- Drawing the iris of the eye
+        cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
+        cr.clip();
+
+        // -- Drawing the iris
         cr.rotate(mouseAngle);
-        cr.setLineWidth(this.options.lineWidth / irisRadius);
-
-        if (this.options.trackerEnabled) {
-            cairoSetColorFromHex(cr, this.options.trackerColor);
-        } else if (this.options.irisColorEnabled) {
-            cairoSetColorFromHex(cr, this.options.irisColor);
-        } else if (this.options.lineMode) {
-            cairoSetColorFromHex(cr, this.options.mainColor);
-        } else {
-            cairoSetColorFromHex(cr, this.options.defaultColor);
-        }
-
         cr.translate(irisX * Math.sin(eyeAngle), 0);
         cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
-        cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
 
+        cairoSetColorFromHex(cr, this.irisColor);
+        cr.setLineWidth(this.options.lineWidth / irisRadius);
+
+        cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
         this.options.lineMode ? cr.stroke() : cr.fill();
 
         cr.scale(1 / (irisRadius * Math.cos(eyeAngle)), 1 / irisRadius);
         cr.translate(-irisX * Math.sin(eyeAngle), 0);
 
-        // -- Drawing the pupil of the eye
-        if (!this.options.lineMode) cr.setSourceRGBA(0, 0, 0, 1);
-
+        // -- Drawing the pupil
         cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
         cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
+
+        if (!this.options.lineMode) cairoSetColorFromHex(cr, this.pupilColor);
+
         cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
         cr.fill();
 
-        cr.save();
-        cr.restore();
+        // -- Drawing the eyelid
+        if (this.options.eyelidLevel > 0) {
+            cr.identityMatrix();
+            cr.translate(areaWidth * 0.5, areaHeight * 0.5);
+            cr.scale(this.scaleX, this.scaleY);
+
+            cairoSetColorFromHex(cr, this.options.eyelidColor);
+
+            cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
+            cr.clip();
+
+            cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
+
+            cr.rectangle(0, 0, areaWidth, areaHeight * this.options.eyelidLevel);
+            cr.fill();
+        }
+
         cr.$dispose();
     }
 }

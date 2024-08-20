@@ -23,6 +23,8 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
+import Meta from 'gi://Meta';
+import Shell from 'gi://Shell';
 import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -48,6 +50,7 @@ const ACCENT_COLORS = {
     slate: '#6f8396',
 };
 const ACCENT_COLORS_KEY = 'accent-color';
+const BLINK_DURATION = 200;
 const DEFAULT_COLOR = '#b5b5b5';
 const EYE_SETTINGS = [
     'eye-reactive',
@@ -55,10 +58,15 @@ const EYE_SETTINGS = [
     'eye-line-mode',
     'eye-line-width',
     'eye-width',
-    'eye-iris-color',
-    'eye-iris-color-enabled',
+    'eye-color-iris',
+    'eye-color-iris-enabled',
     'eye-refresh-rate',
+    'eye-color-eyelid',
+    'eye-blink-mode',
+    'eye-blink-interval',
+    'eye-blink-interval-range',
 ];
+const PUPIL_COLOR = '#000000';
 //#endregion
 
 //#region Defining Eye
@@ -87,6 +95,8 @@ export const Eye = GObject.registerClass(
             // Variables for initial state
             this.mousePositionX = 0;
             this.mousePositionY = 0;
+            this.eyelidLevel = 0;
+            this.blinking = false;
 
             // Initialize settings values
             this.reactive = this.settings.get_boolean('eye-reactive');
@@ -94,9 +104,15 @@ export const Eye = GObject.registerClass(
             this.lineMode = this.settings.get_boolean('eye-line-mode');
             this.lineWidth = this.settings.get_int('eye-line-width') / 10;
             this.width = this.settings.get_int('eye-width');
-            this.irisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
-            this.irisColor = this.settings.get_string('eye-iris-color');
+            this.irisColorEnabled = this.settings.get_boolean('eye-color-iris-enabled');
+            this.irisColor = this.settings.get_string('eye-color-iris');
             this.refreshRate = this.settings.get_int('eye-refresh-rate');
+            this.eyelidColor = this.settings.get_string('eye-color-eyelid');
+            this.blinkMode = this.settings.get_string('eye-blink-mode');
+            this.blinkInterval = this.settings.get_double('eye-blink-interval');
+            this.blinkIntervalRange = this.settings
+                .get_value('eye-blink-interval-range')
+                .deep_unpack();
 
             // Connect change in settings to update function
             this.settingsHandlers = EYE_SETTINGS.map(key =>
@@ -147,6 +163,15 @@ export const Eye = GObject.registerClass(
             // Connect repaint signal of the area to repaint function
             this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
 
+            // Connect blinking shortcut
+            Main.wm.addKeybinding(
+                'eye-blink-keybinding',
+                this.settings,
+                Meta.KeyBindingFlags.NONE,
+                Shell.ActionMode.ALL,
+                this.blink.bind(this)
+            );
+
             // Start periodic redraw
             this.updateHandler = GLib.timeout_add(
                 GLib.PRIORITY_DEFAULT,
@@ -157,7 +182,6 @@ export const Eye = GObject.registerClass(
                 }
             );
         }
-        //#endregion
 
         // Create Popup Functions
         createPopupMenuItem(label, icon, callback) {
@@ -165,6 +189,46 @@ export const Eye = GObject.registerClass(
             item.connect('activate', callback);
             return item;
         }
+        //#endregion
+
+        //#region blink Functions
+        blink() {
+            const totalFrames = Math.ceil(this.refreshRate * (BLINK_DURATION / 1000));
+            const halfFrames = totalFrames / 2;
+            let currentFrame = 0;
+            let increasing = true;
+
+            if (this.blinkTimeout) {
+                // GLib.source_remove(this.blinkTimeout);
+                this.eyelidLevel = 0;
+            }
+
+            this.blinking = true;
+            this.blinkTimeout = GLib.timeout_add(
+                GLib.PRIORITY_DEFAULT,
+                1000 / this.refreshRate,
+                () => {
+                    if (increasing) {
+                        // Closing
+                        this.eyelidLevel = currentFrame / halfFrames;
+                        if (currentFrame >= halfFrames) {
+                            increasing = false;
+                        }
+                    } else {
+                        // Opening
+                        this.eyelidLevel = 1 - (currentFrame - halfFrames) / halfFrames;
+                        if (currentFrame >= totalFrames) {
+                            this.eyelidLevel = 0; // Ensure eyelid is fully open
+                            this.blinking = false;
+                            return GLib.SOURCE_REMOVE;
+                        }
+                    }
+                    currentFrame++;
+                    return GLib.SOURCE_CONTINUE;
+                }
+            );
+        }
+        //#endregion
 
         //#region Draw eye Functions
         // Get absolute position
@@ -194,11 +258,12 @@ export const Eye = GObject.registerClass(
         updateEyeFrame() {
             const [mouseX, mouseY] = global.get_pointer();
 
-            // If mouse has moved or tracker color has changed, redraw eye
+            // If mouse has moved or tracker color has changed, or is blinking, redraw eye
             if (
                 this.mousePositionX !== mouseX ||
                 this.mousePositionY !== mouseY ||
-                this.trackerColor !== this.mouseTracker.currentColor
+                this.trackerColor !== this.mouseTracker.currentColor ||
+                this.blinking
             ) {
                 [this.mousePositionX, this.mousePositionY] = [mouseX, mouseY];
                 this.trackerColor = this.mouseTracker.currentColor;
@@ -226,10 +291,13 @@ export const Eye = GObject.registerClass(
                 lineWidth: this.lineWidth,
                 irisColorEnabled: this.irisColorEnabled,
                 trackerEnabled: this.mouseTracker.enabled,
-                irisColor: this.irisColor,
-                trackerColor: this.trackerColor,
                 mainColor: this.foregroundColor,
                 defaultColor: this.defaultColor,
+                irisColor: this.irisColor,
+                trackerColor: this.trackerColor,
+                eyelidColor: this.eyelidColor,
+                pupilColor: PUPIL_COLOR,
+                eyelidLevel: this.eyelidLevel,
             };
 
             EyeRenderer.drawEye(area, options);
@@ -243,9 +311,10 @@ export const Eye = GObject.registerClass(
             const newLineMode = this.settings.get_boolean('eye-line-mode');
             const newLineWidth = this.settings.get_int('eye-line-width');
             const newWidth = this.settings.get_int('eye-width');
-            const newIrisColorEnabled = this.settings.get_boolean('eye-iris-color-enabled');
-            const newIrisColor = this.settings.get_string('eye-iris-color');
+            const newIrisColorEnabled = this.settings.get_boolean('eye-color-iris-enabled');
+            const newIrisColor = this.settings.get_string('eye-color-iris');
             const newRefreshRate = this.settings.get_int('eye-refresh-rate');
+            const newEyelidColor = this.settings.get_string('eye-color-eyelid');
 
             // Update reactive property
             if (this.reactive !== newReactive) this.reactive = newReactive;
@@ -296,6 +365,11 @@ export const Eye = GObject.registerClass(
                 );
                 this.refreshRate = newRefreshRate;
             }
+
+            if (this.eyelidColor !== newEyelidColor) {
+                this.eyelidColor = newEyelidColor;
+                this.area.queue_repaint();
+            }
         }
         //#endregion
 
@@ -319,6 +393,9 @@ export const Eye = GObject.registerClass(
                 this.settings.disconnect(connection);
             });
             this.settingsHandlers = null;
+
+            // Disconnect keybinding
+            Main.wm.removeKeybinding('eye-blink-keybinding');
 
             if (this.defaultColorHandler) {
                 this.interfaceSettings.disconnect(this.defaultColorHandler);
