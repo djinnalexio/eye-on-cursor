@@ -70,7 +70,7 @@ export class TrackerManager {
         this.currentColor = null;
         this.lastPositionX = null;
         this.lastPositionY = null;
-        this.trackerPositionUpdater = null;
+        this.trackerPositionUpdaterID = null;
 
         // Initialize settings values
         this.shape = this.settings.get_string('tracker-shape');
@@ -247,7 +247,7 @@ export class TrackerManager {
         }
 
         // If the position updater is currently running, stop it and start a new one with the updated refresh rate
-        if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdater) {
+        if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdaterID) {
             this.stopPositionUpdater();
             this.startPositionUpdater(newRefreshRate);
             this.refreshRate = newRefreshRate;
@@ -263,7 +263,7 @@ export class TrackerManager {
 
     //#region Position updater functions
     startPositionUpdater(refreshRate) {
-        this.trackerPositionUpdater = GLib.timeout_add(
+        this.trackerPositionUpdaterID = GLib.timeout_add(
             GLib.PRIORITY_DEFAULT,
             1000 / refreshRate,
             () => {
@@ -274,9 +274,9 @@ export class TrackerManager {
     }
 
     stopPositionUpdater() {
-        if (this.trackerPositionUpdater) {
-            GLib.source_remove(this.trackerPositionUpdater);
-            this.trackerPositionUpdater = null;
+        if (this.trackerPositionUpdaterID) {
+            GLib.source_remove(this.trackerPositionUpdaterID);
+            this.trackerPositionUpdaterID = null;
         }
     }
 

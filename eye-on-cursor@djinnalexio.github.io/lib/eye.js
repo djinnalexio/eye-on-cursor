@@ -155,7 +155,7 @@ export const Eye = GObject.registerClass(
             this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
 
             // Start periodic redraw
-            this.updateHandler = GLib.timeout_add(
+            this.updateHandlerID = GLib.timeout_add(
                 GLib.PRIORITY_DEFAULT,
                 1000 / this.refreshRate,
                 () => {
@@ -330,10 +330,10 @@ export const Eye = GObject.registerClass(
 
             // Update refresh rate
             if (this.refreshRate !== newRefreshRate) {
-                if (this.updateHandler) {
-                    GLib.source_remove(this.updateHandler);
+                if (this.updateHandlerID) {
+                    GLib.source_remove(this.updateHandlerID);
                 }
-                this.updateHandler = GLib.timeout_add(
+                this.updateHandlerID = GLib.timeout_add(
                     GLib.PRIORITY_DEFAULT,
                     1000 / newRefreshRate,
                     () => {
@@ -357,10 +357,10 @@ export const Eye = GObject.registerClass(
             this.area.disconnect(this.repaintHandler);
 
             // Stop periodic redraw
-            if (this.updateHandler) {
-                GLib.source_remove(this.updateHandler);
+            if (this.updateHandlerID) {
+                GLib.source_remove(this.updateHandlerID);
             }
-            this.updateHandler = null;
+            this.updateHandlerID = null;
 
             // Destroy drawing
             this.area.destroy();
