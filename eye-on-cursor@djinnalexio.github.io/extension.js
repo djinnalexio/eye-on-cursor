@@ -22,6 +22,7 @@
 //#region Import libraries
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
+import {BlinkController} from './lib/blinkController.js';
 import {spawnEyes, destroyEyes} from './lib/eye.js';
 import {TrackerManager} from './lib/trackerManager.js';
 //#endregion
@@ -54,6 +55,9 @@ export default class EyeOnCursorExtension extends Extension {
         this.eyeArray = [];
         spawnEyes(this, this.eyeArray, this.mouseTracker);
 
+        // Create the Blink controller
+        this.blinkController = new BlinkController(this, this.eyeArray);
+
         // Connect eye placement settings
         this.placementSettings = ['eye-position', 'eye-index', 'eye-count'];
         this.placementSettingHandlers = this.placementSettings.map(key =>
@@ -79,6 +83,9 @@ export default class EyeOnCursorExtension extends Extension {
 
         this.mouseTracker?.destroy();
         this.mouseTracker = null;
+
+        this.blinkController?.destroy();
+        this.blinkController = null;
 
         this.settings = null;
     }

@@ -23,8 +23,6 @@
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
-import Meta from 'gi://Meta';
-import Shell from 'gi://Shell';
 import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -50,7 +48,7 @@ const ACCENT_COLORS = {
     slate: '#6f8396',
 };
 const ACCENT_COLORS_KEY = 'accent-color';
-const BLINK_DURATION = 200;
+const BLINK_DURATION = 250;
 const DEFAULT_COLOR = '#b5b5b5';
 const EYE_SETTINGS = [
     'eye-reactive',
@@ -62,9 +60,6 @@ const EYE_SETTINGS = [
     'eye-color-iris-enabled',
     'eye-refresh-rate',
     'eye-color-eyelid',
-    'eye-blink-mode',
-    'eye-blink-interval',
-    'eye-blink-interval-range',
 ];
 const PUPIL_COLOR = '#000000';
 //#endregion
@@ -109,11 +104,6 @@ export const Eye = GObject.registerClass(
             this.irisColor = this.settings.get_string('eye-color-iris');
             this.refreshRate = this.settings.get_int('eye-refresh-rate');
             this.eyelidColor = this.settings.get_string('eye-color-eyelid');
-            this.blinkMode = this.settings.get_string('eye-blink-mode');
-            this.blinkInterval = this.settings.get_double('eye-blink-interval');
-            this.blinkIntervalRange = this.settings
-                .get_value('eye-blink-interval-range')
-                .deep_unpack();
 
             // Connect change in settings to update function
             this.settingsHandlers = EYE_SETTINGS.map(key =>
@@ -164,15 +154,6 @@ export const Eye = GObject.registerClass(
             // Connect repaint signal of the area to repaint function
             this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
 
-            // Connect blinking shortcut
-            Main.wm.addKeybinding(
-                'eye-blink-keybinding',
-                this.settings,
-                Meta.KeyBindingFlags.NONE,
-                Shell.ActionMode.ALL,
-                this.blink.bind(this)
-            );
-
             // Start periodic redraw
             this.updateHandler = GLib.timeout_add(
                 GLib.PRIORITY_DEFAULT,
@@ -219,9 +200,9 @@ export const Eye = GObject.registerClass(
                     } else {
                         // Finishing
                         this.eyelidLevel = 0;
-                            this.blinking = false;
+                        this.blinking = false;
                         this.blinkTimeoutID = null;
-                            return GLib.SOURCE_REMOVE;
+                        return GLib.SOURCE_REMOVE;
                     }
                     return GLib.SOURCE_CONTINUE;
                 }
@@ -393,9 +374,6 @@ export const Eye = GObject.registerClass(
             });
             this.settingsHandlers = null;
 
-            // Disconnect keybinding
-            Main.wm.removeKeybinding('eye-blink-keybinding');
-
             if (this.defaultColorHandler) {
                 this.interfaceSettings.disconnect(this.defaultColorHandler);
             }
@@ -404,6 +382,9 @@ export const Eye = GObject.registerClass(
             // Destroy popups
             this.menuItems.forEach(menuItem => menuItem?.destroy());
             this.menuItems = [];
+
+            // Disconnect settings
+            this.settings = null;
 
             // Destroy the button
             super.destroy();
