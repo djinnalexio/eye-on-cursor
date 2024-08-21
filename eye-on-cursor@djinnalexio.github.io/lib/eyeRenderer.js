@@ -41,13 +41,13 @@ class EyeShape {
         this.options = options;
 
         // Color Assignment
-        this.scleraColor = this.options.mainColor;
+        this.scleraColor = this.options.foregroundColor;
         if (this.options.trackerEnabled) {
             this.irisColor = this.options.trackerColor;
         } else if (this.options.irisColorEnabled) {
             this.irisColor = this.options.irisColor;
         } else if (this.options.lineMode) {
-            this.irisColor = this.options.mainColor;
+            this.irisColor = this.options.foregroundColor;
         } else {
             this.irisColor = this.options.defaultColor;
         }
@@ -175,7 +175,7 @@ class NaturalEye extends EyeShape {
 }
 //#endregion
 
-//#region Round class
+//#region Round/Comic class
 class RoundEye extends EyeShape {
     constructor(area, options, scaleX = 0.95, scaleY = 0.95) {
         super(area, options);
@@ -256,7 +256,7 @@ class RoundEye extends EyeShape {
             cr.translate(areaWidth * 0.5, areaHeight * 0.5);
             cr.scale(this.scaleX, this.scaleY);
 
-            cairoSetColorFromHex(cr, this.options.eyelidColor);
+            cairoSetColorFromHex(cr, this.eyelidColor);
 
             cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
             cr.clip();

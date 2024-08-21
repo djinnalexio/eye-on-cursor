@@ -257,11 +257,9 @@ export const Eye = GObject.registerClass(
 
             // Get the foreground color from the theme
             const themeNode = this.area.get_theme_node();
-            const themeForeground = themeNode.get_foreground_color();
-            this.foregroundColor = '#';
-            ['red', 'green', 'blue'].forEach(color => {
-                this.foregroundColor = `${this.foregroundColor}${themeForeground[color].toString(16).padStart(2, '0')}`;
-            });
+            const foregroundColor = `#${['red', 'green', 'blue']
+                .map(color => themeNode.get_foreground_color()[color].toString(16).padStart(2, '0'))
+                .join('')}`;
 
             const options = {
                 areaX,
@@ -271,7 +269,7 @@ export const Eye = GObject.registerClass(
                 lineWidth: this.lineWidth,
                 irisColorEnabled: this.irisColorEnabled,
                 trackerEnabled: this.mouseTracker.enabled,
-                mainColor: this.foregroundColor,
+                foregroundColor,
                 defaultColor: this.defaultColor,
                 irisColor: this.irisColor,
                 trackerColor: this.trackerColor,
