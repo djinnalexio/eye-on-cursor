@@ -97,6 +97,7 @@ export const Eye = GObject.registerClass(
             this.mousePositionY = 0;
             this.eyelidLevel = 0;
             this.blinking = false;
+            this.blinkTimeoutID = null;
 
             // Initialize settings values
             this.reactive = this.settings.get_boolean('eye-reactive');
@@ -196,34 +197,32 @@ export const Eye = GObject.registerClass(
             const totalFrames = Math.ceil(this.refreshRate * (BLINK_DURATION / 1000));
             const halfFrames = totalFrames / 2;
             let currentFrame = 0;
-            let increasing = true;
+            this.blinking = true;
 
-            if (this.blinkTimeout) {
-                // GLib.source_remove(this.blinkTimeout);
-                this.eyelidLevel = 0;
+            // Interrupt a current blink
+            if (this.blinkTimeoutID) {
+                GLib.source_remove(this.blinkTimeoutID);
+                this.blinkTimeoutID = null;
             }
 
-            this.blinking = true;
-            this.blinkTimeout = GLib.timeout_add(
+            this.blinkTimeoutID = GLib.timeout_add(
                 GLib.PRIORITY_DEFAULT,
                 1000 / this.refreshRate,
                 () => {
-                    if (increasing) {
+                    currentFrame++;
+                    if (currentFrame <= halfFrames) {
                         // Closing
                         this.eyelidLevel = currentFrame / halfFrames;
-                        if (currentFrame >= halfFrames) {
-                            increasing = false;
-                        }
-                    } else {
+                    } else if (currentFrame <= totalFrames + 1) {
                         // Opening
                         this.eyelidLevel = 1 - (currentFrame - halfFrames) / halfFrames;
-                        if (currentFrame >= totalFrames) {
-                            this.eyelidLevel = 0; // Ensure eyelid is fully open
+                    } else {
+                        // Finishing
+                        this.eyelidLevel = 0;
                             this.blinking = false;
+                        this.blinkTimeoutID = null;
                             return GLib.SOURCE_REMOVE;
-                        }
                     }
-                    currentFrame++;
                     return GLib.SOURCE_CONTINUE;
                 }
             );
