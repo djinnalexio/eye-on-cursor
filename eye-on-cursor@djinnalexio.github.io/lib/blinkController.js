@@ -20,15 +20,12 @@
 'use strict';
 
 //#region Import libraries
+import GLib from 'gi://GLib';
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
-//#endregion
-
-//#region Constants
-const BLINK_SETTINGS = ['eye-blink-mode', 'eye-blink-interval', 'eye-blink-interval-range'];
 //#endregion
 
 //#region Define Blinking Controller
@@ -48,10 +45,31 @@ export class BlinkController {
         // Attach eye array
         this.eyeArray = eyeArray;
 
+        // Initialize state variables
+        this.syncedBlinkRoutineID = null;
+
         // Initialize settings values
         this.blinkMode = this.settings.get_string('eye-blink-mode');
         this.blinkInterval = this.settings.get_double('eye-blink-interval');
         this.blinkIntervalRange = this.settings.get_value('eye-blink-interval-range').deep_unpack();
+
+        // Connect change in settings to update functions
+        this.settingsHandlers = [
+            this.settings.connect('changed::eye-blink-mode', () => {
+                this.blinkMode = this.settings.get_string('eye-blink-mode');
+                this.selectBlinkMode();
+            }),
+            this.settings.connect('changed::eye-blink-interval', () => {
+                this.blinkInterval = this.settings.get_double('eye-blink-interval');
+                if (this.blinkMode === 'synced') this.startSyncedBlink();
+            }),
+            this.settings.connect('changed::eye-blink-interval-range', () => {
+                this.blinkIntervalRange = this.settings
+                    .get_value('eye-blink-interval-range')
+                    .deep_unpack();
+                // restart unsynced routine
+            }),
+        ];
 
         // Connect blinking shortcut
         Main.wm.addKeybinding(
@@ -59,50 +77,61 @@ export class BlinkController {
             this.settings,
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.ALL,
-            this.manualBLink.bind(this)
+            () => {
+                if (this.blinkMode === 'manual') this.blinkAll();
+            }
         );
 
-        // Connect change in settings to update function
-        this.settingsHandlers = BLINK_SETTINGS.map(key =>
-            this.settings.connect(`changed::${key}`, this.updateBlinkProperties.bind(this))
-        );
+        this.selectBlinkMode();
     }
     //#endregion
 
-    //#region manual blink function
-    manualBLink() {
-        if (this.blinkMode === 'manual') this.eyeArray.forEach(eye => eye.blink());
+    //#region Blink functions
+    blinkAll() {
+        this.eyeArray.forEach(eye => eye.blink());
     }
 
-    //#region Properties update functions
-    updateBlinkProperties() {
-        const newBlinkMode = this.settings.get_string('eye-blink-mode');
-        const newBlinkInterval = this.settings.get_double('eye-blink-interval');
-        const newBlinkIntervalRange = this.settings
-            .get_value('eye-blink-interval-range')
-            .deep_unpack();
+    selectBlinkMode() {
+        this.clearTimeout(this.syncedBlinkRoutineID);
+        // stop unsynced blinking
 
-        // Update blinking mode
-        if (this.blinkMode !== newBlinkMode) {
-            this.blinkMode = newBlinkMode;
+        switch (this.blinkMode) {
+            case 'synced':
+                this.startSyncedBlink();
+                break;
+            case 'unsynced':
+                break;
+            case 'manual':
+            default:
+                break;
         }
+    }
 
-        // Update synced blinking interval
-        if (this.blinkInterval !== newBlinkInterval) {
-            this.blinkInterval = newBlinkInterval;
-        }
+    startSyncedBlink() {
+        this.clearTimeout(this.syncedBlinkRoutineID);
 
-        // Update unsynced blinking interval range
-        if (this.blinkIntervalRange !== newBlinkIntervalRange) {
-            // FIXME find how to properly compare arrays
-            this.blinkIntervalRange = newBlinkIntervalRange;
-            console.debug('Updated unsynced interval to ' + this.blinkIntervalRange);
+        this.syncedBlinkRoutineID = GLib.timeout_add(
+            GLib.PRIORITY_DEFAULT,
+            1000 * this.blinkInterval,
+            () => {
+                this.blinkAll();
+                return GLib.SOURCE_CONTINUE;
+            }
+        );
+    }
+
+    clearTimeout(timeout) {
+        if (timeout) {
+            GLib.source_remove(timeout);
         }
+        timeout = null;
     }
     //#endregion
 
     //#region Destroy function
     destroy() {
+        this.clearTimeout(this.syncedBlinkRoutineID);
+
         // Disconnect settings signal handlers
         this.settingsHandlers?.forEach(connection => {
             this.settings.disconnect(connection);

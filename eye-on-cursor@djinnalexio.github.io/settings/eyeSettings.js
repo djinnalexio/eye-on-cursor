@@ -320,7 +320,7 @@ export const EyePage = GObject.registerClass(
                 title: _('Synced Blinking Interval'),
                 subtitle: _('Seconds between blinks'),
                 adjustment: new Gtk.Adjustment({
-                    lower: 0.5,
+                    lower: 0.1,
                     upper: 60,
                     step_increment: 0.1,
                 }),
@@ -345,7 +345,7 @@ export const EyePage = GObject.registerClass(
 
             const minIntervalButton = new Gtk.SpinButton({
                 adjustment: new Gtk.Adjustment({
-                    lower: 0.5,
+                    lower: 0.1,
                     upper: 59.9,
                     step_increment: 0.1,
                 }),
@@ -359,7 +359,7 @@ export const EyePage = GObject.registerClass(
             });
             const maxIntervalButton = new Gtk.SpinButton({
                 adjustment: new Gtk.Adjustment({
-                    lower: 0.6,
+                    lower: 0.2,
                     upper: 60,
                     step_increment: 0.1,
                 }),
