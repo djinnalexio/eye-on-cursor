@@ -157,16 +157,13 @@ export const EyePage = GObject.registerClass(
             //#endregion
 
             //#region Eye outline mode
-            const lineModeRow = new Adw.ExpanderRow({
+            const lineModeRow = new Adw.SwitchRow({
                 title: _('Outline Mode'),
                 subtitle: _('Draw the eyes as outline only'),
-                show_enable_switch: true,
-                expanded: this.settings.get_boolean('eye-line-mode'),
-                enable_expansion: this.settings.get_boolean('eye-line-mode'),
+                active: this.settings.get_boolean('eye-line-mode'),
             });
-            lineModeRow.connect('notify::expanded', widget => {
-                lineModeRow.enable_expansion = widget.expanded;
-                this.settings.set_boolean('eye-line-mode', widget.expanded);
+            lineModeRow.connect('notify::active', widget => {
+                this.settings.set_boolean('eye-line-mode', widget.active);
             });
             drawingGroup.add(lineModeRow);
             //#endregion
@@ -185,7 +182,7 @@ export const EyePage = GObject.registerClass(
             lineWidthRow.adjustment.connect('value-changed', widget => {
                 this.settings.set_int('eye-line-width', widget.value);
             });
-            lineModeRow.add_row(lineWidthRow);
+            drawingGroup.add(lineWidthRow);
             //#endregion
 
             //#region Eye color
