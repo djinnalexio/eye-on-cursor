@@ -29,12 +29,13 @@ import Shell from 'gi://Shell';
 import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as Timeout from './timeout.js';
 //#endregion
 
 //#region Constants
 const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
 const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
-const CLICK_MAX_DEBOUNCE = 3000; // Max highlighting duration after receiving BUTTON PRESSED signal
+const CLICK_MAX_DEBOUNCE = 5000; // Max highlighting duration after receiving BUTTON PRESSED signal
 const CLICK_RIPPLE_SCALE = 2;
 const TRACKER_RAISE_DELAY = 20;
 const TRACKER_SETTINGS = [
@@ -70,7 +71,15 @@ export class TrackerManager {
         this.currentColor = null;
         this.lastPositionX = null;
         this.lastPositionY = null;
-        this.trackerPositionUpdaterID = null;
+        this.capturedEvent = null;
+        this.mouseListener = null;
+        this.activeClick = null;
+        this.clickResetPending = false;
+        this.isWayland = Meta.is_wayland_compositor();
+        this.clickMaxTimeoutID = {id: null};
+        this.clickReleaseTimeoutID = {id: null};
+        this.trackerPositionUpdaterID = {id: null};
+        this.trackerRaiseTimeoutID = {id: null};
 
         // Initialize settings values
         this.shape = this.settings.get_string('tracker-shape');
@@ -115,17 +124,13 @@ export class TrackerManager {
             this.toggleTracker.bind(this)
         );
 
-        // Set up mouse click highlighting
-        this.isWayland = Meta.is_wayland_compositor();
-        this.capturedEvent = null;
-        this.mouseListener = null;
-        this.activeClick = null;
-        this.clickResetPending = false;
-        this.clickMaxTimeoutID = null;
-        this.clickReleaseTimeoutID = null;
-        this.trackerRaiseTimeoutID = null;
-
         if (!this.isWayland) Atspi.init();
+    }
+
+    // Change tracker icon
+    updateTrackerIcon(shape, color) {
+        this.trackerIcon.gicon = Gio.icon_new_for_string(`${this.cacheDir}/${shape}_${color}.svg`);
+        this.currentColor = color;
     }
     //#endregion
 
@@ -195,6 +200,217 @@ export class TrackerManager {
     }
     //#endregion
 
+    //#region Position updater function
+    updateTrackerPosition() {
+        if (this.trackerIcon) {
+            // Get mouse coordinates
+            const [mouseX, mouseY] = global.get_pointer();
+
+            // Offset so that the cursor appears in the center of the tracker
+            const newPositionX = mouseX - this.size / 2;
+            const newPositionY = mouseY - this.size / 2;
+
+            // If mouse has moved and tracker is on screen, update icon position
+            if (
+                this.trackerIcon.get_parent() &&
+                (this.lastPositionX !== newPositionX || this.lastPositionY !== newPositionY)
+            ) {
+                this.trackerIcon.set_position(newPositionX, newPositionY);
+                Main.uiGroup.set_child_above_sibling(this.trackerIcon, null); // Keep tracker on top of UI elements
+                [this.lastPositionX, this.lastPositionY] = [newPositionX, newPositionY];
+            }
+        }
+    }
+    //#endregion
+
+    //#region Toggle tracker functions
+    toggleTracker() {
+        this.enabled ? this.disableTracker() : this.enableTracker();
+    }
+
+    enableTracker() {
+        this.enabled = true;
+        this.currentColor = this.colorDefault;
+
+        // Start Updater
+        Timeout.setInterval(
+            this.trackerPositionUpdaterID,
+            this.updateTrackerPosition.bind(this),
+            1000 / this.refreshRate
+        );
+
+        // Add tracker to desktop
+        Main.uiGroup.add_child(this.trackerIcon);
+        this.updateTrackerPosition();
+
+        // Connect mouse click events
+        if (this.isWayland) {
+            this.capturedEvent = global.stage.connect(
+                'captured-event',
+                this.onStageMouseEvent.bind(this)
+            );
+        } else {
+            this.mouseListener = Atspi.EventListener.new(this.onAtspiMouseEvent.bind(this));
+            this.mouseListener.register('mouse');
+        }
+    }
+
+    disableTracker() {
+        this.enabled = false;
+
+        // Clear timeouts
+        [this.clickMaxTimeoutID, this.clickReleaseTimeoutID, this.trackerRaiseTimeoutID].forEach(
+            timeout => Timeout.clearTimeout(timeout)
+        );
+
+        // Disconnect mouse click events
+        if (this.capturedEvent) {
+            global.stage.disconnect(this.capturedEvent);
+            this.capturedEvent = null;
+        }
+        if (this.mouseListener) {
+            this.mouseListener.deregister('mouse');
+            this.mouseListener = null;
+        }
+
+        // Remove tracker from desktop
+        if (this.trackerIcon && this.trackerIcon.get_parent() === Main.uiGroup) {
+            Main.uiGroup.remove_child(this.trackerIcon);
+        }
+
+        // Stop updating the tracker position
+        Timeout.clearInterval(this.trackerPositionUpdaterID);
+    }
+    //#endregion
+
+    //#region Monitor Click functions
+    // Button press function
+    handleMousePress(button) {
+        switch (button) {
+            // Button presses
+            case 1:
+                this.handleButtonPress(button, this.colorLeft);
+                break;
+            case 2:
+                this.handleButtonPress(button, this.colorMiddle);
+                break;
+            case 3:
+                this.handleButtonPress(button, this.colorRight);
+                break;
+            default:
+                return;
+        }
+    }
+
+    // Using `global.stage` to monitor mouse clicks on Wayland (doesn't work on applications)
+    onStageMouseEvent(actor, event) {
+        if (event.type() === Clutter.EventType.BUTTON_PRESS) {
+            const button = event.get_button();
+            this.handleMousePress(button);
+        } else if (event.type() === Clutter.EventType.BUTTON_RELEASE) {
+            const button = event.get_button();
+            this.handleButtonRelease(button);
+        }
+    }
+
+    // Using `Atspi.EventListener` to monitor clicks on X11 (middle click is not registered)
+    onAtspiMouseEvent(event) {
+        // Match button presses and releases
+        const match = event.type.match(/mouse:button:(\d)([pr])/);
+        if (match) {
+            const button = parseInt(match[1], 10);
+            const action = match[2];
+            if (action === 'p') this.handleMousePress(button);
+            else if (action === 'r') this.handleButtonRelease(button);
+        }
+    }
+
+    //#region Handle click functions
+    handleButtonPress(button, color) {
+        // Set the active button
+        this.activeClick = button;
+        this.clickResetPending = false;
+
+        // Update the tracker icon with the new color
+        this.updateTrackerIcon(this.shape, color);
+
+        // Move the tracker on top of any new UI element that appears after click
+        Timeout.clearTimeout(this.trackerRaiseTimeoutID);
+        Timeout.setTimeout(
+            this.trackerRaiseTimeoutID,
+            () => {
+                Main.uiGroup.set_child_above_sibling(this.trackerIcon, null);
+            },
+            TRACKER_RAISE_DELAY
+        );
+
+        // Set a maximum timeout to revert the color
+        Timeout.clearTimeout(this.clickMaxTimeoutID);
+        Timeout.setTimeout(this.clickMaxTimeoutID, this.resetColor.bind(this), CLICK_MAX_DEBOUNCE);
+
+        // Create an animated icon
+        let animatedIcon = new St.Icon({
+            x: this.trackerIcon.x,
+            y: this.trackerIcon.y,
+            reactive: false,
+            can_focus: false,
+            track_hover: false,
+            icon_size: this.trackerIcon.icon_size,
+            opacity: this.trackerIcon.opacity,
+            gicon: Gio.icon_new_for_string(`${this.cacheDir}/${this.shape}_${color}.svg`),
+        });
+
+        // Add animated icon to the UI group
+        Main.uiGroup.add_child(animatedIcon);
+
+        // Offset so that the center of the animated icon stays on the tracker
+        const rippleOffset = (animatedIcon.icon_size * (CLICK_RIPPLE_SCALE - 1)) / 2;
+
+        // Play ripple effect
+        animatedIcon.ease({
+            x: animatedIcon.x - rippleOffset,
+            y: animatedIcon.y - rippleOffset,
+            scale_x: CLICK_RIPPLE_SCALE,
+            scale_y: CLICK_RIPPLE_SCALE,
+            opacity: 0,
+            duration: CLICK_MIN_DEBOUNCE * 2,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            onComplete: function () {
+                Main.uiGroup.remove_child(animatedIcon);
+                animatedIcon.destroy();
+                animatedIcon = null;
+            },
+        });
+    }
+
+    handleButtonRelease(button) {
+        // Debounce the release event
+        Timeout.clearTimeout(this.clickReleaseTimeoutID);
+        Timeout.setTimeout(
+            this.clickReleaseTimeoutID,
+            () => {
+                // Only reset if no new click event has occurred in the meantime
+                if (this.activeClick === button && this.clickResetPending) {
+                    this.resetColor();
+                }
+            },
+            CLICK_MIN_DEBOUNCE
+        );
+        this.clickResetPending = true;
+    }
+
+    resetColor() {
+        // Reset the tracker icon to the default color
+        this.updateTrackerIcon(this.shape, this.colorDefault);
+        this.activeClick = null;
+        this.clickResetPending = false;
+
+        // Clear timeout
+        Timeout.clearTimeout(this.clickMaxTimeoutID);
+    }
+    //#endregion
+    //#endregion
+
     //#region Properties update functions
     updateTrackerProperties() {
         // Get new settings
@@ -248,260 +464,15 @@ export class TrackerManager {
 
         // If the position updater is currently running, stop it and start a new one with the updated refresh rate
         if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdaterID) {
-            this.stopPositionUpdater();
-            this.startPositionUpdater(newRefreshRate);
+            Timeout.clearInterval(this.trackerPositionUpdaterID);
+
+            Timeout.setInterval(
+                this.trackerPositionUpdaterID,
+                this.updateTrackerPosition.bind(this),
+                1000 / newRefreshRate
+            );
             this.refreshRate = newRefreshRate;
         }
-    }
-
-    // Change tracker icon
-    updateTrackerIcon(shape, color) {
-        this.trackerIcon.gicon = Gio.icon_new_for_string(`${this.cacheDir}/${shape}_${color}.svg`);
-        this.currentColor = color;
-    }
-    //#endregion
-
-    //#region Position updater functions
-    startPositionUpdater(refreshRate) {
-        this.trackerPositionUpdaterID = GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            1000 / refreshRate,
-            () => {
-                this.updateTrackerPosition();
-                return GLib.SOURCE_CONTINUE;
-            }
-        );
-    }
-
-    stopPositionUpdater() {
-        if (this.trackerPositionUpdaterID) {
-            GLib.source_remove(this.trackerPositionUpdaterID);
-            this.trackerPositionUpdaterID = null;
-        }
-    }
-
-    // Set tracker position to mouse position
-    updateTrackerPosition() {
-        if (this.trackerIcon) {
-            // Get mouse coordinates
-            const [mouseX, mouseY] = global.get_pointer();
-
-            // Offset so that the cursor appears in the center of the tracker
-            const newPositionX = mouseX - this.size / 2;
-            const newPositionY = mouseY - this.size / 2;
-
-            // If mouse has moved and tracker is on screen, update icon position
-            if (
-                this.trackerIcon.get_parent() &&
-                (this.lastPositionX !== newPositionX || this.lastPositionY !== newPositionY)
-            ) {
-                this.trackerIcon.set_position(newPositionX, newPositionY);
-                Main.uiGroup.set_child_above_sibling(this.trackerIcon, null); // Keep tracker on top of UI elements
-                [this.lastPositionX, this.lastPositionY] = [newPositionX, newPositionY];
-            }
-        }
-    }
-    //#endregion
-
-    //#region Monitor Click functions
-    // Using `global.stage` to monitor mouse clicks on Wayland (doesn't work on applications)
-    onCapturedEvent(actor, event) {
-        if (event.type() === Clutter.EventType.BUTTON_PRESS) {
-            const button = event.get_button();
-            switch (button) {
-                case 1:
-                    this.handleButtonPress(button, this.colorLeft);
-                    break;
-                case 2:
-                    this.handleButtonPress(button, this.colorMiddle);
-                    break;
-                case 3:
-                    this.handleButtonPress(button, this.colorRight);
-                    break;
-                default:
-                    return;
-            }
-        } else if (event.type() === Clutter.EventType.BUTTON_RELEASE) {
-            const button = event.get_button();
-            this.handleButtonRelease(button);
-        }
-    }
-
-    // Using `Atspi.EventListener` to monitor clicks on X11 (middle click is not registered)
-    onMouseEvent(event) {
-        // Match button presses and releases
-        const match = event.type.match(/mouse:button:(\d)([pr])/);
-        if (match) {
-            const button = parseInt(match[1], 10);
-            const action = match[2];
-            if (action === 'p') {
-                // Button presses
-                switch (button) {
-                    case 1:
-                        this.handleButtonPress(button, this.colorLeft);
-                        break;
-                    case 2:
-                        this.handleButtonPress(button, this.colorMiddle);
-                        break;
-                    case 3:
-                        this.handleButtonPress(button, this.colorRight);
-                        break;
-                    default:
-                        return;
-                }
-            } else if (action === 'r') {
-                // Button releases
-                this.handleButtonRelease(button);
-            }
-        }
-    }
-
-    //#region Handle click functions
-    handleButtonPress(button, color) {
-        // Set the active button
-        this.activeClick = button;
-        this.clickResetPending = false;
-
-        // Update the tracker icon with the new color
-        this.updateTrackerIcon(this.shape, color);
-
-        // Move the tracker on top of any new UI element that appears after click
-        this.clearTimeout(this.trackerRaiseTimeoutID);
-        this.trackerRaiseTimeoutID = setTimeout(() => {
-            Main.uiGroup.set_child_above_sibling(this.trackerIcon, null);
-        }, TRACKER_RAISE_DELAY);
-
-        // Set a maximum timeout to revert the color
-        this.clearTimeout(this.clickMaxTimeoutID);
-        this.clickMaxTimeoutID = setTimeout(() => {
-            this.resetColor();
-        }, CLICK_MAX_DEBOUNCE);
-
-        // Create an animated icon
-        let animatedIcon = new St.Icon({
-            x: this.trackerIcon.x,
-            y: this.trackerIcon.y,
-            reactive: false,
-            can_focus: false,
-            track_hover: false,
-            icon_size: this.trackerIcon.icon_size,
-            opacity: this.trackerIcon.opacity,
-            gicon: Gio.icon_new_for_string(`${this.cacheDir}/${this.shape}_${color}.svg`),
-        });
-
-        // Add animated icon to the UI group
-        Main.uiGroup.add_child(animatedIcon);
-
-        // Offset so that the center of the animated icon stays on the tracker
-        const rippleOffset = (animatedIcon.icon_size * (CLICK_RIPPLE_SCALE - 1)) / 2;
-
-        // Play ripple effect
-        animatedIcon.ease({
-            x: animatedIcon.x - rippleOffset,
-            y: animatedIcon.y - rippleOffset,
-            scale_x: CLICK_RIPPLE_SCALE,
-            scale_y: CLICK_RIPPLE_SCALE,
-            opacity: 0,
-            duration: CLICK_MIN_DEBOUNCE * 2,
-            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
-            onComplete: function () {
-                Main.uiGroup.remove_child(animatedIcon);
-                animatedIcon.destroy();
-                animatedIcon = null;
-            },
-        });
-    }
-
-    handleButtonRelease(button) {
-        // Debounce the release event
-        this.clearTimeout(this.clickReleaseTimeoutID);
-        this.clickReleaseTimeoutID = setTimeout(() => {
-            // Only reset if no new click event has occurred in the meantime
-            if (this.activeClick === button && this.clickResetPending) {
-                this.resetColor();
-            }
-        }, CLICK_MIN_DEBOUNCE);
-
-        this.clickResetPending = true;
-    }
-
-    resetColor() {
-        // Reset the tracker icon to the default color
-        this.updateTrackerIcon(this.shape, this.colorDefault);
-        this.activeClick = null;
-        this.clickResetPending = false;
-
-        // Clear timeout
-        this.clearTimeout(this.clickMaxTimeoutID);
-    }
-
-    clearTimeout(timeout) {
-        if (timeout) {
-            clearTimeout(timeout);
-            timeout = null;
-        }
-    }
-    //#endregion
-    //#endregion
-
-    //#region Toggle tracker functions
-    toggleTracker() {
-        if (!this.enabled) {
-            this.enableTracker();
-        } else {
-            this.disableTracker();
-        }
-    }
-
-    enableTracker() {
-        this.enabled = true;
-        this.currentColor = this.colorDefault;
-
-        // Start Updater
-        this.startPositionUpdater(this.refreshRate);
-
-        // Add tracker to desktop
-        Main.uiGroup.add_child(this.trackerIcon);
-        this.updateTrackerPosition();
-
-        // Connect mouse click events
-        if (this.isWayland) {
-            this.capturedEvent = global.stage.connect(
-                'captured-event',
-                this.onCapturedEvent.bind(this)
-            );
-        } else {
-            this.mouseListener = Atspi.EventListener.new(this.onMouseEvent.bind(this));
-            this.mouseListener.register('mouse');
-        }
-    }
-
-    disableTracker() {
-        this.enabled = false;
-        this.currentColor = null;
-
-        // Clear timeouts
-        [this.clickMaxTimeoutID, this.clickReleaseTimeoutID, this.trackerRaiseTimeoutID].forEach(
-            timeout => this.clearTimeout(timeout)
-        );
-
-        // Disconnect mouse click events
-        if (this.capturedEvent) {
-            global.stage.disconnect(this.capturedEvent);
-            this.capturedEvent = null;
-        }
-        if (this.mouseListener) {
-            this.mouseListener.deregister('mouse');
-            this.mouseListener = null;
-        }
-
-        // Remove tracker from desktop
-        if (this.trackerIcon && this.trackerIcon.get_parent() === Main.uiGroup) {
-            Main.uiGroup.remove_child(this.trackerIcon);
-        }
-
-        // Stop updating the tracker position
-        this.stopPositionUpdater();
     }
     //#endregion
 

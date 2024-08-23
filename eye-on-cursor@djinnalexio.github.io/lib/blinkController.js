@@ -20,12 +20,13 @@
 'use strict';
 
 //#region Import libraries
-import GLib from 'gi://GLib';
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+
+import * as Timeout from './timeout.js';
 //#endregion
 
 //#region Define Blinking Controller
@@ -46,7 +47,7 @@ export class BlinkController {
         this.eyeArray = eyeArray;
 
         // Initialize state variables
-        this.syncedBlinkRoutineID = null;
+        this.syncedBlinkRoutineID = {id: null};
 
         // Initialize settings values
         this.blinkMode = this.settings.get_string('eye-blink-mode');
@@ -92,7 +93,7 @@ export class BlinkController {
     }
 
     selectBlinkMode() {
-        this.clearTimeout(this.syncedBlinkRoutineID);
+        Timeout.clearInterval(this.syncedBlinkRoutineID);
         // stop unsynced blinking
 
         switch (this.blinkMode) {
@@ -108,29 +109,19 @@ export class BlinkController {
     }
 
     startSyncedBlink() {
-        this.clearTimeout(this.syncedBlinkRoutineID);
+        Timeout.clearInterval(this.syncedBlinkRoutineID);
 
-        this.syncedBlinkRoutineID = GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            1000 * this.blinkInterval,
-            () => {
-                this.blinkAll();
-                return GLib.SOURCE_CONTINUE;
-            }
+        Timeout.setInterval(
+            this.syncedBlinkRoutineID,
+            this.blinkAll.bind(this),
+            1000 * this.blinkInterval
         );
-    }
-
-    clearTimeout(timeout) {
-        if (timeout) {
-            GLib.source_remove(timeout);
-        }
-        timeout = null;
     }
     //#endregion
 
     //#region Destroy function
     destroy() {
-        this.clearTimeout(this.syncedBlinkRoutineID);
+        Timeout.clearInterval(this.syncedBlinkRoutineID);
 
         // Disconnect settings signal handlers
         this.settingsHandlers?.forEach(connection => {

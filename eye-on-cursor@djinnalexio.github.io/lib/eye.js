@@ -31,6 +31,7 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import * as EyeRenderer from './eyeRenderer.js';
+import * as Timeout from './timeout.js';
 //#endregion
 
 //#region Constants
@@ -92,7 +93,8 @@ export const Eye = GObject.registerClass(
             this.mousePositionY = 0;
             this.eyelidLevel = 0;
             this.blinking = false;
-            this.blinkTimeoutID = null;
+            this.blinkTimeoutID = {id: null};
+            this.updateHandlerID = {id: null};
 
             // Initialize settings values
             this.reactive = this.settings.get_boolean('eye-reactive');
@@ -155,13 +157,10 @@ export const Eye = GObject.registerClass(
             this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
 
             // Start periodic redraw
-            this.updateHandlerID = GLib.timeout_add(
-                GLib.PRIORITY_DEFAULT,
-                1000 / this.refreshRate,
-                () => {
-                    this.updateEyeFrame();
-                    return GLib.SOURCE_CONTINUE;
-                }
+            Timeout.setInterval(
+                this.updateHandlerID,
+                this.updateEyeFrame.bind(this),
+                1000 / this.refreshRate
             );
         }
 
@@ -180,13 +179,9 @@ export const Eye = GObject.registerClass(
             let currentFrame = 0;
             this.blinking = true;
 
-            // Interrupt a current blink
-            if (this.blinkTimeoutID) {
-                GLib.source_remove(this.blinkTimeoutID);
-                this.blinkTimeoutID = null;
-            }
+            Timeout.clearInterval(this.blinkTimeoutID);
 
-            this.blinkTimeoutID = GLib.timeout_add(
+            this.blinkTimeoutID.id = GLib.timeout_add(
                 GLib.PRIORITY_DEFAULT,
                 1000 / this.refreshRate,
                 () => {
@@ -201,7 +196,7 @@ export const Eye = GObject.registerClass(
                         // Finishing
                         this.eyelidLevel = 0;
                         this.blinking = false;
-                        this.blinkTimeoutID = null;
+                        this.blinkTimeoutID.id = null;
                         return GLib.SOURCE_REMOVE;
                     }
                     return GLib.SOURCE_CONTINUE;
@@ -330,16 +325,12 @@ export const Eye = GObject.registerClass(
 
             // Update refresh rate
             if (this.refreshRate !== newRefreshRate) {
-                if (this.updateHandlerID) {
-                    GLib.source_remove(this.updateHandlerID);
-                }
-                this.updateHandlerID = GLib.timeout_add(
-                    GLib.PRIORITY_DEFAULT,
-                    1000 / newRefreshRate,
-                    () => {
-                        this.updateEyeFrame();
-                        return GLib.SOURCE_CONTINUE;
-                    }
+                Timeout.clearInterval(this.updateHandlerID);
+
+                Timeout.setInterval(
+                    this.updateHandlerID,
+                    this.updateEyeFrame.bind(this),
+                    1000 / newRefreshRate
                 );
                 this.refreshRate = newRefreshRate;
             }
@@ -357,10 +348,7 @@ export const Eye = GObject.registerClass(
             this.area.disconnect(this.repaintHandler);
 
             // Stop periodic redraw
-            if (this.updateHandlerID) {
-                GLib.source_remove(this.updateHandlerID);
-            }
-            this.updateHandlerID = null;
+            Timeout.clearInterval(this.updateHandlerID);
 
             // Destroy drawing
             this.area.destroy();
