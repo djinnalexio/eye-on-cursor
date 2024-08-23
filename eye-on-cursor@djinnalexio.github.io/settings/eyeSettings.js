@@ -171,7 +171,7 @@ export const EyePage = GObject.registerClass(
             //#region Eye line width
             const lineWidthRow = new Adw.SpinRow({
                 title: _('Strokes'),
-                subtitle: _('Thickness of the strokes'),
+                subtitle: _('Thickness of the strokes in outline mode'),
                 adjustment: new Gtk.Adjustment({
                     lower: 0,
                     upper: 50,
