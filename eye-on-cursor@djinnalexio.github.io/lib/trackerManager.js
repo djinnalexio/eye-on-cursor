@@ -33,6 +33,7 @@ import * as Timeout from './timeout.js';
 //#endregion
 
 //#region Constants
+const DISABLED_COLOR = '#1C2A2B'; // Disabled color so that there is a change when toggling the tracker
 const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
 const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
 const CLICK_MAX_DEBOUNCE = 5000; // Max highlighting duration after receiving BUTTON PRESSED signal
@@ -108,7 +109,7 @@ export class TrackerManager {
         });
         this.trackerIcon.icon_size = this.size;
         this.trackerIcon.opacity = Math.ceil(this.opacity * 2.55); // Convert from 0-100 to 0-255 range
-        this.updateTrackerIcon(this.shape, this.colorDefault);
+        this.updateTrackerIcon(this.shape, DISABLED_COLOR);
 
         // Connect change in settings to update function
         this.settingsHandlers = TRACKER_SETTINGS.map(key =>
@@ -241,6 +242,7 @@ export class TrackerManager {
 
         // Add tracker to desktop
         Main.uiGroup.add_child(this.trackerIcon);
+        this.updateTrackerIcon(this.shape, this.currentColor);
         this.updateTrackerPosition();
 
         // Connect mouse click events
@@ -257,6 +259,7 @@ export class TrackerManager {
 
     disableTracker() {
         this.enabled = false;
+        this.currentColor = DISABLED_COLOR;
 
         // Clear timeouts
         [this.clickMaxTimeoutID, this.clickReleaseTimeoutID, this.trackerRaiseTimeoutID].forEach(
