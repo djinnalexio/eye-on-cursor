@@ -159,12 +159,12 @@ class NaturalEye extends EyeShape {
             cr.identityMatrix();
             cr.translate(areaWidth * 0.5, areaHeight * 0.5);
 
-            cairoSetColorFromHex(cr, this.eyelidColor);
-
             drawEyelidShape();
             cr.clip();
 
             cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
+
+            cairoSetColorFromHex(cr, this.eyelidColor);
 
             cr.rectangle(0, areaHeight * 0.2, areaWidth, eyelidHeight * this.options.eyelidLevel);
             cr.fill();
@@ -256,12 +256,12 @@ class RoundEye extends EyeShape {
             cr.translate(areaWidth * 0.5, areaHeight * 0.5);
             cr.scale(this.scaleX, this.scaleY);
 
-            cairoSetColorFromHex(cr, this.eyelidColor);
-
             cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
             cr.clip();
 
             cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
+
+            cairoSetColorFromHex(cr, this.eyelidColor);
 
             cr.rectangle(0, 0, areaWidth, areaHeight * this.options.eyelidLevel);
             cr.fill();
