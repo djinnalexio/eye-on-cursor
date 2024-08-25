@@ -20,6 +20,7 @@
 'use strict';
 
 //#region Import libraries
+import GLib from 'gi://GLib';
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 
@@ -47,7 +48,8 @@ export class BlinkController {
         this.eyeArray = eyeArray;
 
         // Initialize state variables
-        this.syncedBlinkRoutineID = {id: null};
+        this.syncedRoutineID = {id: null};
+        this.unsyncedRoutineDelayID = {id: null};
 
         // Initialize settings values
         this.blinkMode = this.settings.get_string('eye-blink-mode');
@@ -62,15 +64,39 @@ export class BlinkController {
             }),
             this.settings.connect('changed::eye-blink-interval', () => {
                 this.blinkInterval = this.settings.get_double('eye-blink-interval');
-                if (this.blinkMode === 'synced') this.startSyncedBlink();
+                if (this.blinkMode === 'synced') {
+                    this.stopSyncedBlink();
+                    this.startSyncedBlink();
+                }
             }),
             this.settings.connect('changed::eye-blink-interval-range', () => {
                 this.blinkIntervalRange = this.settings
                     .get_value('eye-blink-interval-range')
                     .deep_unpack();
-                // restart unsynced routine
+                if (this.blinkMode === 'unsynced') {
+                    this.stopUnsyncedBlink();
+                    this.startUnsyncedBlink();
+                }
             }),
         ];
+
+        // Restart Unsynced routine if eye array changes
+        this.eyePlacementSettings = ['eye-position', 'eye-index', 'eye-count'];
+        this.eyePlacementSettings.forEach(key => {
+            this.settingsHandlers.push(
+                this.settings.connect(`changed::${key}`, () => {
+                    if (this.blinkMode === 'unsynced') {
+                        this.stopUnsyncedBlink();
+                        // Adding a delay so that the eye array gets updated first
+                        Timeout.setTimeout(
+                            this.unsyncedRoutineDelayID,
+                            this.startUnsyncedBlink.bind(this),
+                            100
+                        );
+                    }
+                })
+            );
+        });
 
         // Connect blinking shortcut
         Main.wm.addKeybinding(
@@ -93,14 +119,15 @@ export class BlinkController {
     }
 
     selectBlinkMode() {
-        Timeout.clearInterval(this.syncedBlinkRoutineID);
-        // stop unsynced blinking
+        this.stopSyncedBlink();
+        this.stopUnsyncedBlink();
 
         switch (this.blinkMode) {
             case 'synced':
                 this.startSyncedBlink();
                 break;
             case 'unsynced':
+                this.startUnsyncedBlink();
                 break;
             case 'manual':
             default:
@@ -108,20 +135,55 @@ export class BlinkController {
         }
     }
 
+    //#region Synced
     startSyncedBlink() {
-        Timeout.clearInterval(this.syncedBlinkRoutineID);
-
         Timeout.setInterval(
-            this.syncedBlinkRoutineID,
+            this.syncedRoutineID,
             this.blinkAll.bind(this),
             1000 * this.blinkInterval
         );
     }
+
+    stopSyncedBlink() {
+        Timeout.clearInterval(this.syncedRoutineID);
+    }
+    //#endregion
+
+    //#region Unsynced
+    startUnsyncedBlink() {
+        this.eyeArray.forEach(eye => {
+            this.scheduleNextBlink(eye);
+        });
+    }
+
+    stopUnsyncedBlink() {
+        this.eyeArray.forEach(eye => {
+            Timeout.clearTimeout(eye.randomBlinkTimeoutID);
+        });
+    }
+
+    scheduleNextBlink(eye) {
+        const interval =
+            this.blinkIntervalRange[0] +
+            (this.blinkIntervalRange[1] - this.blinkIntervalRange[0]) * Math.random();
+
+        eye.randomBlinkTimeoutID.id = GLib.timeout_add(
+            GLib.PRIORITY_DEFAULT,
+            1000 * interval,
+            () => {
+                eye.blink(this);
+                this.scheduleNextBlink(eye);
+                return GLib.SOURCE_REMOVE;
+            }
+        );
+    }
+    //#endregion
     //#endregion
 
     //#region Destroy function
     destroy() {
-        Timeout.clearInterval(this.syncedBlinkRoutineID);
+        this.stopSyncedBlink();
+        this.stopUnsyncedBlink();
 
         // Disconnect settings signal handlers
         this.settingsHandlers?.forEach(connection => {

@@ -94,6 +94,7 @@ export const Eye = GObject.registerClass(
             this.eyelidLevel = 0;
             this.blinking = false;
             this.blinkTimeoutID = {id: null};
+            this.randomBlinkTimeoutID = {id: null};
             this.updateHandlerID = {id: null};
 
             // Initialize settings values
