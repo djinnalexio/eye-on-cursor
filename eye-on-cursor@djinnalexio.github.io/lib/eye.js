@@ -21,7 +21,6 @@
 
 //#region Import libraries
 import Gio from 'gi://Gio';
-import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
 
@@ -49,7 +48,6 @@ const ACCENT_COLORS = {
     slate: '#6f8396',
 };
 const ACCENT_COLORS_KEY = 'accent-color';
-const BLINK_DURATION = 250;
 const DEFAULT_COLOR = '#b5b5b5';
 const EYE_SETTINGS = [
     'eye-reactive',
@@ -170,39 +168,6 @@ export const Eye = GObject.registerClass(
             const item = new PopupMenu.PopupImageMenuItem(label, icon);
             item.connect('activate', callback);
             return item;
-        }
-        //#endregion
-
-        //#region blink Functions
-        blink() {
-            const totalFrames = Math.ceil(this.refreshRate * (BLINK_DURATION / 1000));
-            const halfFrames = totalFrames / 2;
-            let currentFrame = 0;
-            this.blinking = true;
-
-            Timeout.clearInterval(this.blinkTimeoutID);
-
-            this.blinkTimeoutID.id = GLib.timeout_add(
-                GLib.PRIORITY_DEFAULT,
-                1000 / this.refreshRate,
-                () => {
-                    currentFrame++;
-                    if (currentFrame <= halfFrames) {
-                        // Closing
-                        this.eyelidLevel = currentFrame / halfFrames;
-                    } else if (currentFrame <= totalFrames + 1) {
-                        // Opening
-                        this.eyelidLevel = 1 - (currentFrame - halfFrames) / halfFrames;
-                    } else {
-                        // Finishing
-                        this.eyelidLevel = 0;
-                        this.blinking = false;
-                        this.blinkTimeoutID.id = null;
-                        return GLib.SOURCE_REMOVE;
-                    }
-                    return GLib.SOURCE_CONTINUE;
-                }
-            );
         }
         //#endregion
 
@@ -372,6 +337,7 @@ export const Eye = GObject.registerClass(
 
             // Disconnect settings
             this.settings = null;
+            this.interfaceSettings = null;
 
             // Destroy the button
             super.destroy();

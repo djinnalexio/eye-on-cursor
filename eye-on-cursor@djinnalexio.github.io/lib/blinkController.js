@@ -30,6 +30,9 @@ import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js'
 import * as Timeout from './timeout.js';
 //#endregion
 
+const BLINK_DURATION = 250;
+const DEBOUNCE_DELAY = 100;
+
 //#region Define Blinking Controller
 export class BlinkController {
     /**
@@ -48,8 +51,9 @@ export class BlinkController {
         this.eyeArray = eyeArray;
 
         // Initialize state variables
+        this.blinkAllTimeoutID = {id: null};
         this.syncedRoutineID = {id: null};
-        this.unsyncedRoutineDelayID = {id: null};
+        this.unsyncedDebounceID = {id: null};
 
         // Initialize settings values
         this.blinkMode = this.settings.get_string('eye-blink-mode');
@@ -86,12 +90,14 @@ export class BlinkController {
             this.settingsHandlers.push(
                 this.settings.connect(`changed::${key}`, () => {
                     if (this.blinkMode === 'unsynced') {
-                        this.stopUnsyncedBlink();
-                        // Adding a delay so that the eye array gets updated first
+                        // debounce reset so that the eye array gets updated first
                         Timeout.setTimeout(
-                            this.unsyncedRoutineDelayID,
-                            this.startUnsyncedBlink.bind(this),
-                            100
+                            this.unsyncedDebounceID,
+                            () => {
+                                this.stopUnsyncedBlink();
+                                this.startUnsyncedBlink();
+                            },
+                            DEBOUNCE_DELAY
                         );
                     }
                 })
@@ -113,11 +119,99 @@ export class BlinkController {
     }
     //#endregion
 
-    //#region Blink functions
+    //#region Blink Functions
     blinkAll() {
-        this.eyeArray.forEach(eye => eye.blink());
+        const refreshRate = this.eyeArray[0].refreshRate;
+        const blinkInterval = 1000 / refreshRate;
+        const totalFrames = Math.ceil(refreshRate * (BLINK_DURATION / 1000));
+        const halfFrames = totalFrames / 2;
+
+        Timeout.clearInterval(this.blinkAllTimeoutID);
+
+        this.eyeArray.forEach(eye => (eye.blinking = true));
+
+        let currentFrame = 0;
+        this.blinkAllTimeoutID.id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, blinkInterval, () => {
+            // Increment frame
+            currentFrame++;
+
+            // Calculate eyelid level based on if the animation is past the halfway point or not
+            const eyelidLevel =
+                currentFrame <= halfFrames
+                    ? currentFrame / halfFrames // Closing
+                    : 1 - (currentFrame - halfFrames) / halfFrames; // Opening
+
+            // Update eyelid level in each eye
+            this.eyeArray.forEach(eye => (eye.eyelidLevel = eyelidLevel));
+
+            // Finishing
+            if (currentFrame > totalFrames) {
+                this.eyeArray.forEach(eye => {
+                    eye.eyelidLevel = 0;
+                    eye.blinking = false;
+                });
+                this.blinkAllTimeoutID.id = null;
+                return GLib.SOURCE_REMOVE;
+            }
+
+            return GLib.SOURCE_CONTINUE;
+        });
     }
 
+    blinkSingle(eye) {
+        const refreshRate = eye.refreshRate;
+        const blinkInterval = 1000 / refreshRate;
+        const totalFrames = Math.ceil(refreshRate * (BLINK_DURATION / 1000));
+        const halfFrames = totalFrames / 2;
+        let currentFrame = 0;
+
+        Timeout.clearInterval(eye.blinkTimeoutID);
+
+        eye.blinking = true;
+
+        eye.blinkTimeoutID.id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, blinkInterval, () => {
+            // Increment frame
+            currentFrame++;
+
+            // Calculate eyelid level based on if the animation is past the halfway point or not
+            const eyelidLevel =
+                currentFrame <= halfFrames
+                    ? currentFrame / halfFrames // Closing
+                    : 1 - (currentFrame - halfFrames) / halfFrames; // Opening
+
+            // update eyelid level in each eye
+            eye.eyelidLevel = eyelidLevel;
+
+            // Finishing
+            if (currentFrame > totalFrames) {
+                eye.eyelidLevel = 0;
+                eye.blinking = false;
+                eye.blinkTimeoutID.id = null;
+                return GLib.SOURCE_REMOVE;
+            }
+
+            return GLib.SOURCE_CONTINUE;
+        });
+    }
+
+    scheduleNextBlink(eye) {
+        const interval =
+            this.blinkIntervalRange[0] +
+            (this.blinkIntervalRange[1] - this.blinkIntervalRange[0]) * Math.random();
+
+        eye.randomBlinkTimeoutID.id = GLib.timeout_add(
+            GLib.PRIORITY_DEFAULT,
+            1000 * interval,
+            () => {
+                this.blinkSingle(eye);
+                this.scheduleNextBlink(eye);
+                return GLib.SOURCE_REMOVE;
+            }
+        );
+    }
+    //#endregion
+
+    //#region Routine functions
     selectBlinkMode() {
         this.stopSyncedBlink();
         this.stopUnsyncedBlink();
@@ -161,29 +255,16 @@ export class BlinkController {
             Timeout.clearTimeout(eye.randomBlinkTimeoutID);
         });
     }
-
-    scheduleNextBlink(eye) {
-        const interval =
-            this.blinkIntervalRange[0] +
-            (this.blinkIntervalRange[1] - this.blinkIntervalRange[0]) * Math.random();
-
-        eye.randomBlinkTimeoutID.id = GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            1000 * interval,
-            () => {
-                eye.blink(this);
-                this.scheduleNextBlink(eye);
-                return GLib.SOURCE_REMOVE;
-            }
-        );
-    }
     //#endregion
     //#endregion
 
     //#region Destroy function
     destroy() {
+        // Clear any remaining timeouts
         this.stopSyncedBlink();
         this.stopUnsyncedBlink();
+        Timeout.clearInterval(this.blinkAllTimeoutID);
+        Timeout.clearTimeout(this.unsyncedDebounceID);
 
         // Disconnect settings signal handlers
         this.settingsHandlers?.forEach(connection => {
