@@ -40,7 +40,7 @@ export const EyePage = GObject.registerClass(
              */
 
             super({
-                title: _('Eye'),
+                title: _('Eyes'),
                 icon_name: 'view-reveal-symbolic',
             });
 
@@ -220,10 +220,7 @@ export const EyePage = GObject.registerClass(
                 return colorPicker;
             }
 
-            const colorRow = new Adw.ActionRow({
-                title: _('Color'),
-                subtitle: _('Color of the iris'),
-            });
+            const colorRow = new Adw.ActionRow({title: _('Iris Color')});
 
             const irisColorPicker = newColorPicker(this.settings, 'eye-color-iris');
 
@@ -275,10 +272,7 @@ export const EyePage = GObject.registerClass(
             this.add(blinkGroup);
 
             //#region Eyelid Color
-            const colorEyelidRow = new Adw.ActionRow({
-                title: _('Eyelid Color'),
-                subtitle: _('Color of the eyelid'),
-            });
+            const colorEyelidRow = new Adw.ActionRow({title: _('Eyelid Color')});
 
             const colorEyelidBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
             colorEyelidBox.append(newColorPicker(this.settings, 'eye-color-eyelid'));
@@ -307,7 +301,7 @@ export const EyePage = GObject.registerClass(
             const blinkKeybindRow = new KeybindingRow(
                 this.settings,
                 'eye-blink-keybinding',
-                _('Manual Blink Key')
+                _('Manual Blink')
             );
 
             blinkGroup.set_header_suffix(blinkKeybindRow.resetButton);
