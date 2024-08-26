@@ -254,7 +254,6 @@ class RoundEye extends EyeShape {
         if (this.options.eyelidLevel > 0) {
             cr.identityMatrix();
             cr.translate(areaWidth * 0.5, areaHeight * 0.5);
-            cr.scale(this.scaleX, this.scaleY);
 
             cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
             cr.clip();
