@@ -141,7 +141,6 @@ export class BlinkController {
                     ? currentFrame / halfFrames // Closing
                     : 1 - (currentFrame - halfFrames) / halfFrames; // Opening
 
-            // Update eyelid level in each eye
             this.eyeArray.forEach(eye => (eye.eyelidLevel = eyelidLevel));
 
             // Finishing
@@ -163,12 +162,12 @@ export class BlinkController {
         const blinkInterval = 1000 / refreshRate;
         const totalFrames = Math.ceil(refreshRate * (BLINK_DURATION / 1000));
         const halfFrames = totalFrames / 2;
-        let currentFrame = 0;
 
         Timeout.clearInterval(eye.blinkTimeoutID);
 
         eye.blinking = true;
 
+        let currentFrame = 0;
         eye.blinkTimeoutID.id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, blinkInterval, () => {
             // Increment frame
             currentFrame++;
@@ -179,7 +178,6 @@ export class BlinkController {
                     ? currentFrame / halfFrames // Closing
                     : 1 - (currentFrame - halfFrames) / halfFrames; // Opening
 
-            // update eyelid level in each eye
             eye.eyelidLevel = eyelidLevel;
 
             // Finishing
@@ -195,6 +193,7 @@ export class BlinkController {
     }
 
     scheduleNextBlink(eye) {
+        // Calculate a random interval to next blink
         const interval =
             this.blinkIntervalRange[0] +
             (this.blinkIntervalRange[1] - this.blinkIntervalRange[0]) * Math.random();
