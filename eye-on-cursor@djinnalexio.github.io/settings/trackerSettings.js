@@ -203,7 +203,7 @@ export const TrackerPage = GObject.registerClass(
                 subtitle: _('Hz'),
                 adjustment: new Gtk.Adjustment({
                     lower: 1,
-                    upper: 360,
+                    upper: 144,
                     step_increment: 1,
                 }),
                 value: this.settings.get_int('tracker-refresh-rate'),
@@ -211,6 +211,7 @@ export const TrackerPage = GObject.registerClass(
             refreshRow.adjustment.connect('value-changed', widget => {
                 this.settings.set_int('tracker-refresh-rate', widget.value);
             });
+            refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
             drawingGroup.add(refreshRow);
             //#endregion
             //#endregion

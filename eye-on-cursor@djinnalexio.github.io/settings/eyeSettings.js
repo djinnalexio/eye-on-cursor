@@ -101,6 +101,7 @@ export const EyePage = GObject.registerClass(
             countRow.adjustment.connect('value-changed', widget => {
                 this.settings.set_int('eye-count', widget.value);
             });
+            countRow.set_tooltip_text(_('Displaying more eyes may reduce performance.'));
             placementGroup.add(countRow);
             //#endregion
 
@@ -254,7 +255,7 @@ export const EyePage = GObject.registerClass(
                 subtitle: _('Hz'),
                 adjustment: new Gtk.Adjustment({
                     lower: 1,
-                    upper: 360,
+                    upper: 144,
                     step_increment: 1,
                 }),
                 value: this.settings.get_int('eye-refresh-rate'),
@@ -262,6 +263,7 @@ export const EyePage = GObject.registerClass(
             refreshRow.adjustment.connect('value-changed', widget => {
                 this.settings.set_int('eye-refresh-rate', widget.value);
             });
+            refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
             drawingGroup.add(refreshRow);
             //#endregion
             //#endregion
