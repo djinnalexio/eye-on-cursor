@@ -321,9 +321,7 @@ export const Eye = GObject.registerClass(
             this.area = null;
 
             // Disconnect settings signal handlers
-            this.settingsHandlers?.forEach(connection => {
-                this.settings.disconnect(connection);
-            });
+            this.settingsHandlers?.forEach(connection => this.settings.disconnect(connection));
             this.settingsHandlers = null;
 
             if (this.defaultColorHandler) {

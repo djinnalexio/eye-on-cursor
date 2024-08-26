@@ -485,9 +485,7 @@ export class TrackerManager {
         this.disableTracker();
 
         // Disconnect settings signal handlers
-        this.settingsHandlers?.forEach(connection => {
-            this.settings.disconnect(connection);
-        });
+        this.settingsHandlers?.forEach(connection => this.settings.disconnect(connection));
         this.settingsHandlers = null;
 
         // Disconnect keybinding

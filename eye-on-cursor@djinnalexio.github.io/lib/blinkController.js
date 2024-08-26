@@ -244,15 +244,11 @@ export class BlinkController {
 
     //#region Unsynced
     startUnsyncedBlink() {
-        this.eyeArray.forEach(eye => {
-            this.scheduleNextBlink(eye);
-        });
+        this.eyeArray.forEach(eye => this.scheduleNextBlink(eye));
     }
 
     stopUnsyncedBlink() {
-        this.eyeArray.forEach(eye => {
-            Timeout.clearTimeout(eye.randomBlinkTimeoutID);
-        });
+        this.eyeArray.forEach(eye => Timeout.clearTimeout(eye.randomBlinkTimeoutID));
     }
     //#endregion
     //#endregion
@@ -266,9 +262,7 @@ export class BlinkController {
         Timeout.clearTimeout(this.unsyncedDebounceID);
 
         // Disconnect settings signal handlers
-        this.settingsHandlers?.forEach(connection => {
-            this.settings.disconnect(connection);
-        });
+        this.settingsHandlers?.forEach(connection => this.settings.disconnect(connection));
         this.settingsHandlers = null;
 
         // Disconnect keybinding
