@@ -52,13 +52,14 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 const releaseNotes =
     '<p>New:</p>\
     <ul>\
-        <li>added support for <em>accent colors</em> starting in GNOME 47</li>\
+        <li>Added <em>Blink</em> feature</li>\
     </ul >\
     <p>Fixes &amp; Improvements:</p>\
     <ul>\
-        <li>resized settings window</li>\
-        <li>changed <em>interactivity</em> label to <em>submenu</em></li>\
-        <li>eyes are now generated with ordered IDs for compatibility with external programs</li>\
+        <li>Changed <em>Eyelid</em> shape name to <em>Natural</em></li>\
+        <li>Edited settings window</li>\
+        <li>Fixed all eyes not immediately switching to tracker color</li>\
+        <li>Reduced Max refresh rate</li>\
     </ul >\
     ';
 const supportUrl = '';
