@@ -291,7 +291,7 @@ export const EyePage = GObject.registerClass(
             // Each option enables the corresponding row
             const blinkModeRow = new Adw.ComboRow({
                 title: _('Blink Mode'),
-                subtitle: _('Blink Control Method'),
+                subtitle: _('Choose how eyes blink'),
                 model: blinkModeList,
                 selected: this.settings.get_enum('eye-blink-mode'),
             });
@@ -315,7 +315,7 @@ export const EyePage = GObject.registerClass(
             //#region Blink Interval
             const blinkIntervalRow = new Adw.SpinRow({
                 title: _('Synced Blinking Interval'),
-                subtitle: _('Seconds between blinks'),
+                subtitle: _('Seconds between synchronized blinks'),
                 adjustment: new Gtk.Adjustment({
                     lower: 0.1,
                     upper: 60,
@@ -333,7 +333,7 @@ export const EyePage = GObject.registerClass(
             //#region Blink Interval Range
             const blinkIntervalRangeRow = new Adw.ActionRow({
                 title: _('Unsynced Blinking Interval'),
-                subtitle: _('Range of seconds between blinks'),
+                subtitle: _('Range of seconds between random blinks'),
             });
 
             const blinkIntervalRange = this.settings
