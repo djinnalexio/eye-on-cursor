@@ -1,9 +1,17 @@
 <h1 align="center">Eye on Cursor</h1>
 <p align="center">
+  <a href="https://github.com/djinnalexio/eye-on-cursor/blob/main/LICENSE">
     <img alt="GitHub License" src="https://img.shields.io/github/license/djinnalexio/eye-on-cursor?style=for-the-badge&logo=gnu">
-    <img alt="GitHub package.json version" src="https://img.shields.io/github/package-json/v/djinnalexio/eye-on-cursor?style=for-the-badge&logo=node.js">
+  </a>
+  <a href="https://github.com/djinnalexio/eye-on-cursor/releases/latest">
+    <img alt="Latest Release" src="https://img.shields.io/github/v/release/djinnalexio/eye-on-cursor?label=Latest%20Release&style=for-the-badge&logo=github&color=red">
+  </a>
+</p>
+<p align="center">
+  <a href="https://extensions.gnome.org/extension/7036/eye-on-cursor/">
     <img alt="GNOME versions" src="https://img.shields.io/badge/supported_shell_versions-45_|_46_|_47-green?style=for-the-badge&logo=gnome">
     <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2F7036%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&label=GNOME%20extensions&cacheSeconds=86400&style=for-the-badge&logo=gnome">
+  </a>
 </p>
 <p align="center">
   <img alt="logo" height="100" src="./eye-on-cursor@djinnalexio.github.io/media/eye-on-cursor-logo.svg">
@@ -14,11 +22,18 @@
 
 **Eye on Cursor** is a fun and practical extension that gives your panel eyes that constantly follow your mouse. This quirky feature, combined with a highly customizable mouse tracker that highlights clicks, makes it easier than ever to monitor your mouse movements, ensuring your pointer gets all the attention it needs.
 
-![tracking](assets/tracking.gif) ![tracker](assets/tracker.png)
-
-![comic](assets/comic.png) ![round](assets/round.png) ![blueEyes](assets/blueEyes.png)
-
-![biblicallyAccurate](assets/biblicallyAccurate.png)
+<p align="center">
+<img alt="" height="300" src="assets/tracking.gif">
+<img alt="" height="300" src="assets/biblicallyAccurate.png">
+</p>
+<p align="center">
+<img alt="" height="200" src="assets/tracker.png">
+<img alt="" height="200" src="assets/comic.png">
+</p>
+<p align="center">
+<img alt="" height="200" src="assets/blueEyes.png">
+<img alt="" height="200" src="assets/round.png">
+</p>
 
 ## Features
 
