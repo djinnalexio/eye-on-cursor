@@ -94,6 +94,13 @@ In the root of the repo, run `make install && make enable` to use the extension 
 
 Resources to get you started:
 
-- [GJS Guide](https://gjs.guide/)
+- [Extensions Guide](https://gjs.guide/extensions)
 - [GNOME Shell Extensions Review Guidelines](https://gjs.guide/extensions/review-guidelines/review-guidelines.html)
+- [GNOME GJS Code Conventions](https://gjs.guide/guides/gjs/style-guide.html#code-conventions)
 - [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/)
+- [GJS Documentation](https://gitlab.gnome.org/GNOME/gjs/-/tree/HEAD/doc#gjs)
+- [GJS API Documentation](https://gjs-docs.gnome.org/)
+- [ADW Widgets Documentation](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/widget-gallery.html)
+- [GTK Widgets Documentation](https://docs.gtk.org/gtk4/visual_index.html)
+- [GNOME Shell Source Code](https://gitlab.gnome.org/GNOME/gnome-shell#gnome-shell)
+- [Poedit](https://flathub.org/apps/net.poedit.Poedit)
