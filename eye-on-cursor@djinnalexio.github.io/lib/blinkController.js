@@ -266,7 +266,7 @@ export class BlinkController {
         this.settingsHandlers = null;
 
         // Disconnect keybinding
-        Main.wm.removeKeybinding('tracker-keybinding');
+        Main.wm.removeKeybinding('eye-blink-keybinding');
 
         // Disconnect settings
         this.settings = null;
