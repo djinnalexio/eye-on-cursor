@@ -62,7 +62,7 @@ const releaseNotes =
         <li>Reduced Max refresh rate</li>\
     </ul >\
     ';
-const supportUrl = '';
+const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
 //#endregion
 
 //#region About row class
