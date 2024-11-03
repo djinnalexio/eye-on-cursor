@@ -6,5 +6,9 @@
     "url": "https://github.com/djinnalexio/eye-on-cursor/",
     "gettext-domain": "eye-on-cursor",
     "settings-schema": "org.gnome.shell.extensions.eye-on-cursor",
-    "version-name": "2.0.0.dev"
+    "version-name": "2.0.0.dev",
+    "donations": {
+        "github": "djinnalexio",
+        "paypal": "djinnalexio"
+      }
 }
