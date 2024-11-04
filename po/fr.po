@@ -1,306 +1,84 @@
-# Translation file for Eye on Cursor.
-# Copyright (C) 2024 djinnalexio
-# This file is distributed under the same license as the eye-on-cursor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: eye-on-cursor 2.0.0.dev\n"
-"Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/"
-"issues\n"
-"POT-Creation-Date: 2024-08-26 20:18+0100\n"
-"PO-Revision-Date: 2024-08-26 21:53+0100\n"
-"Last-Translator: djinnalexio\n"
-"Language-Team: \n"
-"Language: fr\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.4\n"
-
-#: eye-on-cursor@djinnalexio.github.io/lib/eye.js:117
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:227
-msgid "Toggle Tracker"
-msgstr "Activer/Désactiver le Traqueur"
-
-#: eye-on-cursor@djinnalexio.github.io/lib/eye.js:122
-msgid "Settings"
-msgstr "Paramètres"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:79
-msgid "About"
-msgstr "À propos"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:80
-msgid "Development information and credits"
-msgstr "Informations de développement et crédits"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:112
-msgctxt "(USER)NAME EMAIL/URL"
-msgid "translator_credits"
-msgstr "djinnalexio https://github.com/djinnalexio/"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:118
-msgid "Extension Page"
-msgstr "Page de l'extension"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:121
-msgid "Forked from"
-msgstr "Dérivé de"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:124
-msgid "Cinnamon Fork"
-msgstr "Branche Cinnamon"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:43
-msgid "Eyes"
-msgstr "Yeux"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:51
-msgid "Layout"
-msgstr "Disposition"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:57
-msgid "Left"
-msgstr "Gauche"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:57
-msgid "Center"
-msgstr "Centre"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:57
-msgid "Right"
-msgstr "Droite"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:62
-msgid "Position"
-msgstr "Position"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:63
-msgid "Position of the eyes on the panel"
-msgstr "Position des yeux sur le panneau"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:75
-msgid "Index"
-msgstr "Ordre"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:76
-msgid "Index of the eyes on the panel segment"
-msgstr "Rang des yeux sur le segment du panneau"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:92
-msgid "Count"
-msgstr "Quantité"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:93
-msgid "Number of eyes"
-msgstr "Nombre d'yeux"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:104
-msgid "Displaying more eyes may reduce performance."
-msgstr "Un plus grand nombre d'yeux peut réduire la performance."
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:110
-msgid "Width"
-msgstr "Largeur"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:111
-msgid "Drawing space and padding"
-msgstr "Espace et marge"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:127
-msgid "Menu"
-msgstr "Menu"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:128
-msgid "Enable the eye submenu"
-msgstr "Activer le sous-menu de l'œil"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:140
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:55
-msgid "Appearance"
-msgstr "Apparence"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:146
-msgid "Natural"
-msgstr "Naturel"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:146
-msgid "Round"
-msgstr "Rond"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:146
-msgid "Comic"
-msgstr "Comic"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:149
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:85
-msgid "Shape"
-msgstr "Forme"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:150
-msgid "Shape of the eyes"
-msgstr "Forme des yeux"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:162
-msgid "Outline Mode"
-msgstr "Mode Contour"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:163
-msgid "Draw the eyes as outline only"
-msgstr "Dessiner les yeux en contour"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:174
-msgid "Strokes"
-msgstr "Traits"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:175
-msgid "Thickness of the strokes in outline mode"
-msgstr "Épaisseur des traits en mode contour"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:223
-msgid "Iris Color"
-msgstr "Couleur de l'iris"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:251
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:202
-msgid "Refresh Rate"
-msgstr "Fréquence"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:252
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:203
-msgid "Hz"
-msgstr "Hz"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:263
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:214
-msgid "Higher refresh rates may impact performance."
-msgstr "Une fréquence élevée peut réduire la performance."
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:270
-msgid "Blinking"
-msgstr "Clignement"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:275
-msgid "Eyelid Color"
-msgstr "Couleur de la paupière"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:286
-msgid "Manual"
-msgstr "Manuel"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:286
-msgid "Synced"
-msgstr "Synchronisé"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:286
-msgid "Unsynced"
-msgstr "Aléatoire"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:289
-msgid "Blink Mode"
-msgstr "Mode de clignement"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:290
-msgid "Choose how eyes blink"
-msgstr "Comment les yeux clignent"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:304
-msgid "Manual Blink"
-msgstr "Clignement manuel"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:313
-msgid "Synced Blinking Interval"
-msgstr "Intervalle de clignement synchronisé"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:314
-msgid "Seconds between synchronized blinks"
-msgstr "Secondes entre les clignements synchronisés"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:331
-msgid "Unsynced Blinking Interval"
-msgstr "Intervalle de clignement aléatoire"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:332
-msgid "Range of seconds between random blinks"
-msgstr "Intervalle de secondes entre les clignements aléatoires"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:400
-msgid "to"
-msgstr "à"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:46
-msgid "Set a shortcut"
-msgstr "Définir un raccourci"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:55
-msgid "New shortcut…"
-msgstr "Nouveau raccourci…"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:98
-msgid "Press Esc to cancel or Backspace to disable the shortcut"
-msgstr ""
-"Appuyez sur Échap pour annuler ou sur Retour arrière pour désactiver le "
-"raccourci"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:46
-msgid "Mouse Tracker"
-msgstr "Traqueur"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:86
-msgid "Shape of the tracker"
-msgstr "Forme du traqueur"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:100
-msgid "Size"
-msgstr "Taille"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:101
-msgid "Size of the tracker"
-msgstr "Taille du traqueur"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:149
-msgid "Color"
-msgstr "Couleur"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:150
-msgid "Default color of the tracker"
-msgstr "Couleur par défaut du traqueur"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:160
-msgid "Colors on Click"
-msgstr "Couleurs de clic"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:161
-msgid "Colors when left, middle, and right-clicking"
-msgstr "Couleurs de clics gauche, central, et droit"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:167
-msgid ""
-"Click highlighting does not work in applications on Wayland. See README."
-msgstr ""
-"La mise en surbrillance des clics ne fonctionne pas dans les applications "
-"sur Wayland. Voir README."
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:171
-msgid "Middle-click highlighting does not work on x11. See README."
-msgstr ""
-"La mise en surbrillance du clic central ne fonctionne pas sur x11. Voir "
-"README."
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:185
-msgid "Opacity"
-msgstr "Opacité"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:186
-msgid "Opacity of the tracker"
-msgstr "Opacité du traqueur"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:220
-msgid "Keybinding"
-msgstr "Raccourci"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:238
-msgid "Credits"
-msgstr "Crédits"
+/* extension.js
+ *
+ * This file is part of the Eye on Cursor GNOME Shell extension (eye-on-cursor@djinnalexio.github.io).
+ *
+ * Copyright (C) 2024 djinnalexio
+ *
+ * This extension is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software Foundation,
+ * either version 3 of the License, or (at your option) any later version.
+ *
+ * This extension is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this extension.
+ * If not, see <https://www.gnu.org/licenses/gpl-3.0.html#license-text>.
+ *
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+'use strict';
+
+//#region Import libraries
+import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
+import { BlinkController } from './lib/blinkController.js';
+import { spawnEyes, destroyEyes } from './lib/eye.js';
+import { TrackerManager } from './lib/trackerManager.js';
+//#endregion
+
+//#region Launching extension
+export default class EyeOnCursorExtension extends Extension {
+    constructor(metadata) {
+        super(metadata);
+        /**
+         * Runs when your extension is loaded, not enabled.
+         *
+         * DO NOT make any changes to GNOME Shell, create any objects, connect any signals
+         * or add any event sources here.
+         *
+         * Extensions **MAY** create and store a reasonable amount of static data
+         * during initialization.
+         */
+    }
+
+    //#region Enable
+    // Runs when the extension is enabled or the desktop session is logged in or unlocked
+    // Create objects, connect signals and add main loop sources
+    enable() {
+        this.settings = this.getSettings();
+
+        // Create the tracker
+        this.mouseTracker = new TrackerManager(this);
+
+        // Create eyes based in starting settings
+        this.eyeArray = [];
+        spawnEyes(this, this.eyeArray, this.mouseTracker);
+
+        // Create the Blink controller
+        this.blinkController = new BlinkController(this, this.eyeArray);
+
+        // Connect eye placement settings
+        this.placementSettings = ['eye-position', 'eye-index', 'eye-count'];
+        this.placementSettingHandlers = this.placementSettings.map((key) =>
+            this.settings.connect(`changed::${key}`, spawnEyes.bind(this, this, this.eyeArray, this.mouseTracker))
+        );
+    }
+    //#endregion
+
+    //#region Disable
+    // Runs when the extension is disabled, uninstalled or the desktop session is exited or locked
+    // Cleanup anything done in enable()
+    disable() {
+        this.placementSettingHandlers?.forEach((connection) => this.settings.disconnect(connection));
+        this.placementSettingHandlers = null;
+        destroyEyes(this.eyeArray);
+        this.eyeArray = null;
+        this.mouseTracker?.destroy();
+        this.mouseTracker = null;
+        this.blinkController?.destroy();
+        this.blinkController = null;
+        this.settings = null;
+    }
+    //#endregion
+}
+//#endregion
