@@ -1,4 +1,4 @@
-/* blinkController.js
+/* eye.js
  *
  * This file is part of the Eye on Cursor GNOME Shell extension (eye-on-cursor@djinnalexio.github.io).
  *
@@ -20,235 +20,336 @@
 'use strict';
 
 //#region Import libraries
-import GLib from 'gi://GLib';
-import Meta from 'gi://Meta';
-import Shell from 'gi://Shell';
+import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
+import St from 'gi://St';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
+import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
+import * as EyeRenderer from './eyeRenderer.js';
 import * as Timeout from './timeout.js';
 //#endregion
 
-const BLINK_DURATION = 250;
-const DEBOUNCE_DELAY = 100;
+//#region Constants
+// See https://gitlab.gnome.org/GNOME/libadwaita/-/blob/main/src/adw-accent-color.c?ref_type=heads#L15
+// And https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas/-/blob/master/schemas/org.gnome.desktop.interface.gschema.xml.in?ref_type=heads#L314
+const ACCENT_COLORS = {
+    blue: '#3584e4',
+    teal: '#2190a4',
+    green: '#3a944a',
+    yellow: '#c88800',
+    orange: '#ed5b00',
+    red: '#e62d42',
+    pink: '#d56199',
+    purple: '#9141ac',
+    slate: '#6f8396',
+};
+const ACCENT_COLORS_KEY = 'accent-color';
+const DEFAULT_COLOR = '#b5b5b5';
+const EYE_SETTINGS = [
+    'eye-reactive',
+    'eye-shape',
+    'eye-line-mode',
+    'eye-line-width',
+    'eye-width',
+    'eye-color-iris',
+    'eye-color-iris-enabled',
+    'eye-refresh-rate',
+    'eye-color-eyelid',
+];
+const PUPIL_COLOR = '#000000';
+//#endregion
 
-//#region Define Blinking Controller
-export class BlinkController {
-    /**
-     * Creates an instance of BlinkController, which controls blinking functions.
-     *
-     * @param {Extension} extensionObject - The extension object.
-     * @param {Array} eyeArray - The array of eye objects.
-     */
+//#region Defining Eye
+export const Eye = GObject.registerClass(
+    class Eye extends PanelMenu.Button {
+        /**
+         * Creates an instance of Eye, an animated eye created in the panel
+         * that follows the pointer.
+         *
+         * @param {Object} extensionObject - The extension object.
+         * @param {Object} trackerManager - The object that controls the tracker.
+         */
 
-    //#region Constructor
-    constructor(extensionObject, eyeArray) {
-        // Get extension object properties
-        this.settings = extensionObject.settings;
+        //#region Constructor
+        constructor(extensionObject, trackerManager) {
+            super(0, extensionObject.uuid, false);
 
-        // Attach eye array
-        this.eyeArray = eyeArray;
+            // Get extension object properties
+            this.path = extensionObject.path;
+            this.settings = extensionObject.settings;
 
-        // Initialize state variables
-        this.blinkAllTimeoutID = {
-            id: null,
-        };
-        this.syncedRoutineID = {
-            id: null,
-        };
-        this.unsyncedDebounceID = {
-            id: null,
-        };
+            // Attach mouse tracker
+            this.mouseTracker = trackerManager;
+            this.trackerColor = null;
 
-        // Initialize settings values
-        this.blinkMode = this.settings.get_string('eye-blink-mode');
-        this.blinkInterval = this.settings.get_double('eye-blink-interval');
-        this.blinkIntervalRange = this.settings.get_value('eye-blink-interval-range').deep_unpack();
+            // Variables for initial state
+            this.mousePositionX = 0;
+            this.mousePositionY = 0;
+            this.eyelidLevel = 0;
+            this.blinking = false;
+            this.blinkTimeoutID = {
+                id: null,
+            };
+            this.randomBlinkTimeoutID = {
+                id: null,
+            };
+            this.updateHandlerID = {
+                id: null,
+            };
 
-        // Connect change in settings to update functions
-        this.settingsHandlers = [
-            this.settings.connect('changed::eye-blink-mode', () => {
-                this.blinkMode = this.settings.get_string('eye-blink-mode');
-                this.selectBlinkMode();
-            }),
-            this.settings.connect('changed::eye-blink-interval', () => {
-                this.blinkInterval = this.settings.get_double('eye-blink-interval');
-                if (this.blinkMode === 'synced') {
-                    this.stopSyncedBlink();
-                    this.startSyncedBlink();
-                }
-            }),
-            this.settings.connect('changed::eye-blink-interval-range', () => {
-                this.blinkIntervalRange = this.settings.get_value('eye-blink-interval-range').deep_unpack();
-                if (this.blinkMode === 'unsynced') {
-                    this.stopUnsyncedBlink();
-                    this.startUnsyncedBlink();
-                }
-            }),
-        ];
+            // Initialize settings values
+            this.reactive = this.settings.get_boolean('eye-reactive');
+            this.shape = this.settings.get_string('eye-shape');
+            this.lineMode = this.settings.get_boolean('eye-line-mode');
+            this.lineWidth = this.settings.get_int('eye-line-width') / 10;
+            this.width = this.settings.get_int('eye-width');
+            this.irisColorEnabled = this.settings.get_boolean('eye-color-iris-enabled');
+            this.irisColor = this.settings.get_string('eye-color-iris');
+            this.refreshRate = this.settings.get_int('eye-refresh-rate');
+            this.eyelidColor = this.settings.get_string('eye-color-eyelid');
 
-        // Restart Unsynced routine if eye array changes
-        this.eyePlacementSettings = ['eye-position', 'eye-index', 'eye-count'];
-        this.eyePlacementSettings.forEach((key) => {
-            this.settingsHandlers.push(
-                this.settings.connect(`changed::${key}`, () => {
-                    if (this.blinkMode === 'unsynced') {
-                        // debounce reset so that the eye array gets updated first
-                        Timeout.setTimeout(
-                            this.unsyncedDebounceID,
-                            () => {
-                                this.stopUnsyncedBlink();
-                                this.startUnsyncedBlink();
-                            },
-                            DEBOUNCE_DELAY
-                        );
-                    }
-                })
+            // Connect change in settings to update function
+            this.settingsHandlers = EYE_SETTINGS.map((key) =>
+                this.settings.connect(`changed::${key}`, this.updateEyeProperties.bind(this))
             );
-        });
 
-        // Connect blinking shortcut
-        Main.wm.addKeybinding(
-            'eye-blink-keybinding',
-            this.settings,
-            Meta.KeyBindingFlags.NONE,
-            Shell.ActionMode.ALL,
-            () => {
-                if (this.blinkMode === 'manual') this.blinkAll();
-            }
-        );
-        this.selectBlinkMode();
-    }
-    //#endregion
+            // Add popups
+            this.menuItems = [
+                this.createPopupMenuItem(
+                    _('Toggle Tracker'),
+                    'view-reveal-symbolic',
+                    this.mouseTracker.toggleTracker.bind(this.mouseTracker)
+                ),
+                this.createPopupMenuItem(
+                    _('Settings'),
+                    'org.gnome.Settings-symbolic',
+                    extensionObject.openPreferences.bind(extensionObject)
+                ),
+            ];
+            this.menuItems.forEach((popup) => this.menu.addMenuItem(popup));
 
-    //#region Blink Functions
-    blinkAll() {
-        const refreshRate = this.eyeArray[0].refreshRate;
-        const blinkInterval = 1000 / refreshRate;
-        const totalFrames = Math.ceil(refreshRate * (BLINK_DURATION / 1000));
-        const halfFrames = totalFrames / 2;
-        Timeout.clearInterval(this.blinkAllTimeoutID);
-        this.eyeArray.forEach((eye) => (eye.blinking = true));
-        let currentFrame = 0;
-        this.blinkAllTimeoutID.id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, blinkInterval, () => {
-            // Increment frame
-            currentFrame++;
+            // Create the eye canvas
+            this.area = new St.DrawingArea({
+                width: this.width,
+            });
+            this.add_child(this.area);
 
-            // Calculate eyelid level based on if the animation is past the halfway point or not
-            const eyelidLevel =
-                currentFrame <= halfFrames
-                    ? currentFrame / halfFrames // Closing
-                    : 1 - (currentFrame - halfFrames) / halfFrames; // Opening
-
-            this.eyeArray.forEach((eye) => (eye.eyelidLevel = eyelidLevel));
-
-            // Finishing
-            if (currentFrame > totalFrames) {
-                this.eyeArray.forEach((eye) => {
-                    eye.eyelidLevel = 0;
-                    eye.blinking = false;
+            // Get desktop accent color if supported (GNOME 47+) else use default
+            this.interfaceSettings = new Gio.Settings({
+                schema_id: 'org.gnome.desktop.interface',
+            });
+            this.accentColorKeyFound = this.interfaceSettings.list_keys().includes(ACCENT_COLORS_KEY);
+            if (this.accentColorKeyFound) {
+                this.defaultColor = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                this.defaultColorHandler = this.interfaceSettings.connect(`changed::${ACCENT_COLORS_KEY}`, () => {
+                    this.defaultColor = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                    this.area.queue_repaint();
                 });
-                this.blinkAllTimeoutID.id = null;
-                return GLib.SOURCE_REMOVE;
+            } else {
+                this.defaultColor = DEFAULT_COLOR;
             }
-            return GLib.SOURCE_CONTINUE;
-        });
-    }
-    blinkSingle(eye) {
-        const refreshRate = eye.refreshRate;
-        const blinkInterval = 1000 / refreshRate;
-        const totalFrames = Math.ceil(refreshRate * (BLINK_DURATION / 1000));
-        const halfFrames = totalFrames / 2;
-        Timeout.clearInterval(eye.blinkTimeoutID);
-        eye.blinking = true;
-        let currentFrame = 0;
-        eye.blinkTimeoutID.id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, blinkInterval, () => {
-            // Increment frame
-            currentFrame++;
 
-            // Calculate eyelid level based on if the animation is past the halfway point or not
-            const eyelidLevel =
-                currentFrame <= halfFrames
-                    ? currentFrame / halfFrames // Closing
-                    : 1 - (currentFrame - halfFrames) / halfFrames; // Opening
+            // Connect repaint signal of the area to repaint function
+            this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
 
-            eye.eyelidLevel = eyelidLevel;
-
-            // Finishing
-            if (currentFrame > totalFrames) {
-                eye.eyelidLevel = 0;
-                eye.blinking = false;
-                eye.blinkTimeoutID.id = null;
-                return GLib.SOURCE_REMOVE;
-            }
-            return GLib.SOURCE_CONTINUE;
-        });
-    }
-    scheduleNextBlink(eye) {
-        // Calculate a random interval to next blink
-        const interval =
-            this.blinkIntervalRange[0] + (this.blinkIntervalRange[1] - this.blinkIntervalRange[0]) * Math.random();
-        eye.randomBlinkTimeoutID.id = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000 * interval, () => {
-            this.blinkSingle(eye);
-            this.scheduleNextBlink(eye);
-            return GLib.SOURCE_REMOVE;
-        });
-    }
-    //#endregion
-
-    //#region Routine functions
-    selectBlinkMode() {
-        this.stopSyncedBlink();
-        this.stopUnsyncedBlink();
-        switch (this.blinkMode) {
-            case 'synced':
-                this.startSyncedBlink();
-                break;
-            case 'unsynced':
-                this.startUnsyncedBlink();
-                break;
-            case 'manual':
-            default:
-                break;
+            // Start periodic redraw
+            Timeout.setInterval(this.updateHandlerID, this.updateEyeFrame.bind(this), 1000 / this.refreshRate);
         }
-    }
 
-    //#region Synced
-    startSyncedBlink() {
-        Timeout.setInterval(this.syncedRoutineID, this.blinkAll.bind(this), 1000 * this.blinkInterval);
-    }
-    stopSyncedBlink() {
-        Timeout.clearInterval(this.syncedRoutineID);
-    }
-    //#endregion
+        // Create Popup Functions
+        createPopupMenuItem(label, icon, callback) {
+            const item = new PopupMenu.PopupImageMenuItem(label, icon);
+            item.connect('activate', callback);
+            return item;
+        }
+        //#endregion
 
-    //#region Unsynced
-    startUnsyncedBlink() {
-        this.eyeArray.forEach((eye) => this.scheduleNextBlink(eye));
+        //#region Draw eye Functions
+        // Get absolute position
+        getAbsPosition(area) {
+            let [areaX, areaY] = [0, 0];
+            let obj = area;
+
+            // Loop through the hierarchy of parent elements
+            while (obj) {
+                let [tx, ty] = [0, 0];
+                try {
+                    [tx, ty] = obj.get_position();
+                } catch {
+                    /* move on if failed */
+                }
+                // Accumulate the coordinates
+                areaX += tx;
+                areaY += ty;
+                // Move to the parent element
+                obj = obj.get_parent();
+            }
+            // Return the absolute position of the drawing area on the desktop
+            return [areaX, areaY];
+        }
+
+        // Update and redraw the eye frame if the mouse has moved
+        updateEyeFrame() {
+            const [mouseX, mouseY] = global.get_pointer();
+
+            // If mouse has moved or tracker color has changed, or is blinking, redraw eye
+            if (
+                this.mousePositionX !== mouseX ||
+                this.mousePositionY !== mouseY ||
+                this.trackerColor !== this.mouseTracker.currentColor ||
+                this.blinking
+            ) {
+                [this.mousePositionX, this.mousePositionY] = [mouseX, mouseY];
+                this.trackerColor = this.mouseTracker.currentColor;
+                this.area.queue_repaint();
+            }
+        }
+
+        // Draw function
+        onRepaint(area) {
+            const [areaX, areaY] = this.getAbsPosition(area);
+
+            // Get the foreground color from the theme
+            const themeNode = this.area.get_theme_node();
+            const foregroundColor = `#${['red', 'green', 'blue']
+                .map((color) => themeNode.get_foreground_color()[color].toString(16).padStart(2, '0'))
+                .join('')}`;
+            const options = {
+                areaX,
+                areaY,
+                shape: this.shape,
+                lineMode: this.lineMode,
+                lineWidth: this.lineWidth,
+                irisColorEnabled: this.irisColorEnabled,
+                trackerEnabled: this.mouseTracker.enabled,
+                foregroundColor,
+                defaultColor: this.defaultColor,
+                irisColor: this.irisColor,
+                trackerColor: this.trackerColor,
+                eyelidColor: this.eyelidColor,
+                pupilColor: PUPIL_COLOR,
+                eyelidLevel: this.eyelidLevel,
+            };
+            EyeRenderer.drawEye(area, options);
+        }
+        //#endregion
+
+        //#region Properties update functions
+        updateEyeProperties() {
+            const newReactive = this.settings.get_boolean('eye-reactive');
+            const newShape = this.settings.get_string('eye-shape');
+            const newLineMode = this.settings.get_boolean('eye-line-mode');
+            const newLineWidth = this.settings.get_int('eye-line-width');
+            const newWidth = this.settings.get_int('eye-width');
+            const newIrisColorEnabled = this.settings.get_boolean('eye-color-iris-enabled');
+            const newIrisColor = this.settings.get_string('eye-color-iris');
+            const newRefreshRate = this.settings.get_int('eye-refresh-rate');
+            const newEyelidColor = this.settings.get_string('eye-color-eyelid');
+
+            // Update reactive property
+            if (this.reactive !== newReactive) this.reactive = newReactive;
+
+            // Update width
+            if (this.width !== newWidth) {
+                this.area.set_width(newWidth);
+                this.width = newWidth;
+            }
+
+            // Update shape
+            if (this.shape !== newShape) {
+                this.shape = newShape;
+                this.area.queue_repaint();
+            }
+
+            // Update drawing mode
+            if (this.lineMode !== newLineMode) {
+                this.lineMode = newLineMode;
+                this.area.queue_repaint();
+            }
+
+            // Update line thickness
+            if (this.lineWidth !== newLineWidth) {
+                this.lineWidth = newLineWidth / 10;
+                this.area.queue_repaint();
+            }
+
+            // Update iris color
+            if (this.irisColorEnabled !== newIrisColorEnabled || this.irisColor !== newIrisColor) {
+                this.irisColorEnabled = newIrisColorEnabled;
+                this.irisColor = newIrisColor;
+                this.area.queue_repaint();
+            }
+
+            // Update refresh rate
+            if (this.refreshRate !== newRefreshRate) {
+                Timeout.clearInterval(this.updateHandlerID);
+                Timeout.setInterval(this.updateHandlerID, this.updateEyeFrame.bind(this), 1000 / newRefreshRate);
+                this.refreshRate = newRefreshRate;
+            }
+            if (this.eyelidColor !== newEyelidColor) {
+                this.eyelidColor = newEyelidColor;
+                this.area.queue_repaint();
+            }
+        }
+        //#endregion
+
+        //#region Destroy function
+        destroy() {
+            // Disconnect repaint signal
+            this.area.disconnect(this.repaintHandler);
+
+            // Stop periodic redraw
+            Timeout.clearInterval(this.updateHandlerID);
+
+            // Destroy drawing
+            this.area.destroy();
+            this.area = null;
+
+            // Disconnect settings signal handlers
+            this.settingsHandlers?.forEach((connection) => this.settings.disconnect(connection));
+            this.settingsHandlers = null;
+            if (this.defaultColorHandler) {
+                this.interfaceSettings.disconnect(this.defaultColorHandler);
+            }
+            this.defaultColorHandler = null;
+
+            // Destroy popups
+            this.menuItems.forEach((menuItem) => menuItem?.destroy());
+            this.menuItems = [];
+
+            // Disconnect settings
+            this.settings = null;
+            this.interfaceSettings = null;
+
+            // Destroy the button
+            super.destroy();
+        }
+        //#endregion
     }
-    stopUnsyncedBlink() {
-        this.eyeArray.forEach((eye) => Timeout.clearTimeout(eye.randomBlinkTimeoutID));
+);
+//#endregion
+
+//#region Creating eyes
+export function spawnEyes(extensionObject, eyeArray, trackerManager) {
+    // Remove current eyes
+    destroyEyes(eyeArray);
+    for (let count = 0; count < extensionObject.settings.get_int('eye-count'); count++) {
+        eyeArray.push(new Eye(extensionObject, trackerManager));
+        Main.panel.addToStatusArea(
+            `${extensionObject.metadata['gettext-domain']}-${count}`,
+            eyeArray[count],
+            extensionObject.settings.get_int('eye-index'),
+            extensionObject.settings.get_string('eye-position')
+        );
     }
-    //#endregion
-    //#endregion
+}
+//#endregion
 
-    //#region Destroy function
-    destroy() {
-        // Clear any remaining timeouts
-        this.stopSyncedBlink();
-        this.stopUnsyncedBlink();
-        Timeout.clearInterval(this.blinkAllTimeoutID);
-        Timeout.clearTimeout(this.unsyncedDebounceID);
-
-        // Disconnect settings signal handlers
-        this.settingsHandlers?.forEach((connection) => this.settings.disconnect(connection));
-        this.settingsHandlers = null;
-
-        // Disconnect keybinding
-        Main.wm.removeKeybinding('eye-blink-keybinding');
-
-        // Disconnect settings
-        this.settings = null;
-    }
-    //#endregion
+//#region Destroying eyes
+export function destroyEyes(eyeArray) {
+    eyeArray?.forEach((eye) => eye.destroy());
+    eyeArray.length = 0; // Or eyeArray = [];
 }
 //#endregion
