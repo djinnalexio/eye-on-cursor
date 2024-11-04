@@ -1,231 +1,298 @@
-/* trackerSettings.js
- *
- * This file is part of the Eye on Cursor GNOME Shell extension (eye-on-cursor@djinnalexio.github.io).
- *
- * Copyright (C) 2024 djinnalexio
- *
- * This extension is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software Foundation,
- * either version 3 of the License, or (at your option) any later version.
- *
- * This extension is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with this extension.
- * If not, see <https://www.gnu.org/licenses/gpl-3.0.html#license-text>.
- *
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-'use strict';
+msgid ""
+msgstr ""
+"Project-Id-Version: eye-on-cursor\n"
+"Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
+"POT-Creation-Date: 2024-08-26 20:18+0100\n"
+"PO-Revision-Date: 2024-11-04 23:07\n"
+"Last-Translator: \n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: eye-on-cursor\n"
+"X-Crowdin-Project-ID: 734021\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /main/po/eye-on-cursor.pot\n"
+"X-Crowdin-File-ID: 40\n"
 
-//#region Import libraries
-import Adw from 'gi://Adw';
-import GObject from 'gi://GObject';
-import Gdk from 'gi://Gdk';
-import Gio from 'gi://Gio';
-import Gtk from 'gi://Gtk';
-import { gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
-import { EyeAboutRow } from './about.js';
-import { KeybindingRow } from './keybinding.js';
-//#endregion
+#: eye-on-cursor@djinnalexio.github.io/lib/eye.js:117
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:227
+msgid "Toggle Tracker"
+msgstr "Activer/Désactiver le Traqueur"
 
-export const TrackerPage = GObject.registerClass(
-    class TrackerPage extends Adw.PreferencesPage {
-        constructor(extensionObject) {
-            /**
-             * A page displaying the tracker settings
-             *
-             * @param {Extension} extensionObject - the extension object
-             */
+#: eye-on-cursor@djinnalexio.github.io/lib/eye.js:122
+msgid "Settings"
+msgstr "Paramètres"
 
-            super({
-                title: _('Mouse Tracker'),
-                icon_name: 'input-mouse-symbolic',
-            });
-            this.metadata = extensionObject.metadata;
-            this.path = extensionObject.path;
-            this.settings = extensionObject.getSettings();
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:79
+msgid "About"
+msgstr "À propos"
 
-            //#region Tracker drawing group
-            const drawingGroup = new Adw.PreferencesGroup({
-                title: _('Appearance'),
-            });
-            this.add(drawingGroup);
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:80
+msgid "Development information and credits"
+msgstr "Informations de développement et crédits"
 
-            //#region Tracker shape
-            function getSVGsList(path) {
-                const svgsList = [];
-                const svgsDir = Gio.file_new_for_path(path);
-                const enumFiles = svgsDir.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
-                let fileInfo;
-                while ((fileInfo = enumFiles.next_file(null)) !== null) {
-                    const fileName = fileInfo.get_name();
-                    if (fileName.toLowerCase().endsWith('.svg')) svgsList.push(fileName.replace('.svg', ''));
-                }
-                svgsList.sort();
-                return svgsList;
-            }
-            const shapeList = getSVGsList(`${this.path}/media/glyphs/`);
-            const shapeLabelList = new Gtk.StringList();
-            shapeList.forEach((shape) => {
-                shape = shape.replaceAll('_', ' ');
-                shapeLabelList.append(shape);
-            });
-            const shapeRow = new Adw.ComboRow({
-                title: _('Shape'),
-                subtitle: _('Shape of the tracker'),
-                model: shapeLabelList,
-                enable_search: true,
-                expression: new Gtk.PropertyExpression(Gtk.StringObject, null, 'string'),
-                selected: shapeList.indexOf(this.settings.get_string('tracker-shape')),
-            });
-            shapeRow.connect('notify::selected', (widget) => {
-                this.settings.set_string('tracker-shape', shapeList[widget.selected]);
-            });
-            drawingGroup.add(shapeRow);
-            //#endregion
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:112
+msgctxt "(USER)NAME EMAIL/URL"
+msgid "translator_credits"
+msgstr "djinnalexio https://github.com/djinnalexio/"
 
-            //#region Tracker size
-            const sizeRow = new Adw.SpinRow({
-                title: _('Size'),
-                subtitle: _('Size of the tracker'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 128,
-                    upper: 1024,
-                    step_increment: 16,
-                }),
-                value: this.settings.get_int('tracker-size'),
-            });
-            sizeRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('tracker-size', widget.value);
-            });
-            drawingGroup.add(sizeRow);
-            //#endregion
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:118
+msgid "Extension Page"
+msgstr "Page de l'extension"
 
-            //#region Tracker colors
-            function newColorPicker(settings, key) {
-                const colorPicker = new Gtk.ColorDialogButton({
-                    dialog: new Gtk.ColorDialog({
-                        modal: true,
-                        with_alpha: false,
-                    }),
-                    hexpand: false,
-                    margin_end: 8,
-                    valign: Gtk.Align.CENTER,
-                    vexpand: false,
-                });
-                const currentColor = colorPicker.get_rgba();
-                currentColor.parse(settings.get_string(key));
-                colorPicker.set_rgba(currentColor);
-                colorPicker.connect('notify::rgba', (widget) => {
-                    // Convert 'rgb(255,255,255)' to '#ffffff'
-                    const rgbCode = widget.get_rgba().to_string();
-                    const hexCode =
-                        '#' +
-                        rgbCode
-                            .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
-                            .split(',') // Split numbers at ","
-                            .map((string) => parseInt(string)) // Convert them to int
-                            .map((number) => number.toString(16)) // Convert them to base16
-                            .map((string) => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
-                            .join(''); // Join them back into a string
-                    settings.set_string(key, hexCode);
-                });
-                return colorPicker;
-            }
-            const colorDefaultRow = new Adw.ActionRow({
-                title: _('Color'),
-                subtitle: _('Default color of the tracker'),
-            });
-            const colorDefaultBox = new Gtk.Box({
-                orientation: Gtk.Orientation.HORIZONTAL,
-            });
-            colorDefaultBox.append(newColorPicker(this.settings, 'tracker-color-default'));
-            colorDefaultRow.add_suffix(colorDefaultBox);
-            drawingGroup.add(colorDefaultRow);
-            const colorClickRow = new Adw.ActionRow({
-                title: _('Colors on Click'),
-                subtitle: _('Colors when left, middle, and right-clicking'),
-            });
-            const isWayland = Gdk.Display.get_default().constructor.name.includes('Wayland');
-            if (isWayland) {
-                colorClickRow.set_tooltip_text(
-                    _('Click highlighting does not work in applications on Wayland. See README.')
-                );
-            } else {
-                colorClickRow.set_tooltip_text(_('Middle-click highlighting does not work on x11. See README.'));
-            }
-            const colorClickBox = new Gtk.Box({
-                orientation: Gtk.Orientation.HORIZONTAL,
-            });
-            ['tracker-color-left', 'tracker-color-middle', 'tracker-color-right'].forEach((key) => {
-                colorClickBox.append(newColorPicker(this.settings, key));
-            });
-            colorClickRow.add_suffix(colorClickBox);
-            drawingGroup.add(colorClickRow);
-            //#endregion
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:121
+msgid "Forked from"
+msgstr "Dérivé de"
 
-            //#region Tracker opacity
-            const opacityRow = new Adw.SpinRow({
-                title: _('Opacity'),
-                subtitle: _('Opacity of the tracker'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 0,
-                    upper: 100,
-                    step_increment: 10,
-                }),
-                value: this.settings.get_int('tracker-opacity'),
-            });
-            opacityRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('tracker-opacity', widget.value);
-            });
-            drawingGroup.add(opacityRow);
-            //#endregion
+#: eye-on-cursor@djinnalexio.github.io/settings/about.js:124
+msgid "Cinnamon Fork"
+msgstr "Branche Cinnamon"
 
-            //#region Tracker refresh rate
-            const refreshRow = new Adw.SpinRow({
-                title: _('Refresh Rate'),
-                subtitle: _('Hz'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 1,
-                    upper: 144,
-                    step_increment: 1,
-                }),
-                value: this.settings.get_int('tracker-refresh-rate'),
-            });
-            refreshRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('tracker-refresh-rate', widget.value);
-            });
-            refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
-            drawingGroup.add(refreshRow);
-            //#endregion
-            //#endregion
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:43
+msgid "Eyes"
+msgstr "Yeux"
 
-            //#region Tracker keybinding
-            const keybindGroup = new Adw.PreferencesGroup({
-                title: _('Keybinding'),
-            });
-            this.add(keybindGroup);
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:51
+msgid "Layout"
+msgstr "Disposition"
 
-            // Create row
-            const keybindRow = new KeybindingRow(this.settings, 'tracker-keybinding', _('Toggle Tracker'));
-            keybindGroup.set_header_suffix(keybindRow.resetButton);
-            keybindGroup.add(keybindRow);
-            //#endregion
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:57
+msgid "Left"
+msgstr "Gauche"
 
-            //#region About group
-            const adwVersion = parseFloat(Adw.VERSION_S.substring(0, 3));
-            //AboutDialog is available starting in v1.5.0 of Adw (GNOME 46)
-            if (adwVersion >= 1.5) {
-                const aboutGroup = new Adw.PreferencesGroup({
-                    title: _('Credits'),
-                });
-                this.add(aboutGroup);
-                const aboutRow = new EyeAboutRow(this.metadata, this.path);
-                aboutGroup.add(aboutRow);
-            }
-            //#endregion
-        }
-    }
-);
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:57
+msgid "Center"
+msgstr "Centre"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:57
+msgid "Right"
+msgstr "Droite"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:62
+msgid "Position"
+msgstr "Position"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:63
+msgid "Position of the eyes on the panel"
+msgstr "Position des yeux sur le panneau"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:75
+msgid "Index"
+msgstr "Ordre"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:76
+msgid "Index of the eyes on the panel segment"
+msgstr "Rang des yeux sur le segment du panneau"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:92
+msgid "Count"
+msgstr "Quantité"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:93
+msgid "Number of eyes"
+msgstr "Nombre d'yeux"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:104
+msgid "Displaying more eyes may reduce performance."
+msgstr "Un plus grand nombre d'yeux peut réduire la performance."
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:110
+msgid "Width"
+msgstr "Largeur"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:111
+msgid "Drawing space and padding"
+msgstr "Espace et marge"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:127
+msgid "Menu"
+msgstr "Menu"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:128
+msgid "Enable the eye submenu"
+msgstr "Activer le sous-menu de l'œil"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:140
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:55
+msgid "Appearance"
+msgstr "Apparence"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:146
+msgid "Natural"
+msgstr "Naturel"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:146
+msgid "Round"
+msgstr "Rond"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:146
+msgid "Comic"
+msgstr "Comic"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:149
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:85
+msgid "Shape"
+msgstr "Forme"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:150
+msgid "Shape of the eyes"
+msgstr "Forme des yeux"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:162
+msgid "Outline Mode"
+msgstr "Mode Contour"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:163
+msgid "Draw the eyes as outline only"
+msgstr "Dessiner les yeux en contour"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:174
+msgid "Strokes"
+msgstr "Traits"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:175
+msgid "Thickness of the strokes in outline mode"
+msgstr "Épaisseur des traits en mode contour"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:223
+msgid "Iris Color"
+msgstr "Couleur de l'iris"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:251
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:202
+msgid "Refresh Rate"
+msgstr "Fréquence"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:252
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:203
+msgid "Hz"
+msgstr "Hz"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:263
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:214
+msgid "Higher refresh rates may impact performance."
+msgstr "Une fréquence élevée peut réduire la performance."
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:270
+msgid "Blinking"
+msgstr "Clignement"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:275
+msgid "Eyelid Color"
+msgstr "Couleur de la paupière"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:286
+msgid "Manual"
+msgstr "Manuel"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:286
+msgid "Synced"
+msgstr "Synchronisé"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:286
+msgid "Unsynced"
+msgstr "Aléatoire"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:289
+msgid "Blink Mode"
+msgstr "Mode de clignement"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:290
+msgid "Choose how eyes blink"
+msgstr "Comment les yeux clignent"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:304
+msgid "Manual Blink"
+msgstr "Clignement manuel"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:313
+msgid "Synced Blinking Interval"
+msgstr "Intervalle de clignement synchronisé"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:314
+msgid "Seconds between synchronized blinks"
+msgstr "Secondes entre les clignements synchronisés"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:331
+msgid "Unsynced Blinking Interval"
+msgstr "Intervalle de clignement aléatoire"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:332
+msgid "Range of seconds between random blinks"
+msgstr "Intervalle de secondes entre les clignements aléatoires"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:400
+msgid "to"
+msgstr "à"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:46
+msgid "Set a shortcut"
+msgstr "Définir un raccourci"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:55
+msgid "New shortcut…"
+msgstr "Nouveau raccourci…"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:98
+msgid "Press Esc to cancel or Backspace to disable the shortcut"
+msgstr "Appuyez sur Échap pour annuler ou sur Retour arrière pour désactiver le raccourci"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:46
+msgid "Mouse Tracker"
+msgstr "Traqueur"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:86
+msgid "Shape of the tracker"
+msgstr "Forme du traqueur"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:100
+msgid "Size"
+msgstr "Taille"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:101
+msgid "Size of the tracker"
+msgstr "Taille du traqueur"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:149
+msgid "Color"
+msgstr "Couleur"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:150
+msgid "Default color of the tracker"
+msgstr "Couleur par défaut du traqueur"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:160
+msgid "Colors on Click"
+msgstr "Couleurs de clic"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:161
+msgid "Colors when left, middle, and right-clicking"
+msgstr "Couleurs de clics gauche, central, et droit"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:167
+msgid "Click highlighting does not work in applications on Wayland. See README."
+msgstr "La mise en surbrillance des clics ne fonctionne pas dans les applications sur Wayland. Voir README."
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:171
+msgid "Middle-click highlighting does not work on x11. See README."
+msgstr "La mise en surbrillance du clic central ne fonctionne pas sur x11. Voir README."
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:185
+msgid "Opacity"
+msgstr "Opacité"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:186
+msgid "Opacity of the tracker"
+msgstr "Opacité du traqueur"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:220
+msgid "Keybinding"
+msgstr "Raccourci"
+
+#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:238
+msgid "Credits"
+msgstr "Crédits"
+
