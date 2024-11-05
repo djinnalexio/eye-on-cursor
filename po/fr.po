@@ -1,28 +1,26 @@
-# Translation file for Eye on Cursor.
-# Copyright (C) 2024 djinnalexio
-# This file is distributed under the same license as the eye-on-cursor package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: eye-on-cursor 2.0.0.dev\n"
-"Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/"
-"issues\n"
+"Project-Id-Version: eye-on-cursor\n"
+"Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
 "POT-Creation-Date: 2024-08-26 20:18+0100\n"
-"PO-Revision-Date: 2024-08-26 21:53+0100\n"
-"Last-Translator: djinnalexio\n"
-"Language-Team: \n"
-"Language: fr\n"
+"PO-Revision-Date: 2024-11-05 05:30\n"
+"Last-Translator: \n"
+"Language-Team: French\n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.4\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Crowdin-Project: eye-on-cursor\n"
+"X-Crowdin-Project-ID: 734021\n"
+"X-Crowdin-Language: fr\n"
+"X-Crowdin-File: /main/po/eye-on-cursor.pot\n"
+"X-Crowdin-File-ID: 40\n"
 
 #: eye-on-cursor@djinnalexio.github.io/lib/eye.js:117
 #: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:227
 msgid "Toggle Tracker"
-msgstr "Activer/Désactiver le Traqueur"
+msgstr "Activer/Désactiver Le Traqueur"
 
 #: eye-on-cursor@djinnalexio.github.io/lib/eye.js:122
 msgid "Settings"
@@ -240,9 +238,7 @@ msgstr "Nouveau raccourci…"
 
 #: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:98
 msgid "Press Esc to cancel or Backspace to disable the shortcut"
-msgstr ""
-"Appuyez sur Échap pour annuler ou sur Retour arrière pour désactiver le "
-"raccourci"
+msgstr "Appuyez sur Échap pour annuler ou sur Retour arrière pour désactiver le raccourci"
 
 #: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:46
 msgid "Mouse Tracker"
@@ -277,17 +273,12 @@ msgid "Colors when left, middle, and right-clicking"
 msgstr "Couleurs de clics gauche, central, et droit"
 
 #: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:167
-msgid ""
-"Click highlighting does not work in applications on Wayland. See README."
-msgstr ""
-"La mise en surbrillance des clics ne fonctionne pas dans les applications "
-"sur Wayland. Voir README."
+msgid "Click highlighting does not work in applications on Wayland. See README."
+msgstr "La mise en surbrillance des clics ne fonctionne pas dans les applications sur Wayland. Voir README."
 
 #: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:171
 msgid "Middle-click highlighting does not work on x11. See README."
-msgstr ""
-"La mise en surbrillance du clic central ne fonctionne pas sur x11. Voir "
-"README."
+msgstr "La mise en surbrillance du clic central ne fonctionne pas sur x11. Voir README."
 
 #: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:185
 msgid "Opacity"
@@ -304,3 +295,4 @@ msgstr "Raccourci"
 #: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:238
 msgid "Credits"
 msgstr "Crédits"
+
