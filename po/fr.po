@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: eye-on-cursor\n"
 "Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
 "POT-Creation-Date: 2024-08-26 20:18+0100\n"
-"PO-Revision-Date: 2024-11-04 23:07\n"
+"PO-Revision-Date: 2024-11-05 05:30\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: eye-on-cursor@djinnalexio.github.io/lib/eye.js:117
 #: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:227
 msgid "Toggle Tracker"
-msgstr "Activer/Désactiver le Traqueur"
+msgstr "Activer/Désactiver Le Traqueur"
 
 #: eye-on-cursor@djinnalexio.github.io/lib/eye.js:122
 msgid "Settings"
