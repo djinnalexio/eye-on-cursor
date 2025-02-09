@@ -6,7 +6,7 @@ EXTENSION_GETTEXT_DOMAIN = eye-on-cursor
 EXTENSION_UUID = eye-on-cursor@djinnalexio.github.io
 ISSUES_URL = https://github.com/djinnalexio/eye-on-cursor/issues
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
-VERSION = 2.0.0.dev
+VERSION = 1.3.2
 
 .phony: pack install uninstall prefs test test-prefs-settings test-prefs-window update-pot
 
