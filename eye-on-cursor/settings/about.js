@@ -52,14 +52,8 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 const releaseNotes =
     '<p>New:</p>\
     <ul>\
-        <li>Added <em>Blink</em> feature</li>\
-    </ul >\
-    <p>Fixes &amp; Improvements:</p>\
-    <ul>\
-        <li>Changed <em>Eyelid</em> shape name to <em>Natural</em></li>\
-        <li>Edited settings window</li>\
-        <li>Fixed all eyes not immediately switching to tracker color</li>\
-        <li>Reduced Max refresh rate</li>\
+        <li>Added support for GNOME 48</li>\
+        <li>Added donations options</li>\
     </ul >\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
