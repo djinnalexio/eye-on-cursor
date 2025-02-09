@@ -232,15 +232,11 @@ export const TrackerPage = GObject.registerClass(
             //#endregion
 
             //#region About group
-            const adwVersion = parseFloat(Adw.VERSION_S.substring(0, 3));
-            //AboutDialog is available starting in v1.5.0 of Adw (GNOME 46)
-            if (adwVersion >= 1.5) {
-                const aboutGroup = new Adw.PreferencesGroup({title: _('Credits')});
-                this.add(aboutGroup);
+            const aboutGroup = new Adw.PreferencesGroup({title: _('Credits')});
+            this.add(aboutGroup);
 
-                const aboutRow = new EyeAboutRow(this.metadata, this.path);
-                aboutGroup.add(aboutRow);
-            }
+            const aboutRow = new EyeAboutRow(this.metadata, this.path);
+            aboutGroup.add(aboutRow);
             //#endregion
         }
     }

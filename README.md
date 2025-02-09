@@ -9,7 +9,7 @@
 </p>
 <p align="center">
   <a href="https://extensions.gnome.org/extension/7036/eye-on-cursor/">
-    <img alt="GNOME versions" src="https://img.shields.io/badge/supported_shell_versions-45_>>_48-green?style=for-the-badge&logo=gnome">
+    <img alt="GNOME versions" src="https://img.shields.io/badge/supported_shell_versions-47_|_48-green?style=for-the-badge&logo=gnome">
     <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2F7036%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&label=GNOME%20extensions&cacheSeconds=86400&style=for-the-badge&logo=gnome">
   </a>
 </p>

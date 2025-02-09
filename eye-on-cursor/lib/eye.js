@@ -48,7 +48,6 @@ const ACCENT_COLORS = {
     slate: '#6f8396',
 };
 const ACCENT_COLORS_KEY = 'accent-color';
-const DEFAULT_COLOR = '#b5b5b5';
 const EYE_SETTINGS = [
     'eye-reactive',
     'eye-shape',
@@ -131,26 +130,17 @@ export const Eye = GObject.registerClass(
             this.area = new St.DrawingArea({width: this.width});
             this.add_child(this.area);
 
-            // Get desktop accent color if supported (GNOME 47+) else use default
+            // Use desktop accent color as default eye color
             this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-            this.accentColorKeyFound = this.interfaceSettings
-                .list_keys()
-                .includes(ACCENT_COLORS_KEY);
-
-            if (this.accentColorKeyFound) {
-                this.defaultColor =
-                    ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-                this.defaultColorHandler = this.interfaceSettings.connect(
-                    `changed::${ACCENT_COLORS_KEY}`,
-                    () => {
-                        this.defaultColor =
-                            ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-                        this.area.queue_repaint();
-                    }
-                );
-            } else {
-                this.defaultColor = DEFAULT_COLOR;
-            }
+            this.defaultColor = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+            this.defaultColorHandler = this.interfaceSettings.connect(
+                `changed::${ACCENT_COLORS_KEY}`,
+                () => {
+                    this.defaultColor =
+                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                    this.area.queue_repaint();
+                }
+            );
 
             // Connect repaint signal of the area to repaint function
             this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
