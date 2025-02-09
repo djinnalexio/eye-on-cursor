@@ -14,7 +14,7 @@
   </a>
 </p>
 <p align="center">
-  <img alt="logo" height="100" src="./eye-on-cursor@djinnalexio.github.io/media/eye-on-cursor-logo.svg">
+  <img alt="logo" height="100" src="./eye-on-cursor/media/eye-on-cursor-logo.svg">
 </p>
 <h3 align="center">Let your desktop "keep an eye" on your mouse!</h3>
 
