@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: djinnalexio
 
 COPYRIGHT_HOLDER = djinnalexio
-EXTENSION_GETTEXT_DOMAIN = eye-on-cursor
+EXTENSION_NAME = eye-on-cursor
 EXTENSION_UUID = eye-on-cursor@djinnalexio.github.io
 ISSUES_URL = https://github.com/djinnalexio/eye-on-cursor/issues
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
@@ -11,7 +11,7 @@ VERSION = 1.3.2
 .phony: pack install uninstall prefs test test-prefs-settings test-prefs-window update-pot
 
 pack:
-	gnome-extensions pack $(EXTENSION_UUID) \
+	gnome-extensions pack $(EXTENSION_NAME) \
 		--extra-source="lib" \
 		--extra-source="media" \
 		--extra-source="settings" \
@@ -25,7 +25,7 @@ install: pack
 	# Log out and in to use it, or start testing immediately.
 
 uninstall:
-	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_GETTEXT_DOMAIN)
+	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_NAME)
 	gnome-extensions uninstall $(EXTENSION_UUID)
 	# Extension has been uninstalled and settings purged.
 
@@ -42,17 +42,17 @@ test: install
 
 test-prefs-settings: install prefs
 	# Monitoring settings values:
-	dconf watch /org/gnome/shell/extensions/$(EXTENSION_GETTEXT_DOMAIN)/
+	dconf watch /org/gnome/shell/extensions/$(EXTENSION_NAME)/
 
 test-prefs-window: install prefs
 	# Monitoring Preferences window:
 	journalctl -f -o cat /usr/bin/gjs
 
 update-pot:
-	find $(EXTENSION_UUID)/ -iname "*.js" | xargs xgettext \
-		--output=po/$(EXTENSION_GETTEXT_DOMAIN).pot \
+	find $(EXTENSION_NAME)/ -iname "*.js" | xargs xgettext \
+		--output=po/$(EXTENSION_NAME).pot \
 		--from-code=UTF-8 \
-		--package-name=$(EXTENSION_GETTEXT_DOMAIN)  \
+		--package-name=$(EXTENSION_NAME)  \
 		--package-version=$(VERSION) \
 		--copyright-holder=$(COPYRIGHT_HOLDER) \
 		--msgid-bugs-address=$(ISSUES_URL)
