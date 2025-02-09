@@ -52,8 +52,11 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 const releaseNotes =
     '<p>New:</p>\
     <ul>\
-        <li>Added support for GNOME 48</li>\
-        <li>Added donations options</li>\
+        <li></li>\
+    </ul >\
+    <p>Fixes &amp; Improvements:</p>\
+    <ul>\
+        <li></li>\
     </ul >\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
