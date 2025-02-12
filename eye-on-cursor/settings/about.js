@@ -44,7 +44,7 @@ const designers = [];
 const developers = ['djinnalexio https://github.com/djinnalexio/'];
 const documenters = [];
 
-const copyright = '© 2024 djinnalexio';
+const copyright = '© 2024-2025 djinnalexio';
 const developerName = 'djinnalexio';
 const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
