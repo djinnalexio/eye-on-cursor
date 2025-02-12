@@ -100,7 +100,7 @@ export const TrackerPage = GObject.registerClass(
                 title: _('Size'),
                 subtitle: _('Size of the tracker'),
                 adjustment: new Gtk.Adjustment({
-                    lower: 128,
+                    lower: 16,
                     upper: 1024,
                     step_increment: 16,
                 }),
