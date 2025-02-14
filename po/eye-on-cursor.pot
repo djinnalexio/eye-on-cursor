@@ -1,5 +1,5 @@
 # Translation file for Eye on Cursor.
-# Copyright (C) 2024 djinnalexio
+# Copyright (C) 2024-2025 djinnalexio
 # This file is distributed under the same license as the eye-on-cursor package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
