@@ -55,6 +55,11 @@ const releaseNotes =
         <li>Added support for GNOME 48</li>\
         <li>Added donations options</li>\
     </ul >\
+    <p>Fixes &amp; Improvements:</p>\
+    <ul>\
+        <li>Set minimum eye count to zero allowing to disable eye</li>\
+        <li>Lowered minimum tracker size</li>\
+    </ul >\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
 //#endregion
