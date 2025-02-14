@@ -2,7 +2,7 @@
  *
  * This file is part of the Eye on Cursor GNOME Shell extension (eye-on-cursor@djinnalexio.github.io).
  *
- * Copyright (C) 2024 djinnalexio
+ * Copyright (C) 2024-2025 djinnalexio
  *
  * This extension is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software Foundation,
@@ -44,7 +44,7 @@ const designers = [];
 const developers = ['djinnalexio https://github.com/djinnalexio/'];
 const documenters = [];
 
-const copyright = '© 2024 djinnalexio';
+const copyright = '© 2024-2025 djinnalexio';
 const developerName = 'djinnalexio';
 const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
