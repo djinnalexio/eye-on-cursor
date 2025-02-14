@@ -92,7 +92,7 @@ export const EyePage = GObject.registerClass(
                 title: _('Count'),
                 subtitle: _('Number of eyes'),
                 adjustment: new Gtk.Adjustment({
-                    lower: 1,
+                    lower: 0,
                     upper: 100,
                     step_increment: 1,
                 }),
