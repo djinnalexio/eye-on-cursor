@@ -46,8 +46,6 @@ class EyeShape {
             this.irisColor = this.options.trackerColor;
         } else if (this.options.irisColorEnabled) {
             this.irisColor = this.options.irisColor;
-        } else if (this.options.lineMode) {
-            this.irisColor = this.options.foregroundColor;
         } else {
             this.irisColor = this.options.defaultColor;
         }
