@@ -74,24 +74,85 @@ export const TrackerPage = GObject.registerClass(
                 return svgsList;
             }
 
-            const shapeList = getSVGsList(`${this.path}/media/glyphs/`);
-            const shapeLabelList = new Gtk.StringList();
-            shapeList.forEach(shape => {
-                shape = shape.replaceAll('_', ' ');
-                shapeLabelList.append(shape);
-            });
+            const shapeDir = `${this.path}/media/glyphs/`;
+            const shapeList = getSVGsList(shapeDir);
 
-            const shapeRow = new Adw.ComboRow({
+            const shapeRow = new Adw.ActionRow({
                 title: _('Shape'),
                 subtitle: _('Shape of the tracker'),
-                model: shapeLabelList,
-                enable_search: true,
-                expression: new Gtk.PropertyExpression(Gtk.StringObject, null, 'string'),
-                selected: shapeList.indexOf(this.settings.get_string('tracker-shape')),
+                activatable: true,
             });
-            shapeRow.connect('notify::selected', widget => {
-                this.settings.set_string('tracker-shape', shapeList[widget.selected]);
+
+            const shapeRowLabel = new Gtk.Label({
+                label: this.settings.get_string('tracker-shape').replaceAll('_', ' '),
+                valign: Gtk.Align.CENTER,
             });
+            shapeRow.add_suffix(shapeRowLabel);
+
+            const shapeWindow = new Adw.Dialog({
+                title: _('Select a Tracker'),
+                content_width: 400,
+                content_height: 600,
+            });
+
+            const shapePicker = new Gtk.FlowBox({
+                min_children_per_line: 3,
+                activate_on_single_click: true,
+                homogeneous: true,
+                margin_top: 8,
+                margin_bottom: 8,
+                margin_start: 8,
+                margin_end: 8,
+                row_spacing: 4,
+                column_spacing: 4,
+            });
+
+            shapeList.forEach(shape => {
+                const displayName = shape.replaceAll('_', ' ');
+                const filePath = `${shapeDir}/${shape}.svg`;
+
+                const flowItem = new Gtk.FlowBoxChild();
+                flowItem.shape = shape;
+                flowItem.name = displayName;
+
+                const flowItemContent = new Gtk.Box({
+                    orientation: Gtk.Orientation.VERTICAL,
+                    spacing: 4,
+                    valign: Gtk.Align.CENTER,
+                    halign: Gtk.Align.CENTER,
+                });
+
+                const picture = Gtk.Picture.new_for_filename(filePath);
+                picture.set_size_request(48, 48);
+                picture.set_content_fit(Gtk.ContentFit.CONTAIN);
+
+                const label = new Gtk.Label({
+                    label: displayName,
+                    justify: Gtk.Justification.CENTER,
+                    wrap: true,
+                    xalign: 0.5,
+                });
+
+                flowItemContent.append(picture);
+                flowItemContent.append(label);
+                flowItem.set_child(flowItemContent);
+                shapePicker.append(flowItem);
+            });
+
+            shapePicker.connect('child-activated', (flowBox, flowBoxChild) => {
+                shapeRowLabel.set_label(flowBoxChild.name);
+                this.settings.set_string('tracker-shape', flowBoxChild.shape);
+                shapeWindow.close();
+            });
+
+            const scrolledWindow = new Gtk.ScrolledWindow();
+            scrolledWindow.set_child(shapePicker);
+            shapeWindow.set_child(scrolledWindow);
+
+            shapeRow.connect('activated', () => {
+                shapeWindow.present(this);
+            });
+
             drawingGroup.add(shapeRow);
             //#endregion
 
