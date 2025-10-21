@@ -30,6 +30,12 @@
 
     <!-- Eye Position Settings -->
 
+    <key name='eye-active' type='b'>
+      <default>true</default>
+      <summary>Whether eyes are enabled</summary>
+      <description>Determines if there are eyes.</description>
+    </key>
+
     <key name='eye-position' enum='org.gnome.shell.extensions.eye-on-cursor.eye-position'>
       <default>'center'</default>
       <summary>Position of the eyes on the panel</summary>

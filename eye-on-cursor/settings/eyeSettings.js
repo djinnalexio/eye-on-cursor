@@ -52,6 +52,36 @@ export const EyePage = GObject.registerClass(
             });
             this.add(placementGroup);
 
+            //#region Eye Activity
+            const activeRow = new Adw.SwitchRow({
+                title: _('Active'),
+                subtitle: _('Enable the eyes'),
+                active: this.settings.get_boolean('eye-active'),
+            });
+            activeRow.connect('notify::active', widget => {
+                this.settings.set_boolean('eye-active', widget.active);
+            });
+            placementGroup.add(activeRow);
+            //#endregion
+
+            //#region Eye count
+            const countRow = new Adw.SpinRow({
+                title: _('Count'),
+                subtitle: _('Number of eyes'),
+                adjustment: new Gtk.Adjustment({
+                    lower: 1,
+                    upper: 100,
+                    step_increment: 1,
+                }),
+                value: this.settings.get_int('eye-count'),
+            });
+            countRow.adjustment.connect('value-changed', widget => {
+                this.settings.set_int('eye-count', widget.value);
+            });
+            countRow.set_tooltip_text(_('Displaying more eyes may reduce performance.'));
+            placementGroup.add(countRow);
+            //#endregion
+
             //#region Eye position
             const positionLabelList = new Gtk.StringList();
             [_('Left'), _('Center'), _('Right')].forEach(position =>
@@ -85,24 +115,6 @@ export const EyePage = GObject.registerClass(
                 this.settings.set_int('eye-index', widget.value);
             });
             placementGroup.add(indexRow);
-            //#endregion
-
-            //#region Eye count
-            const countRow = new Adw.SpinRow({
-                title: _('Count'),
-                subtitle: _('Number of eyes'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 0,
-                    upper: 100,
-                    step_increment: 1,
-                }),
-                value: this.settings.get_int('eye-count'),
-            });
-            countRow.adjustment.connect('value-changed', widget => {
-                this.settings.set_int('eye-count', widget.value);
-            });
-            countRow.set_tooltip_text(_('Displaying more eyes may reduce performance.'));
-            placementGroup.add(countRow);
             //#endregion
 
             //#region Eye margin
