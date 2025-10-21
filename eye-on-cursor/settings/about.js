@@ -52,11 +52,14 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 const releaseNotes =
     '<p>New:</p>\
     <ul>\
-        <li></li>\
+        <li>Added support for GNOME 49</li>\
+        <li>Added cursor tracker shapes</li>\
     </ul >\
     <p>Fixes &amp; Improvements:</p>\
     <ul>\
-        <li></li>\
+        <li>Added option to disable eye</li>\
+        <li>Make default accent color apply to the iris in outline mode</li>\
+        <li>Replaced the dropdown list for shape selection with a selection popup</li>\
     </ul >\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';

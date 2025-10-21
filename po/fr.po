@@ -6,301 +6,315 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: eye-on-cursor 2.0.0.dev\n"
-"Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/"
-"issues\n"
-"POT-Creation-Date: 2024-08-26 20:18+0100\n"
-"PO-Revision-Date: 2024-08-26 21:53+0100\n"
+"Project-Id-Version: eye-on-cursor 2..0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
+"POT-Creation-Date: 2025-10-21 02:22+0100\n"
+"PO-Revision-Date: 2025-10-21 02:36+0100\n"
 "Last-Translator: djinnalexio\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.8\n"
 
-#: eye-on-cursor@djinnalexio.github.io/lib/eye.js:117
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:227
+#: eye-on-cursor/lib/eye.js:116 eye-on-cursor/settings/trackerSettings.js:288
 msgid "Toggle Tracker"
 msgstr "Activer/Désactiver le Traqueur"
 
-#: eye-on-cursor@djinnalexio.github.io/lib/eye.js:122
+#: eye-on-cursor/lib/eye.js:121
 msgid "Settings"
 msgstr "Paramètres"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:79
-msgid "About"
-msgstr "À propos"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:80
-msgid "Development information and credits"
-msgstr "Informations de développement et crédits"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:112
-msgctxt "(USER)NAME EMAIL/URL"
-msgid "translator_credits"
-msgstr "djinnalexio https://github.com/djinnalexio/"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:118
-msgid "Extension Page"
-msgstr "Page de l'extension"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:121
-msgid "Forked from"
-msgstr "Dérivé de"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/about.js:124
-msgid "Cinnamon Fork"
-msgstr "Branche Cinnamon"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:43
+#: eye-on-cursor/settings/eyeSettings.js:43
 msgid "Eyes"
 msgstr "Yeux"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:51
+#: eye-on-cursor/settings/eyeSettings.js:51
 msgid "Layout"
 msgstr "Disposition"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:57
-msgid "Left"
-msgstr "Gauche"
+#: eye-on-cursor/settings/eyeSettings.js:57
+msgid "Active"
+msgstr "Actif"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:57
-msgid "Center"
-msgstr "Centre"
+#: eye-on-cursor/settings/eyeSettings.js:58
+msgid "Enable the eyes"
+msgstr "Activer les yeux"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:57
-msgid "Right"
-msgstr "Droite"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:62
-msgid "Position"
-msgstr "Position"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:63
-msgid "Position of the eyes on the panel"
-msgstr "Position des yeux sur le panneau"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:75
-msgid "Index"
-msgstr "Ordre"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:76
-msgid "Index of the eyes on the panel segment"
-msgstr "Rang des yeux sur le segment du panneau"
-
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:92
+#: eye-on-cursor/settings/eyeSettings.js:69
 msgid "Count"
-msgstr "Quantité"
+msgstr "Compte"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:93
+#: eye-on-cursor/settings/eyeSettings.js:70
 msgid "Number of eyes"
 msgstr "Nombre d'yeux"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:104
+#: eye-on-cursor/settings/eyeSettings.js:81
 msgid "Displaying more eyes may reduce performance."
 msgstr "Un plus grand nombre d'yeux peut réduire la performance."
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:110
+#: eye-on-cursor/settings/eyeSettings.js:87
+msgid "Left"
+msgstr "Gauche"
+
+#: eye-on-cursor/settings/eyeSettings.js:87
+msgid "Center"
+msgstr "Centre"
+
+#: eye-on-cursor/settings/eyeSettings.js:87
+msgid "Right"
+msgstr "Droite"
+
+#: eye-on-cursor/settings/eyeSettings.js:92
+msgid "Position"
+msgstr "Position"
+
+#: eye-on-cursor/settings/eyeSettings.js:93
+msgid "Position of the eyes on the panel"
+msgstr "Position des yeux sur le panneau"
+
+#: eye-on-cursor/settings/eyeSettings.js:105
+msgid "Index"
+msgstr "Ordre"
+
+#: eye-on-cursor/settings/eyeSettings.js:106
+msgid "Index of the eyes on the panel segment"
+msgstr "Rang des yeux sur le segment du panneau"
+
+#: eye-on-cursor/settings/eyeSettings.js:122
 msgid "Width"
 msgstr "Largeur"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:111
+#: eye-on-cursor/settings/eyeSettings.js:123
 msgid "Drawing space and padding"
 msgstr "Espace et marge"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:127
+#: eye-on-cursor/settings/eyeSettings.js:139
 msgid "Menu"
 msgstr "Menu"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:128
+#: eye-on-cursor/settings/eyeSettings.js:140
 msgid "Enable the eye submenu"
 msgstr "Activer le sous-menu de l'œil"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:140
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:55
+#: eye-on-cursor/settings/eyeSettings.js:152
+#: eye-on-cursor/settings/trackerSettings.js:55
 msgid "Appearance"
 msgstr "Apparence"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:146
+#: eye-on-cursor/settings/eyeSettings.js:158
 msgid "Natural"
 msgstr "Naturel"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:146
+#: eye-on-cursor/settings/eyeSettings.js:158
 msgid "Round"
 msgstr "Rond"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:146
+#: eye-on-cursor/settings/eyeSettings.js:158
 msgid "Comic"
 msgstr "Comic"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:149
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:85
+#: eye-on-cursor/settings/eyeSettings.js:161
+#: eye-on-cursor/settings/trackerSettings.js:81
 msgid "Shape"
 msgstr "Forme"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:150
+#: eye-on-cursor/settings/eyeSettings.js:162
 msgid "Shape of the eyes"
 msgstr "Forme des yeux"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:162
+#: eye-on-cursor/settings/eyeSettings.js:174
 msgid "Outline Mode"
 msgstr "Mode Contour"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:163
+#: eye-on-cursor/settings/eyeSettings.js:175
 msgid "Draw the eyes as outline only"
 msgstr "Dessiner les yeux en contour"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:174
+#: eye-on-cursor/settings/eyeSettings.js:186
 msgid "Strokes"
 msgstr "Traits"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:175
+#: eye-on-cursor/settings/eyeSettings.js:187
 msgid "Thickness of the strokes in outline mode"
 msgstr "Épaisseur des traits en mode contour"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:223
+#: eye-on-cursor/settings/eyeSettings.js:235
 msgid "Iris Color"
 msgstr "Couleur de l'iris"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:251
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:202
+#: eye-on-cursor/settings/eyeSettings.js:263
+#: eye-on-cursor/settings/trackerSettings.js:263
 msgid "Refresh Rate"
 msgstr "Fréquence"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:252
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:203
+#: eye-on-cursor/settings/eyeSettings.js:264
+#: eye-on-cursor/settings/trackerSettings.js:264
 msgid "Hz"
 msgstr "Hz"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:263
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:214
+#: eye-on-cursor/settings/eyeSettings.js:275
+#: eye-on-cursor/settings/trackerSettings.js:275
 msgid "Higher refresh rates may impact performance."
 msgstr "Une fréquence élevée peut réduire la performance."
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:270
+#: eye-on-cursor/settings/eyeSettings.js:282
 msgid "Blinking"
 msgstr "Clignement"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:275
+#: eye-on-cursor/settings/eyeSettings.js:287
 msgid "Eyelid Color"
 msgstr "Couleur de la paupière"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:286
+#: eye-on-cursor/settings/eyeSettings.js:298
 msgid "Manual"
 msgstr "Manuel"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:286
+#: eye-on-cursor/settings/eyeSettings.js:298
 msgid "Synced"
 msgstr "Synchronisé"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:286
+#: eye-on-cursor/settings/eyeSettings.js:298
 msgid "Unsynced"
 msgstr "Aléatoire"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:289
+#: eye-on-cursor/settings/eyeSettings.js:301
 msgid "Blink Mode"
 msgstr "Mode de clignement"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:290
+#: eye-on-cursor/settings/eyeSettings.js:302
 msgid "Choose how eyes blink"
 msgstr "Comment les yeux clignent"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:304
+#: eye-on-cursor/settings/eyeSettings.js:316
 msgid "Manual Blink"
 msgstr "Clignement manuel"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:313
+#: eye-on-cursor/settings/eyeSettings.js:325
 msgid "Synced Blinking Interval"
 msgstr "Intervalle de clignement synchronisé"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:314
+#: eye-on-cursor/settings/eyeSettings.js:326
 msgid "Seconds between synchronized blinks"
 msgstr "Secondes entre les clignements synchronisés"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:331
+#: eye-on-cursor/settings/eyeSettings.js:343
 msgid "Unsynced Blinking Interval"
 msgstr "Intervalle de clignement aléatoire"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:332
+#: eye-on-cursor/settings/eyeSettings.js:344
 msgid "Range of seconds between random blinks"
 msgstr "Intervalle de secondes entre les clignements aléatoires"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/eyeSettings.js:400
+#: eye-on-cursor/settings/eyeSettings.js:412
 msgid "to"
 msgstr "à"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:46
+#: eye-on-cursor/settings/keybinding.js:46
 msgid "Set a shortcut"
 msgstr "Définir un raccourci"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:55
+#: eye-on-cursor/settings/keybinding.js:55
 msgid "New shortcut…"
 msgstr "Nouveau raccourci…"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/keybinding.js:98
+#: eye-on-cursor/settings/keybinding.js:98
 msgid "Press Esc to cancel or Backspace to disable the shortcut"
 msgstr ""
 "Appuyez sur Échap pour annuler ou sur Retour arrière pour désactiver le "
 "raccourci"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:46
+#: eye-on-cursor/settings/about.js:80
+msgid "About"
+msgstr "À propos"
+
+#: eye-on-cursor/settings/about.js:81
+msgid "Development information and credits"
+msgstr "Informations de développement et crédits"
+
+#: eye-on-cursor/settings/about.js:113
+msgctxt "(USER)NAME EMAIL/URL"
+msgid "translator_credits"
+msgstr "djinnalexio https://github.com/djinnalexio/"
+
+#: eye-on-cursor/settings/about.js:119
+msgid "Extension Page"
+msgstr "Page de l'extension"
+
+#: eye-on-cursor/settings/about.js:122
+msgid "Donate"
+msgstr "Faire un Don"
+
+#: eye-on-cursor/settings/about.js:123
+msgid "Forked from"
+msgstr "Dérivé de"
+
+#: eye-on-cursor/settings/about.js:126
+msgid "Cinnamon Fork"
+msgstr "Branche Cinnamon"
+
+#: eye-on-cursor/settings/trackerSettings.js:46
 msgid "Mouse Tracker"
 msgstr "Traqueur"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:86
+#: eye-on-cursor/settings/trackerSettings.js:82
 msgid "Shape of the tracker"
 msgstr "Forme du traqueur"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:100
+#: eye-on-cursor/settings/trackerSettings.js:93
+msgid "Select a Tracker"
+msgstr "Sélectionner un Traqueur"
+
+#: eye-on-cursor/settings/trackerSettings.js:161
 msgid "Size"
 msgstr "Taille"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:101
+#: eye-on-cursor/settings/trackerSettings.js:162
 msgid "Size of the tracker"
 msgstr "Taille du traqueur"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:149
+#: eye-on-cursor/settings/trackerSettings.js:210
 msgid "Color"
 msgstr "Couleur"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:150
+#: eye-on-cursor/settings/trackerSettings.js:211
 msgid "Default color of the tracker"
 msgstr "Couleur par défaut du traqueur"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:160
+#: eye-on-cursor/settings/trackerSettings.js:221
 msgid "Colors on Click"
 msgstr "Couleurs de clic"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:161
+#: eye-on-cursor/settings/trackerSettings.js:222
 msgid "Colors when left, middle, and right-clicking"
 msgstr "Couleurs de clics gauche, central, et droit"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:167
+#: eye-on-cursor/settings/trackerSettings.js:228
 msgid ""
 "Click highlighting does not work in applications on Wayland. See README."
 msgstr ""
 "La mise en surbrillance des clics ne fonctionne pas dans les applications "
 "sur Wayland. Voir README."
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:171
+#: eye-on-cursor/settings/trackerSettings.js:232
 msgid "Middle-click highlighting does not work on x11. See README."
 msgstr ""
 "La mise en surbrillance du clic central ne fonctionne pas sur x11. Voir "
 "README."
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:185
+#: eye-on-cursor/settings/trackerSettings.js:246
 msgid "Opacity"
 msgstr "Opacité"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:186
+#: eye-on-cursor/settings/trackerSettings.js:247
 msgid "Opacity of the tracker"
 msgstr "Opacité du traqueur"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:220
+#: eye-on-cursor/settings/trackerSettings.js:281
 msgid "Keybinding"
 msgstr "Raccourci"
 
-#: eye-on-cursor@djinnalexio.github.io/settings/trackerSettings.js:238
+#: eye-on-cursor/settings/trackerSettings.js:296
 msgid "Credits"
 msgstr "Crédits"
