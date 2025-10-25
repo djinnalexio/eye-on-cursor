@@ -282,7 +282,7 @@ msgstr "Colour"
 
 #: eye-on-cursor/settings/trackerSettings.js:212
 msgid "Custom color for the tracker"
-msgstr "Custom colour of the tracker"
+msgstr "Custom colour for the tracker"
 
 #: eye-on-cursor/settings/trackerSettings.js:241
 msgid "Colors on Click"

@@ -146,7 +146,7 @@ msgstr "Couleur de l'iris"
 
 #: eye-on-cursor/settings/eyeSettings.js:237
 msgid "Custom color for the iris"
-msgstr "Couleur personnalisée de l'iris"
+msgstr "Couleur personnalisée pour l'iris"
 
 #: eye-on-cursor/settings/eyeSettings.js:266
 #: eye-on-cursor/settings/trackerSettings.js:283
@@ -284,7 +284,7 @@ msgstr "Couleur"
 
 #: eye-on-cursor/settings/trackerSettings.js:212
 msgid "Custom color for the tracker"
-msgstr "Couleur personnalisée du traqueur"
+msgstr "Couleur personnalisée pour le traqueur"
 
 #: eye-on-cursor/settings/trackerSettings.js:241
 msgid "Colors on Click"
