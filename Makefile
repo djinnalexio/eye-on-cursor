@@ -33,12 +33,19 @@ prefs:
 	gnome-extensions prefs $(EXTENSION_UUID)
 	# Opened Preferences.
 
-test: install
+test-gnome48: install
 	# Running a nested GNOME Shell:
 	env MUTTER_DEBUG_DUMMY_MODE_SPECS=960x540 \
 		SHELL_DEBUG=backtrace-warnings \
 		G_MESSAGES_DEBUG='GNOME Shell' \
 		dbus-run-session -- gnome-shell --nested --wayland
+
+test: install
+	# Running a nested GNOME Shell:
+	env MUTTER_DEBUG_DUMMY_MODE_SPECS=960x540 \
+		SHELL_DEBUG=backtrace-warnings \
+		G_MESSAGES_DEBUG='GNOME Shell' \
+		dbus-run-session -- gnome-shell --devkit
 
 test-prefs-settings: install prefs
 	# Monitoring settings values:
