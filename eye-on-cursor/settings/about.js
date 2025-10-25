@@ -54,11 +54,12 @@ const releaseNotes =
     <ul>\
         <li>Added support for GNOME 49</li>\
         <li>Added cursor tracker shapes</li>\
-    </ul >\
-    <p>Fixes &amp; Improvements:</p>\
-    <ul>\
+        </ul >\
+        <p>Fixes &amp; Improvements:</p>\
+        <ul>\
         <li>Added option to disable eye</li>\
-        <li>Make default accent color apply to the iris in outline mode</li>\
+        <li>Made desktop accent color apply to tracker</li>\
+        <li>Made desktop accent color apply to the iris in outline mode</li>\
         <li>Replaced the dropdown list for shape selection with a selection popup</li>\
     </ul >\
     ';
