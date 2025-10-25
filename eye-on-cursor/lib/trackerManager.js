@@ -33,6 +33,20 @@ import * as Timeout from './timeout.js';
 //#endregion
 
 //#region Constants
+// See https://gitlab.gnome.org/GNOME/libadwaita/-/blob/main/src/adw-accent-color.c?ref_type=heads#L15
+// And https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas/-/blob/master/schemas/org.gnome.desktop.interface.gschema.xml.in?ref_type=heads#L314
+const ACCENT_COLORS = {
+    blue: '#3584e4',
+    teal: '#2190a4',
+    green: '#3a944a',
+    yellow: '#c88800',
+    orange: '#ed5b00',
+    red: '#e62d42',
+    pink: '#d56199',
+    purple: '#9141ac',
+    slate: '#6f8396',
+};
+const ACCENT_COLORS_KEY = 'accent-color';
 const DISABLED_COLOR = '#1C2A2B'; // Disabled color so that there is a change when toggling the tracker
 const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
 const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
@@ -42,7 +56,8 @@ const TRACKER_RAISE_DELAY = 20;
 const TRACKER_SETTINGS = [
     'tracker-shape',
     'tracker-size',
-    'tracker-color-default',
+    'tracker-color-main-enabled',
+    'tracker-color-main',
     'tracker-color-left',
     'tracker-color-middle',
     'tracker-color-right',
@@ -85,17 +100,23 @@ export class TrackerManager {
         // Initialize settings values
         this.shape = this.settings.get_string('tracker-shape');
         this.size = this.settings.get_int('tracker-size');
-        this.colorDefault = this.settings.get_string('tracker-color-default');
+        this.colorMainEnabled = this.settings.get_boolean('tracker-color-main-enabled');
+        this.colorMain = this.settings.get_string('tracker-color-main');
         this.colorLeft = this.settings.get_string('tracker-color-left');
         this.colorMiddle = this.settings.get_string('tracker-color-middle');
         this.colorRight = this.settings.get_string('tracker-color-right');
         this.opacity = this.settings.get_int('tracker-opacity');
         this.refreshRate = this.settings.get_int('tracker-refresh-rate');
 
+        // Use desktop accent color as default tracker color
+        this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+        this.colorDefault = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+
         // Create tracker icons in cache based on the initial settings
         this.cacheDir = this.getCacheDir();
         this.updateCacheTrackers(this.shape, [
             this.colorDefault,
+            this.colorMain,
             this.colorLeft,
             this.colorMiddle,
             this.colorRight,
@@ -126,6 +147,17 @@ export class TrackerManager {
         );
 
         if (!this.isWayland) Atspi.init();
+
+        // Connect change in accent color to tracker redraw
+        this.defaultColorHandler = this.interfaceSettings.connect(
+            `changed::${ACCENT_COLORS_KEY}`,
+            () => {
+                this.colorDefault =
+                    ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                this.updateCacheTrackers(this.shape, [this.colorDefault]);
+                if (!this.colorMainEnabled) this.updateTrackerIcon(this.shape, this.colorDefault);
+            }
+        );
     }
 
     // Change tracker icon
@@ -231,7 +263,6 @@ export class TrackerManager {
 
     enableTracker() {
         this.enabled = true;
-        this.currentColor = this.colorDefault;
 
         // Start Updater
         Timeout.setInterval(
@@ -242,7 +273,9 @@ export class TrackerManager {
 
         // Add tracker to desktop
         Main.uiGroup.add_child(this.trackerIcon);
-        this.updateTrackerIcon(this.shape, this.currentColor);
+        this.colorMainEnabled
+            ? this.updateTrackerIcon(this.shape, this.colorMain)
+            : this.updateTrackerIcon(this.shape, this.colorDefault);
         this.updateTrackerPosition();
 
         // Connect mouse click events
@@ -404,7 +437,9 @@ export class TrackerManager {
 
     resetColor() {
         // Reset the tracker icon to the default color
-        this.updateTrackerIcon(this.shape, this.colorDefault);
+        this.colorMainEnabled
+            ? this.updateTrackerIcon(this.shape, this.colorMain)
+            : this.updateTrackerIcon(this.shape, this.colorDefault);
         this.activeClick = null;
         this.clickResetPending = false;
 
@@ -419,7 +454,8 @@ export class TrackerManager {
         // Get new settings
         const newShape = this.settings.get_string('tracker-shape');
         const newSize = this.settings.get_int('tracker-size');
-        const newColorDefault = this.settings.get_string('tracker-color-default');
+        const newColorMainEnabled = this.settings.get_boolean('tracker-color-main-enabled');
+        const newColorMain = this.settings.get_string('tracker-color-main');
         const newColorLeft = this.settings.get_string('tracker-color-left');
         const newColorMiddle = this.settings.get_string('tracker-color-middle');
         const newColorRight = this.settings.get_string('tracker-color-right');
@@ -429,25 +465,33 @@ export class TrackerManager {
         // Update cache if shape or any color has changed
         if (
             this.shape !== newShape ||
-            this.colorDefault !== newColorDefault ||
+            this.colorMainEnabled !== newColorMainEnabled ||
+            this.colorMain !== newColorMain ||
             this.colorLeft !== newColorLeft ||
             this.colorMiddle !== newColorMiddle ||
             this.colorRight !== newColorRight
         ) {
             this.updateCacheTrackers(newShape, [
-                newColorDefault,
+                newColorMain,
                 newColorLeft,
                 newColorMiddle,
                 newColorRight,
             ]);
 
             // Update current tracker if shape or default color has changed
-            if (this.shape !== newShape || this.colorDefault !== newColorDefault) {
-                this.updateTrackerIcon(newShape, newColorDefault);
+            if (
+                this.shape !== newShape ||
+                this.colorMainEnabled !== newColorMainEnabled ||
+                this.colorMain !== newColorMain
+            ) {
+                newColorMainEnabled
+                    ? this.updateTrackerIcon(this.shape, newColorMain)
+                    : this.updateTrackerIcon(this.shape, this.colorDefault);
             }
 
             this.shape = newShape;
-            this.colorDefault = newColorDefault;
+            this.colorMainEnabled = newColorMainEnabled;
+            this.colorMain = newColorMain;
             this.colorLeft = newColorLeft;
             this.colorMiddle = newColorMiddle;
             this.colorRight = newColorRight;
@@ -487,6 +531,11 @@ export class TrackerManager {
         // Disconnect settings signal handlers
         this.settingsHandlers?.forEach(connection => this.settings.disconnect(connection));
         this.settingsHandlers = null;
+
+        if (this.defaultColorHandler) {
+            this.interfaceSettings.disconnect(this.defaultColorHandler);
+        }
+        this.defaultColorHandler = null;
 
         // Disconnect keybinding
         Main.wm.removeKeybinding('tracker-keybinding');

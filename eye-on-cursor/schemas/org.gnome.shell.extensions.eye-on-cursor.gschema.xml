@@ -150,7 +150,13 @@
       <description>Sets the size of the tracker element in pixels.</description>
     </key>
 
-    <key name='tracker-color-default' type='s'>
+    <key name='tracker-color-main-enabled' type='b'>
+      <default>false</default>
+      <summary>Whether the custom tracker color is used</summary>
+      <description>Determines if the tracker uses the custom color instead of the accent color.</description>
+    </key>
+
+    <key name='tracker-color-main' type='s'>
       <default>'#ffff00'</default>
       <summary>Default color of the tracker</summary>
       <description>Sets the default color of the tracker.</description>

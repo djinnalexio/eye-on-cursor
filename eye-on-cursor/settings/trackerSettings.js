@@ -174,6 +174,7 @@ export const TrackerPage = GObject.registerClass(
             //#endregion
 
             //#region Tracker colors
+            //#region Main Tracker color
             function newColorPicker(settings, key) {
                 const colorPicker = new Gtk.ColorDialogButton({
                     dialog: new Gtk.ColorDialog({
@@ -206,16 +207,35 @@ export const TrackerPage = GObject.registerClass(
                 return colorPicker;
             }
 
-            const colorDefaultRow = new Adw.ActionRow({
+            const colorMainRow = new Adw.ActionRow({
                 title: _('Color'),
-                subtitle: _('Default color of the tracker'),
+                subtitle: _('Custom color for the tracker'),
             });
 
-            const colorDefaultBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
-            colorDefaultBox.append(newColorPicker(this.settings, 'tracker-color-default'));
+            const colorMainPicker = newColorPicker(this.settings, 'tracker-color-main');
 
-            colorDefaultRow.add_suffix(colorDefaultBox);
-            drawingGroup.add(colorDefaultRow);
+            // Tracker Main Color Toggle
+            const trackerColorToggle = new Gtk.CheckButton({
+                active: this.settings.get_boolean('tracker-color-main-enabled'),
+                hexpand: false,
+                margin_end: 8,
+                valign: Gtk.Align.CENTER,
+                vexpand: false,
+            });
+            trackerColorToggle.connect('toggled', widget => {
+                this.settings.set_boolean('tracker-color-main-enabled', widget.active);
+                colorMainPicker.set_sensitive(widget.active);
+            });
+            colorMainPicker.set_sensitive(trackerColorToggle.active);
+
+            const colorMainBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
+
+            colorMainBox.append(trackerColorToggle);
+            colorMainBox.append(colorMainPicker);
+
+            colorMainRow.add_suffix(colorMainBox);
+            drawingGroup.add(colorMainRow);
+            //#endregion
 
             const colorClickRow = new Adw.ActionRow({
                 title: _('Colors on Click'),

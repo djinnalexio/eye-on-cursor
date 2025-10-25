@@ -232,7 +232,10 @@ export const EyePage = GObject.registerClass(
                 return colorPicker;
             }
 
-            const colorRow = new Adw.ActionRow({title: _('Iris Color')});
+            const colorRow = new Adw.ActionRow({
+                title: _('Iris Color'),
+                subtitle: _('Custom color for the iris'),
+            });
 
             const irisColorPicker = newColorPicker(this.settings, 'eye-color-iris');
 
