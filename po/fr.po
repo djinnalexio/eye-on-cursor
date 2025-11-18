@@ -7,389 +7,171 @@
 'use strict';
 
 //#region Import libraries
-import Adw from 'gi://Adw';
 import GObject from 'gi://GObject';
-import GLib from 'gi://GLib';
+import Adw from 'gi://Adw';
+import Gdk from 'gi://Gdk';
 import Gtk from 'gi://Gtk';
 import { gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
-import { KeybindingRow } from './keybinding.js';
 //#endregion
 
-export const EyePage = GObject.registerClass(
-    class EyePage extends Adw.PreferencesPage {
-        constructor(extensionObject) {
+//#region Keybinding row class
+export const KeybindingRow = GObject.registerClass(
+    class KeybindingRow extends Adw.ActionRow {
+        constructor(settings, key, shortcutName) {
             /**
-             * A page displaying the eye settings
-             *
-             * @param {Extension} extensionObject - the extension object
+             * A row that allows users to set and manage a keyboard shortcut.
+             * @param {Gio.Settings} settings - settings object of the extension
+             * @param {string} key - key in the settings object for the keybinding
+             * @param {string} shortcutName - name of the shortcut and title of the row
+             * @param {string} subtitle - subtitle of the row
              */
 
             super({
-                title: _('Eyes'),
-                icon_name: 'view-reveal-symbolic',
+                title: shortcutName,
+                subtitle: _('Set a shortcut'),
+                activatable: true,
             });
-            this.settings = extensionObject.getSettings();
+            this.settings = settings;
+            this.key = key;
 
-            //#region Eye placement group
-            const placementGroup = new Adw.PreferencesGroup({
-                title: _('Layout'),
-            });
-            this.add(placementGroup);
-
-            //#region Eye Activity
-            const activeRow = new Adw.SwitchRow({
-                title: _('Active'),
-                subtitle: _('Enable the eyes'),
-                active: this.settings.get_boolean('eye-active'),
-            });
-            activeRow.connect('notify::active', (widget) => {
-                this.settings.set_boolean('eye-active', widget.active);
-            });
-            placementGroup.add(activeRow);
-            //#endregion
-
-            //#region Eye count
-            const countRow = new Adw.SpinRow({
-                title: _('Count'),
-                subtitle: _('Number of eyes'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 1,
-                    upper: 100,
-                    step_increment: 1,
-                }),
-                value: this.settings.get_int('eye-count'),
-            });
-            countRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('eye-count', widget.value);
-            });
-            countRow.set_tooltip_text(_('Displaying more eyes may reduce performance.'));
-            placementGroup.add(countRow);
-            //#endregion
-
-            //#region Eye position
-            const positionLabelList = new Gtk.StringList();
-            [_('Left'), _('Center'), _('Right')].forEach((position) => positionLabelList.append(position));
-            const positionRow = new Adw.ComboRow({
-                title: _('Position'),
-                subtitle: _('Position of the eyes on the panel'),
-                model: positionLabelList,
-                selected: this.settings.get_enum('eye-position'),
-            });
-            positionRow.connect('notify::selected', (widget) => {
-                this.settings.set_enum('eye-position', widget.selected);
-            });
-            placementGroup.add(positionRow);
-            //#endregion
-
-            //#region Eye index
-            const indexRow = new Adw.SpinRow({
-                title: _('Index'),
-                subtitle: _('Index of the eyes on the panel segment'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 0,
-                    upper: 100,
-                    step_increment: 1,
-                }),
-                value: this.settings.get_int('eye-index'),
-            });
-            indexRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('eye-index', widget.value);
-            });
-            placementGroup.add(indexRow);
-            //#endregion
-
-            //#region Eye margin
-            const widthRow = new Adw.SpinRow({
-                title: _('Width'),
-                subtitle: _('Drawing space and padding'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 20,
-                    upper: 1000,
-                    step_increment: 1,
-                }),
-                value: this.settings.get_int('eye-width'),
-            });
-            widthRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('eye-width', widget.value);
-            });
-            placementGroup.add(widthRow);
-            //#endregion
-
-            //#region Eye reactivity
-            const reactiveRow = new Adw.SwitchRow({
-                title: _('Menu'),
-                subtitle: _('Enable the eye submenu'),
-                active: this.settings.get_boolean('eye-reactive'),
-            });
-            reactiveRow.connect('notify::active', (widget) => {
-                this.settings.set_boolean('eye-reactive', widget.active);
-            });
-            placementGroup.add(reactiveRow);
-            //#endregion
-            //#endregion
-
-            //#region Eye Drawing group
-            const drawingGroup = new Adw.PreferencesGroup({
-                title: _('Appearance'),
-            });
-            this.add(drawingGroup);
-
-            //#region Eye shape
-            const shapeLabelList = new Gtk.StringList();
-            [_('Natural'), _('Round'), _('Comic')].forEach((shape) => shapeLabelList.append(shape));
-            const shapeRow = new Adw.ComboRow({
-                title: _('Shape'),
-                subtitle: _('Shape of the eyes'),
-                model: shapeLabelList,
-                selected: this.settings.get_enum('eye-shape'),
-            });
-            shapeRow.connect('notify::selected', (widget) => {
-                this.settings.set_enum('eye-shape', widget.selected);
-            });
-            drawingGroup.add(shapeRow);
-            //#endregion
-
-            //#region Eye outline mode
-            const lineModeRow = new Adw.SwitchRow({
-                title: _('Outline Mode'),
-                subtitle: _('Draw the eyes as outline only'),
-                active: this.settings.get_boolean('eye-line-mode'),
-            });
-            lineModeRow.connect('notify::active', (widget) => {
-                this.settings.set_boolean('eye-line-mode', widget.active);
-            });
-            drawingGroup.add(lineModeRow);
-            //#endregion
-
-            //#region Eye line width
-            const lineWidthRow = new Adw.SpinRow({
-                title: _('Strokes'),
-                subtitle: _('Thickness of the strokes in outline mode'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 0,
-                    upper: 50,
-                    step_increment: 1,
-                }),
-                value: this.settings.get_int('eye-line-width'),
-            });
-            lineWidthRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('eye-line-width', widget.value);
-            });
-            drawingGroup.add(lineWidthRow);
-            //#endregion
-
-            //#region Eye color
-            // Color picker
-            function newColorPicker(settings, key) {
-                const colorPicker = new Gtk.ColorDialogButton({
-                    dialog: new Gtk.ColorDialog({
-                        modal: true,
-                        with_alpha: false,
-                    }),
-                    hexpand: false,
-                    margin_end: 8,
-                    valign: Gtk.Align.CENTER,
-                    vexpand: false,
-                });
-                const currentColor = colorPicker.get_rgba();
-                currentColor.parse(settings.get_string(key));
-                colorPicker.set_rgba(currentColor);
-                colorPicker.connect('notify::rgba', (widget) => {
-                    // Convert 'rgb(255,255,255)' to '#ffffff'
-                    const rgbCode = widget.get_rgba().to_string();
-                    const hexCode =
-                        '#' +
-                        rgbCode
-                            .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
-                            .split(',') // Split numbers at ","
-                            .map((string) => parseInt(string)) // Convert them to int
-                            .map((number) => number.toString(16)) // Convert them to base16
-                            .map((string) => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
-                            .join(''); // Join them back into a string
-                    settings.set_string(key, hexCode);
-                });
-                return colorPicker;
-            }
-            const colorRow = new Adw.ActionRow({
-                title: _('Iris Color'),
-                subtitle: _('Custom color for the iris'),
-            });
-            const irisColorPicker = newColorPicker(this.settings, 'eye-color-iris');
-
-            // Iris Color Toggle
-            const irisColorToggle = new Gtk.CheckButton({
-                active: this.settings.get_boolean('eye-color-iris-enabled'),
-                hexpand: false,
-                margin_end: 8,
+            // Display current keybinding
+            this.label = new Gtk.ShortcutLabel({
+                disabled_text: _('New shortcut…'),
                 valign: Gtk.Align.CENTER,
+                hexpand: false,
                 vexpand: false,
+                accelerator: this.settings.get_strv(this.key)[0],
             });
-            irisColorToggle.connect('toggled', (widget) => {
-                this.settings.set_boolean('eye-color-iris-enabled', widget.active);
-                irisColorPicker.set_sensitive(widget.active);
-            });
-            irisColorPicker.set_sensitive(irisColorToggle.active);
-            const colorBox = new Gtk.Box({
+            this.box = new Gtk.Box({
                 orientation: Gtk.Orientation.HORIZONTAL,
             });
-            colorBox.append(irisColorToggle);
-            colorBox.append(irisColorPicker);
-            colorRow.add_suffix(colorBox);
-            drawingGroup.add(colorRow);
-            //#endregion
+            this.box.append(this.label);
+            this.add_suffix(this.box);
 
-            //#region Eye refresh rate
-            const refreshRow = new Adw.SpinRow({
-                title: _('Refresh Rate'),
-                subtitle: _('Hz'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 1,
-                    upper: 144,
-                    step_increment: 1,
-                }),
-                value: this.settings.get_int('eye-refresh-rate'),
-            });
-            refreshRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('eye-refresh-rate', widget.value);
-            });
-            refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
-            drawingGroup.add(refreshRow);
-            //#endregion
-            //#endregion
-
-            //#region Eye Blink group
-            const blinkGroup = new Adw.PreferencesGroup({
-                title: _('Blinking'),
-            });
-            this.add(blinkGroup);
-
-            //#region Eyelid Color
-            const colorEyelidRow = new Adw.ActionRow({
-                title: _('Eyelid Color'),
-            });
-            const colorEyelidBox = new Gtk.Box({
-                orientation: Gtk.Orientation.HORIZONTAL,
-            });
-            colorEyelidBox.append(newColorPicker(this.settings, 'eye-color-eyelid'));
-            colorEyelidRow.add_suffix(colorEyelidBox);
-            blinkGroup.add(colorEyelidRow);
-            //#endregion
-
-            //#region Blink Mode
-            const blinkModeList = new Gtk.StringList();
-            [_('Manual'), _('Synced'), _('Unsynced')].forEach((mode) => blinkModeList.append(mode));
-            // Each option enables the corresponding row
-            const blinkModeRow = new Adw.ComboRow({
-                title: _('Blink Mode'),
-                subtitle: _('Choose how eyes blink'),
-                model: blinkModeList,
-                selected: this.settings.get_enum('eye-blink-mode'),
-            });
-            blinkModeRow.connect('notify::selected', (widget) => {
-                this.settings.set_enum('eye-blink-mode', widget.selected);
-            });
-            blinkGroup.add(blinkModeRow);
-            //#endregion
-
-            //#region Blink Keybinding
-            const blinkKeybindRow = new KeybindingRow(this.settings, 'eye-blink-keybinding', _('Manual Blink'));
-            blinkGroup.set_header_suffix(blinkKeybindRow.resetButton);
-            blinkGroup.add(blinkKeybindRow);
-            //#endregion
-
-            //#region Blink Interval
-            const blinkIntervalRow = new Adw.SpinRow({
-                title: _('Synced Blinking Interval'),
-                subtitle: _('Seconds between synchronized blinks'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 0.1,
-                    upper: 60,
-                    step_increment: 0.1,
-                }),
-                digits: 1,
-                value: this.settings.get_double('eye-blink-interval'),
-            });
-            blinkIntervalRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_double('eye-blink-interval', widget.value);
-            });
-            blinkGroup.add(blinkIntervalRow);
-            //#endregion
-
-            //#region Blink Interval Range
-            const blinkIntervalRangeRow = new Adw.ActionRow({
-                title: _('Unsynced Blinking Interval'),
-                subtitle: _('Range of seconds between random blinks'),
-            });
-            const blinkIntervalRange = this.settings.get_value('eye-blink-interval-range').deep_unpack();
-            const minIntervalButton = new Gtk.SpinButton({
-                adjustment: new Gtk.Adjustment({
-                    lower: 0.1,
-                    upper: 59.9,
-                    step_increment: 0.1,
-                }),
-                digits: 1,
+            // Button to reset keybinding
+            this.resetButton = new Gtk.Button({
+                icon_name: 'edit-delete-symbolic',
+                css_classes: ['error'],
                 hexpand: false,
-                margin_end: 8,
-                margin_top: 8,
-                valign: Gtk.Align.CENTER,
                 vexpand: false,
-                value: blinkIntervalRange[0],
             });
-            const maxIntervalButton = new Gtk.SpinButton({
-                adjustment: new Gtk.Adjustment({
-                    lower: 0.2,
-                    upper: 60,
-                    step_increment: 0.1,
-                }),
-                digits: 1,
-                hexpand: false,
-                margin_end: 8,
-                margin_bottom: 8,
-                valign: Gtk.Align.CENTER,
-                vexpand: false,
-                value: blinkIntervalRange[1],
+            this.resetButton.connect('clicked', this.resetKeybind.bind(this));
+
+            // Hide reset button if no shortcut is set
+            if (!this.label.accelerator) this.resetButton.visible = false;
+
+            // Connect row activation to open capture window
+            this.captureWindow = null;
+            this.connect('activated', this.openCaptureWindow.bind(this));
+
+            // Connect change in accelerator to update setting
+            this.label.connect('notify::accelerator', (widget) => {
+                this.settings.set_strv(this.key, [widget.accelerator]);
+                // Main.wm.addKeybinding takes string arrays, not strings
             });
-
-            // Function to validate and correct interval range values
-            function validateIntervals(valueChanged) {
-                let minValue = minIntervalButton.get_value();
-                let maxValue = maxIntervalButton.get_value();
-
-                // Ensure a minimum gap of 0.1 between min and max
-                if (maxValue - minValue < 0.1) {
-                    switch (valueChanged) {
-                        case 'min':
-                            minValue = maxValue - 0.1;
-                            minIntervalButton.set_value(minValue);
-                            break;
-                        case 'max':
-                        default:
-                            maxValue = minValue + 0.1;
-                            maxIntervalButton.set_value(maxValue);
-                            break;
-                    }
-                }
-
-                // Update the settings with validated values
-                this.settings.set_value('eye-blink-interval-range', new GLib.Variant('ad', [minValue, maxValue]));
-            }
-            minIntervalButton.connect('value-changed', validateIntervals.bind(this, 'min'));
-            maxIntervalButton.connect('value-changed', validateIntervals.bind(this, 'max'));
-            const box = new Gtk.Box({
-                orientation: Gtk.Orientation.VERTICAL,
-            });
-            box.append(minIntervalButton);
-            box.append(
-                new Gtk.Label({
-                    label: _('to'),
-                    margin_end: 8,
-                })
-            );
-            box.append(maxIntervalButton);
-            blinkIntervalRangeRow.add_suffix(box);
-            blinkGroup.add(blinkIntervalRangeRow);
-            //#endregion
-            //#endregion
         }
+        resetKeybind() {
+            this.label.accelerator = '';
+            this.resetButton.visible = false;
+        }
+        openCaptureWindow() {
+            const controller = new Gtk.EventControllerKey();
+            const content = new Adw.StatusPage({
+                title: _('Set a shortcut'),
+                description: _('Press Esc to cancel or Backspace to disable the shortcut'),
+                icon_name: 'preferences-desktop-keyboard-shortcuts-symbolic',
+            });
+            this.captureWindow = new Adw.Window({
+                modal: true,
+                hide_on_close: true,
+                transient_for: this.get_root(),
+                width_request: 480,
+                height_request: 320,
+                content,
+            });
+            this.captureWindow.add_controller(controller);
+            controller.connect('key-pressed', this.registerKey.bind(this));
+            this.captureWindow.present();
+        }
+        registerKey(widget, keyval, keycode, state) {
+            // Get default modifier mask (keys) that are currently pressed
+            let mask = state & Gtk.accelerator_get_default_mod_mask();
+            // Filter out CAPS LOCK
+            mask &= ~Gdk.ModifierType.LOCK_MASK;
+
+            // If Esc is pressed without modifiers, close capture window
+            if (!mask && keyval === Gdk.KEY_Escape) {
+                this.captureWindow.close();
+                return Gdk.EVENT_STOP;
+            }
+
+            // If Backspace is pressed, reset keybinding
+            if (keyval === Gdk.KEY_BackSpace) {
+                this.resetKeybind();
+                this.captureWindow.destroy();
+                return Gdk.EVENT_STOP;
+            }
+
+            // If the key combination is not acceptable, ignore it
+            if (!this.isValidBinding(mask, keycode, keyval) || !this.isValidAccel(mask, keyval)) {
+                return Gdk.EVENT_STOP;
+            }
+            this.label.accelerator = Gtk.accelerator_name_with_keycode(null, keyval, keycode, mask);
+            this.resetButton.visible = true;
+            this.captureWindow.destroy();
+            return Gdk.EVENT_STOP;
+        }
+
+        //#region Keybinding Validation
+        // Validating functions from https://gitlab.gnome.org/GNOME/gnome-control-center/-/blob/main/panels/keyboard/keyboard-shortcuts.c
+
+        isValidBinding(mask, keycode, keyval) {
+            if (mask === 0) return false;
+            if (mask === Gdk.ModifierType.SHIFT_MASK && keycode !== 0) {
+                if (
+                    this.isKeyInRange(keyval, Gdk.KEY_A, Gdk.KEY_Z) ||
+                    this.isKeyInRange(keyval, Gdk.KEY_0, Gdk.KEY_9) ||
+                    this.isKeyInRange(keyval, Gdk.KEY_a, Gdk.KEY_z) ||
+                    this.isKeyInRange(keyval, Gdk.KEY_kana_fullstop, Gdk.KEY_semivoicedsound) ||
+                    this.isKeyInRange(keyval, Gdk.KEY_Arabic_comma, Gdk.KEY_Arabic_sukun) ||
+                    this.isKeyInRange(keyval, Gdk.KEY_Serbian_dje, Gdk.KEY_Cyrillic_HARDSIGN) ||
+                    this.isKeyInRange(keyval, Gdk.KEY_Greek_ALPHAaccent, Gdk.KEY_Greek_omega) ||
+                    this.isKeyInRange(keyval, Gdk.KEY_hebrew_doublelowline, Gdk.KEY_hebrew_taf) ||
+                    this.isKeyInRange(keyval, Gdk.KEY_Thai_kokai, Gdk.KEY_Thai_lekkao) ||
+                    this.isKeyInRange(keyval, Gdk.KEY_Hangul_Kiyeog, Gdk.KEY_Hangul_J_YeorinHieuh) ||
+                    (keyval === Gdk.KEY_space && mask === 0) ||
+                    this.keyvalIsForbidden(keyval)
+                ) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        keyvalIsForbidden(keyval) {
+            return [
+                // Navigation keys
+                Gdk.KEY_Home,
+                Gdk.KEY_Left,
+                Gdk.KEY_Up,
+                Gdk.KEY_Right,
+                Gdk.KEY_Down,
+                Gdk.KEY_Page_Up,
+                Gdk.KEY_Page_Down,
+                Gdk.KEY_End,
+                Gdk.KEY_Tab,
+                // Return
+                Gdk.KEY_KP_Enter,
+                Gdk.KEY_Return,
+                Gdk.KEY_Mode_switch,
+            ].includes(keyval);
+        }
+        isKeyInRange(keyval, start, end) {
+            return keyval >= start && keyval <= end;
+        }
+        isValidAccel(mask, keyval) {
+            return Gtk.accelerator_valid(keyval, mask) || (keyval === Gdk.KEY_Tab && mask !== 0);
+        }
+        //#endregion
     }
 );
+//#endregion
