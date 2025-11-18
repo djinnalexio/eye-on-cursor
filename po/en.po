@@ -7,171 +7,273 @@
 'use strict';
 
 //#region Import libraries
-import GObject from 'gi://GObject';
 import Adw from 'gi://Adw';
+import GObject from 'gi://GObject';
 import Gdk from 'gi://Gdk';
+import Gio from 'gi://Gio';
 import Gtk from 'gi://Gtk';
 import { gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import { EyeAboutRow } from './about.js';
+import { KeybindingRow } from './keybinding.js';
 //#endregion
 
-//#region Keybinding row class
-export const KeybindingRow = GObject.registerClass(
-    class KeybindingRow extends Adw.ActionRow {
-        constructor(settings, key, shortcutName) {
+export const TrackerPage = GObject.registerClass(
+    class TrackerPage extends Adw.PreferencesPage {
+        constructor(extensionObject) {
             /**
-             * A row that allows users to set and manage a keyboard shortcut.
-             * @param {Gio.Settings} settings - settings object of the extension
-             * @param {string} key - key in the settings object for the keybinding
-             * @param {string} shortcutName - name of the shortcut and title of the row
-             * @param {string} subtitle - subtitle of the row
+             * A page displaying the tracker settings
+             *
+             * @param {Extension} extensionObject - the extension object
              */
 
             super({
-                title: shortcutName,
-                subtitle: _('Set a shortcut'),
+                title: _('Mouse Tracker'),
+                icon_name: 'input-mouse-symbolic',
+            });
+            this.metadata = extensionObject.metadata;
+            this.path = extensionObject.path;
+            this.settings = extensionObject.getSettings();
+
+            //#region Tracker drawing group
+            const drawingGroup = new Adw.PreferencesGroup({
+                title: _('Appearance'),
+            });
+            this.add(drawingGroup);
+
+            //#region Tracker shape
+            function getSVGsList(path) {
+                const svgsList = [];
+                const svgsDir = Gio.file_new_for_path(path);
+                const enumFiles = svgsDir.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
+                let fileInfo;
+                while ((fileInfo = enumFiles.next_file(null)) !== null) {
+                    const fileName = fileInfo.get_name();
+                    if (fileName.toLowerCase().endsWith('.svg')) svgsList.push(fileName.replace('.svg', ''));
+                }
+                svgsList.sort();
+                return svgsList;
+            }
+            const shapeDir = `${this.path}/media/glyphs/`;
+            const shapeList = getSVGsList(shapeDir);
+            const shapeRow = new Adw.ActionRow({
+                title: _('Shape'),
+                subtitle: _('Shape of the tracker'),
                 activatable: true,
             });
-            this.settings = settings;
-            this.key = key;
-
-            // Display current keybinding
-            this.label = new Gtk.ShortcutLabel({
-                disabled_text: _('New shortcut…'),
+            const shapeRowLabel = new Gtk.Label({
+                label: this.settings.get_string('tracker-shape').replaceAll('_', ' '),
                 valign: Gtk.Align.CENTER,
-                hexpand: false,
-                vexpand: false,
-                accelerator: this.settings.get_strv(this.key)[0],
             });
-            this.box = new Gtk.Box({
+            shapeRow.add_suffix(shapeRowLabel);
+            const shapeWindow = new Adw.Dialog({
+                title: _('Select a Tracker'),
+                content_width: 400,
+                content_height: 600,
+            });
+            const shapePicker = new Gtk.FlowBox({
+                min_children_per_line: 3,
+                activate_on_single_click: true,
+                homogeneous: true,
+                margin_top: 8,
+                margin_bottom: 8,
+                margin_start: 8,
+                margin_end: 8,
+                row_spacing: 4,
+                column_spacing: 4,
+            });
+            shapeList.forEach((shape) => {
+                const displayName = shape.replaceAll('_', ' ');
+                const filePath = `${shapeDir}/${shape}.svg`;
+                const flowItem = new Gtk.FlowBoxChild();
+                flowItem.shape = shape;
+                flowItem.name = displayName;
+                const flowItemContent = new Gtk.Box({
+                    orientation: Gtk.Orientation.VERTICAL,
+                    spacing: 4,
+                    valign: Gtk.Align.CENTER,
+                    halign: Gtk.Align.CENTER,
+                });
+                const picture = Gtk.Picture.new_for_filename(filePath);
+                picture.set_size_request(48, 48);
+                picture.set_content_fit(Gtk.ContentFit.CONTAIN);
+                const label = new Gtk.Label({
+                    label: displayName,
+                    justify: Gtk.Justification.CENTER,
+                    wrap: true,
+                    xalign: 0.5,
+                });
+                flowItemContent.append(picture);
+                flowItemContent.append(label);
+                flowItem.set_child(flowItemContent);
+                shapePicker.append(flowItem);
+            });
+            shapePicker.connect('child-activated', (flowBox, flowBoxChild) => {
+                shapeRowLabel.set_label(flowBoxChild.name);
+                this.settings.set_string('tracker-shape', flowBoxChild.shape);
+                shapeWindow.close();
+            });
+            const scrolledWindow = new Gtk.ScrolledWindow();
+            scrolledWindow.set_child(shapePicker);
+            shapeWindow.set_child(scrolledWindow);
+            shapeRow.connect('activated', () => {
+                shapeWindow.present(this);
+            });
+            drawingGroup.add(shapeRow);
+            //#endregion
+
+            //#region Tracker size
+            const sizeRow = new Adw.SpinRow({
+                title: _('Size'),
+                subtitle: _('Size of the tracker'),
+                adjustment: new Gtk.Adjustment({
+                    lower: 16,
+                    upper: 1024,
+                    step_increment: 16,
+                }),
+                value: this.settings.get_int('tracker-size'),
+            });
+            sizeRow.adjustment.connect('value-changed', (widget) => {
+                this.settings.set_int('tracker-size', widget.value);
+            });
+            drawingGroup.add(sizeRow);
+            //#endregion
+
+            //#region Tracker colors
+            //Main Tracker color
+            function newColorPicker(settings, key) {
+                const colorPicker = new Gtk.ColorDialogButton({
+                    dialog: new Gtk.ColorDialog({
+                        modal: true,
+                        with_alpha: false,
+                    }),
+                    hexpand: false,
+                    margin_end: 8,
+                    valign: Gtk.Align.CENTER,
+                    vexpand: false,
+                });
+                const currentColor = colorPicker.get_rgba();
+                currentColor.parse(settings.get_string(key));
+                colorPicker.set_rgba(currentColor);
+                colorPicker.connect('notify::rgba', (widget) => {
+                    // Convert 'rgb(255,255,255)' to '#ffffff'
+                    const rgbCode = widget.get_rgba().to_string();
+                    const hexCode =
+                        '#' +
+                        rgbCode
+                            .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
+                            .split(',') // Split numbers at ","
+                            .map((string) => parseInt(string)) // Convert them to int
+                            .map((number) => number.toString(16)) // Convert them to base16
+                            .map((string) => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
+                            .join(''); // Join them back into a string
+                    settings.set_string(key, hexCode);
+                });
+                return colorPicker;
+            }
+            const colorMainRow = new Adw.ActionRow({
+                title: _('Color'),
+                subtitle: _('Custom color for the tracker'),
+            });
+            const colorMainPicker = newColorPicker(this.settings, 'tracker-color-main');
+
+            // Tracker Main Color Toggle
+            const trackerColorToggle = new Gtk.CheckButton({
+                active: this.settings.get_boolean('tracker-color-main-enabled'),
+                hexpand: false,
+                margin_end: 8,
+                valign: Gtk.Align.CENTER,
+                vexpand: false,
+            });
+            trackerColorToggle.connect('toggled', (widget) => {
+                this.settings.set_boolean('tracker-color-main-enabled', widget.active);
+                colorMainPicker.set_sensitive(widget.active);
+            });
+            colorMainPicker.set_sensitive(trackerColorToggle.active);
+            const colorMainBox = new Gtk.Box({
                 orientation: Gtk.Orientation.HORIZONTAL,
             });
-            this.box.append(this.label);
-            this.add_suffix(this.box);
-
-            // Button to reset keybinding
-            this.resetButton = new Gtk.Button({
-                icon_name: 'edit-delete-symbolic',
-                css_classes: ['error'],
-                hexpand: false,
-                vexpand: false,
+            colorMainBox.append(trackerColorToggle);
+            colorMainBox.append(colorMainPicker);
+            colorMainRow.add_suffix(colorMainBox);
+            drawingGroup.add(colorMainRow);
+            const colorClickRow = new Adw.ActionRow({
+                title: _('Colors on Click'),
+                subtitle: _('Colors when left, middle, and right-clicking'),
             });
-            this.resetButton.connect('clicked', this.resetKeybind.bind(this));
-
-            // Hide reset button if no shortcut is set
-            if (!this.label.accelerator) this.resetButton.visible = false;
-
-            // Connect row activation to open capture window
-            this.captureWindow = null;
-            this.connect('activated', this.openCaptureWindow.bind(this));
-
-            // Connect change in accelerator to update setting
-            this.label.connect('notify::accelerator', (widget) => {
-                this.settings.set_strv(this.key, [widget.accelerator]);
-                // Main.wm.addKeybinding takes string arrays, not strings
+            const isWayland = Gdk.Display.get_default().constructor.name.includes('Wayland');
+            if (isWayland) {
+                colorClickRow.set_tooltip_text(
+                    _('Click highlighting does not work in applications on Wayland. See README.')
+                );
+            } else {
+                colorClickRow.set_tooltip_text(_('Middle-click highlighting does not work on x11. See README.'));
+            }
+            const colorClickBox = new Gtk.Box({
+                orientation: Gtk.Orientation.HORIZONTAL,
             });
-        }
-        resetKeybind() {
-            this.label.accelerator = '';
-            this.resetButton.visible = false;
-        }
-        openCaptureWindow() {
-            const controller = new Gtk.EventControllerKey();
-            const content = new Adw.StatusPage({
-                title: _('Set a shortcut'),
-                description: _('Press Esc to cancel or Backspace to disable the shortcut'),
-                icon_name: 'preferences-desktop-keyboard-shortcuts-symbolic',
+            ['tracker-color-left', 'tracker-color-middle', 'tracker-color-right'].forEach((key) => {
+                colorClickBox.append(newColorPicker(this.settings, key));
             });
-            this.captureWindow = new Adw.Window({
-                modal: true,
-                hide_on_close: true,
-                transient_for: this.get_root(),
-                width_request: 480,
-                height_request: 320,
-                content,
+            colorClickRow.add_suffix(colorClickBox);
+            drawingGroup.add(colorClickRow);
+            //#endregion
+
+            //#region Tracker opacity
+            const opacityRow = new Adw.SpinRow({
+                title: _('Opacity'),
+                subtitle: _('Opacity of the tracker'),
+                adjustment: new Gtk.Adjustment({
+                    lower: 0,
+                    upper: 100,
+                    step_increment: 10,
+                }),
+                value: this.settings.get_int('tracker-opacity'),
             });
-            this.captureWindow.add_controller(controller);
-            controller.connect('key-pressed', this.registerKey.bind(this));
-            this.captureWindow.present();
-        }
-        registerKey(widget, keyval, keycode, state) {
-            // Get default modifier mask (keys) that are currently pressed
-            let mask = state & Gtk.accelerator_get_default_mod_mask();
-            // Filter out CAPS LOCK
-            mask &= ~Gdk.ModifierType.LOCK_MASK;
+            opacityRow.adjustment.connect('value-changed', (widget) => {
+                this.settings.set_int('tracker-opacity', widget.value);
+            });
+            drawingGroup.add(opacityRow);
+            //#endregion
 
-            // If Esc is pressed without modifiers, close capture window
-            if (!mask && keyval === Gdk.KEY_Escape) {
-                this.captureWindow.close();
-                return Gdk.EVENT_STOP;
-            }
+            //#region Tracker refresh rate
+            const refreshRow = new Adw.SpinRow({
+                title: _('Refresh Rate'),
+                subtitle: _('Hz'),
+                adjustment: new Gtk.Adjustment({
+                    lower: 1,
+                    upper: 144,
+                    step_increment: 1,
+                }),
+                value: this.settings.get_int('tracker-refresh-rate'),
+            });
+            refreshRow.adjustment.connect('value-changed', (widget) => {
+                this.settings.set_int('tracker-refresh-rate', widget.value);
+            });
+            refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
+            drawingGroup.add(refreshRow);
+            //#endregion
+            //#endregion
 
-            // If Backspace is pressed, reset keybinding
-            if (keyval === Gdk.KEY_BackSpace) {
-                this.resetKeybind();
-                this.captureWindow.destroy();
-                return Gdk.EVENT_STOP;
-            }
+            //#region Tracker keybinding
+            const keybindGroup = new Adw.PreferencesGroup({
+                title: _('Keybinding'),
+            });
+            this.add(keybindGroup);
 
-            // If the key combination is not acceptable, ignore it
-            if (!this.isValidBinding(mask, keycode, keyval) || !this.isValidAccel(mask, keyval)) {
-                return Gdk.EVENT_STOP;
-            }
-            this.label.accelerator = Gtk.accelerator_name_with_keycode(null, keyval, keycode, mask);
-            this.resetButton.visible = true;
-            this.captureWindow.destroy();
-            return Gdk.EVENT_STOP;
-        }
+            // Create row
+            const keybindRow = new KeybindingRow(this.settings, 'tracker-keybinding', _('Toggle Tracker'));
+            keybindGroup.set_header_suffix(keybindRow.resetButton);
+            keybindGroup.add(keybindRow);
+            //#endregion
 
-        //#region Keybinding Validation
-        // Validating functions from https://gitlab.gnome.org/GNOME/gnome-control-center/-/blob/main/panels/keyboard/keyboard-shortcuts.c
-
-        isValidBinding(mask, keycode, keyval) {
-            if (mask === 0) return false;
-            if (mask === Gdk.ModifierType.SHIFT_MASK && keycode !== 0) {
-                if (
-                    this.isKeyInRange(keyval, Gdk.KEY_A, Gdk.KEY_Z) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_0, Gdk.KEY_9) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_a, Gdk.KEY_z) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_kana_fullstop, Gdk.KEY_semivoicedsound) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_Arabic_comma, Gdk.KEY_Arabic_sukun) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_Serbian_dje, Gdk.KEY_Cyrillic_HARDSIGN) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_Greek_ALPHAaccent, Gdk.KEY_Greek_omega) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_hebrew_doublelowline, Gdk.KEY_hebrew_taf) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_Thai_kokai, Gdk.KEY_Thai_lekkao) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_Hangul_Kiyeog, Gdk.KEY_Hangul_J_YeorinHieuh) ||
-                    (keyval === Gdk.KEY_space && mask === 0) ||
-                    this.keyvalIsForbidden(keyval)
-                ) {
-                    return false;
-                }
-            }
-            return true;
+            //#region About group
+            const aboutGroup = new Adw.PreferencesGroup({
+                title: _('Credits'),
+            });
+            this.add(aboutGroup);
+            const aboutRow = new EyeAboutRow(this.metadata, this.path);
+            aboutGroup.add(aboutRow);
+            //#endregion
         }
-        keyvalIsForbidden(keyval) {
-            return [
-                // Navigation keys
-                Gdk.KEY_Home,
-                Gdk.KEY_Left,
-                Gdk.KEY_Up,
-                Gdk.KEY_Right,
-                Gdk.KEY_Down,
-                Gdk.KEY_Page_Up,
-                Gdk.KEY_Page_Down,
-                Gdk.KEY_End,
-                Gdk.KEY_Tab,
-                // Return
-                Gdk.KEY_KP_Enter,
-                Gdk.KEY_Return,
-                Gdk.KEY_Mode_switch,
-            ].includes(keyval);
-        }
-        isKeyInRange(keyval, start, end) {
-            return keyval >= start && keyval <= end;
-        }
-        isValidAccel(mask, keyval) {
-            return Gtk.accelerator_valid(keyval, mask) || (keyval === Gdk.KEY_Tab && mask !== 0);
-        }
-        //#endregion
     }
 );
-//#endregion
