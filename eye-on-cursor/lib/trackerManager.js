@@ -462,7 +462,7 @@ export class TrackerManager {
         const newOpacity = this.settings.get_int('tracker-opacity');
         const newRefreshRate = this.settings.get_int('tracker-refresh-rate');
 
-        // Update cache if shape or any color has changed
+        // Update tracker if shape or any color has changed
         if (
             this.shape !== newShape ||
             this.colorMainEnabled !== newColorMainEnabled ||
@@ -472,22 +472,16 @@ export class TrackerManager {
             this.colorRight !== newColorRight
         ) {
             this.updateCacheTrackers(newShape, [
+                this.colorDefault,
                 newColorMain,
                 newColorLeft,
                 newColorMiddle,
                 newColorRight,
             ]);
 
-            // Update current tracker if shape or default color has changed
-            if (
-                this.shape !== newShape ||
-                this.colorMainEnabled !== newColorMainEnabled ||
-                this.colorMain !== newColorMain
-            ) {
                 newColorMainEnabled
-                    ? this.updateTrackerIcon(this.shape, newColorMain)
-                    : this.updateTrackerIcon(this.shape, this.colorDefault);
-            }
+                ? this.updateTrackerIcon(newShape, newColorMain)
+                : this.updateTrackerIcon(newShape, this.colorDefault);
 
             this.shape = newShape;
             this.colorMainEnabled = newColorMainEnabled;
