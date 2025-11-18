@@ -94,7 +94,7 @@ export const KeybindingRow = GObject.registerClass(
             const controller = new Gtk.EventControllerKey();
 
             const content = new Adw.StatusPage({
-                title: this.title,
+                title: _('Set Shortcut'),
                 description: _('Press Esc to cancel or Backspace to disable the shortcut'),
                 icon_name: 'preferences-desktop-keyboard-shortcuts-symbolic',
             });
