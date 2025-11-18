@@ -6,7 +6,7 @@ EXTENSION_NAME = eye-on-cursor
 EXTENSION_UUID = eye-on-cursor@djinnalexio.github.io
 ISSUES_URL = https://github.com/djinnalexio/eye-on-cursor/issues
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
-VERSION = 2.1.0
+VERSION = 2.1.1
 
 .phony: pack install uninstall enable disable prefs test test-gnome48 test-prefs-settings test-prefs-window update-pot
 
@@ -26,8 +26,8 @@ install: pack
 
 uninstall:
 	# Uninstalling extension...
-	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_NAME)
-	gnome-extensions uninstall $(EXTENSION_UUID)
+	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_NAME)/
+	# gnome-extensions uninstall $(EXTENSION_UUID)
 
 enable:
 	# Enabling extension...

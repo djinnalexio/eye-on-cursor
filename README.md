@@ -78,7 +78,9 @@ If you have contributed in any way, feel free to add yourself to the `credits.js
 
 ### Development
 
-In the root of the repo, run `make install && make enable` to use the extension or `make test` to debug it. The `Makefile` contains a few other commands that should be useful for debugging.
+From the root of the repo, run `make install` to install the extension and start using it in the next session or run `make test` to start debugging immediately in a nested shell.
+
+`Makefile` contains a few other commands useful for debugging.
 
 ### Known Issues
 

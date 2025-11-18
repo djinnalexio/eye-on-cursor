@@ -50,17 +50,9 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
     <ol> ordered and <ul> unordered lists with <li> list items, and <code> code. */
 const releaseNotes =
-    '<p>New:</p>\
+    '<p>Fixes &amp; Improvements:</p>\
     <ul>\
-        <li>Added support for GNOME 49</li>\
-        <li>Added cursor tracker shapes</li>\
-        </ul >\
-        <p>Fixes &amp; Improvements:</p>\
-        <ul>\
-        <li>Added option to disable eye</li>\
-        <li>Made desktop accent color apply to tracker</li>\
-        <li>Made desktop accent color apply to the iris in outline mode</li>\
-        <li>Replaced the dropdown list for shape selection with a selection popup</li>\
+        <li>Fixed tracker getting stuck on old icon when changing shape or color</li>\
     </ul >\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
