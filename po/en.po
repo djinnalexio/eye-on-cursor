@@ -1,279 +1,317 @@
-/*
- * Eye on Cursor GNOME Shell extension
- *
- * SPDX-FileCopyrightText: 2024-2025 djinnalexio
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-'use strict';
+msgid ""
+msgstr ""
+"Project-Id-Version: eye-on-cursor\n"
+"Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
+"POT-Creation-Date: 2025-10-25 07:16+0100\n"
+"PO-Revision-Date: 2025-11-18 23:35\n"
+"Last-Translator: \n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: eye-on-cursor\n"
+"X-Crowdin-Project-ID: 734021\n"
+"X-Crowdin-Language: en\n"
+"X-Crowdin-File: /main/po/eye-on-cursor.pot\n"
+"X-Crowdin-File-ID: 40\n"
+"Language: en_US\n"
 
-//#region Import libraries
-import Adw from 'gi://Adw';
-import GObject from 'gi://GObject';
-import Gdk from 'gi://Gdk';
-import Gio from 'gi://Gio';
-import Gtk from 'gi://Gtk';
-import { gettext as _ } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
-import { EyeAboutRow } from './about.js';
-import { KeybindingRow } from './keybinding.js';
-//#endregion
+#: eye-on-cursor/lib/eye.js:116 eye-on-cursor/settings/trackerSettings.js:308
+msgid "Toggle Tracker"
+msgstr ""
 
-export const TrackerPage = GObject.registerClass(
-    class TrackerPage extends Adw.PreferencesPage {
-        constructor(extensionObject) {
-            /**
-             * A page displaying the tracker settings
-             *
-             * @param {Extension} extensionObject - the extension object
-             */
+#: eye-on-cursor/lib/eye.js:121
+msgid "Settings"
+msgstr ""
 
-            super({
-                title: _('Mouse Tracker'),
-                icon_name: 'input-mouse-symbolic',
-            });
-            this.metadata = extensionObject.metadata;
-            this.path = extensionObject.path;
-            this.settings = extensionObject.getSettings();
+#: eye-on-cursor/settings/eyeSettings.js:43
+msgid "Eyes"
+msgstr ""
 
-            //#region Tracker drawing group
-            const drawingGroup = new Adw.PreferencesGroup({
-                title: _('Appearance'),
-            });
-            this.add(drawingGroup);
+#: eye-on-cursor/settings/eyeSettings.js:51
+msgid "Layout"
+msgstr ""
 
-            //#region Tracker shape
-            function getSVGsList(path) {
-                const svgsList = [];
-                const svgsDir = Gio.file_new_for_path(path);
-                const enumFiles = svgsDir.enumerate_children('standard::name', Gio.FileQueryInfoFlags.NONE, null);
-                let fileInfo;
-                while ((fileInfo = enumFiles.next_file(null)) !== null) {
-                    const fileName = fileInfo.get_name();
-                    if (fileName.toLowerCase().endsWith('.svg')) svgsList.push(fileName.replace('.svg', ''));
-                }
-                svgsList.sort();
-                return svgsList;
-            }
-            const shapeDir = `${this.path}/media/glyphs/`;
-            const shapeList = getSVGsList(shapeDir);
-            const shapeRow = new Adw.ActionRow({
-                title: _('Shape'),
-                subtitle: _('Shape of the tracker'),
-                activatable: true,
-            });
-            const shapeRowLabel = new Gtk.Label({
-                label: this.settings.get_string('tracker-shape').replaceAll('_', ' '),
-                valign: Gtk.Align.CENTER,
-            });
-            shapeRow.add_suffix(shapeRowLabel);
-            const shapeWindow = new Adw.Dialog({
-                title: _('Select a Tracker'),
-                content_width: 400,
-                content_height: 600,
-            });
-            const shapePicker = new Gtk.FlowBox({
-                min_children_per_line: 3,
-                activate_on_single_click: true,
-                homogeneous: true,
-                margin_top: 8,
-                margin_bottom: 8,
-                margin_start: 8,
-                margin_end: 8,
-                row_spacing: 4,
-                column_spacing: 4,
-            });
-            shapeList.forEach((shape) => {
-                const displayName = shape.replaceAll('_', ' ');
-                const filePath = `${shapeDir}/${shape}.svg`;
-                const flowItem = new Gtk.FlowBoxChild();
-                flowItem.shape = shape;
-                flowItem.name = displayName;
-                const flowItemContent = new Gtk.Box({
-                    orientation: Gtk.Orientation.VERTICAL,
-                    spacing: 4,
-                    valign: Gtk.Align.CENTER,
-                    halign: Gtk.Align.CENTER,
-                });
-                const picture = Gtk.Picture.new_for_filename(filePath);
-                picture.set_size_request(48, 48);
-                picture.set_content_fit(Gtk.ContentFit.CONTAIN);
-                const label = new Gtk.Label({
-                    label: displayName,
-                    justify: Gtk.Justification.CENTER,
-                    wrap: true,
-                    xalign: 0.5,
-                });
-                flowItemContent.append(picture);
-                flowItemContent.append(label);
-                flowItem.set_child(flowItemContent);
-                shapePicker.append(flowItem);
-            });
-            shapePicker.connect('child-activated', (flowBox, flowBoxChild) => {
-                shapeRowLabel.set_label(flowBoxChild.name);
-                this.settings.set_string('tracker-shape', flowBoxChild.shape);
-                shapeWindow.close();
-            });
-            const scrolledWindow = new Gtk.ScrolledWindow();
-            scrolledWindow.set_child(shapePicker);
-            shapeWindow.set_child(scrolledWindow);
-            shapeRow.connect('activated', () => {
-                shapeWindow.present(this);
-            });
-            drawingGroup.add(shapeRow);
-            //#endregion
+#: eye-on-cursor/settings/eyeSettings.js:57
+msgid "Active"
+msgstr ""
 
-            //#region Tracker size
-            const sizeRow = new Adw.SpinRow({
-                title: _('Size'),
-                subtitle: _('Size of the tracker'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 16,
-                    upper: 1024,
-                    step_increment: 16,
-                }),
-                value: this.settings.get_int('tracker-size'),
-            });
-            sizeRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('tracker-size', widget.value);
-            });
-            drawingGroup.add(sizeRow);
-            //#endregion
+#: eye-on-cursor/settings/eyeSettings.js:58
+msgid "Enable the eyes"
+msgstr ""
 
-            //#region Tracker colors
-            //Main Tracker color
-            function newColorPicker(settings, key) {
-                const colorPicker = new Gtk.ColorDialogButton({
-                    dialog: new Gtk.ColorDialog({
-                        modal: true,
-                        with_alpha: false,
-                    }),
-                    hexpand: false,
-                    margin_end: 8,
-                    valign: Gtk.Align.CENTER,
-                    vexpand: false,
-                });
-                const currentColor = colorPicker.get_rgba();
-                currentColor.parse(settings.get_string(key));
-                colorPicker.set_rgba(currentColor);
-                colorPicker.connect('notify::rgba', (widget) => {
-                    // Convert 'rgb(255,255,255)' to '#ffffff'
-                    const rgbCode = widget.get_rgba().to_string();
-                    const hexCode =
-                        '#' +
-                        rgbCode
-                            .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
-                            .split(',') // Split numbers at ","
-                            .map((string) => parseInt(string)) // Convert them to int
-                            .map((number) => number.toString(16)) // Convert them to base16
-                            .map((string) => (string.length === 1 ? '0' + string : string)) // If the length of the string is 1, adds a leading 0
-                            .join(''); // Join them back into a string
-                    settings.set_string(key, hexCode);
-                });
-                return colorPicker;
-            }
-            const colorMainRow = new Adw.ActionRow({
-                title: _('Color'),
-                subtitle: _('Custom color for the tracker'),
-            });
-            const colorMainPicker = newColorPicker(this.settings, 'tracker-color-main');
+#: eye-on-cursor/settings/eyeSettings.js:69
+msgid "Count"
+msgstr ""
 
-            // Tracker Main Color Toggle
-            const trackerColorToggle = new Gtk.CheckButton({
-                active: this.settings.get_boolean('tracker-color-main-enabled'),
-                hexpand: false,
-                margin_end: 8,
-                valign: Gtk.Align.CENTER,
-                vexpand: false,
-            });
-            trackerColorToggle.connect('toggled', (widget) => {
-                this.settings.set_boolean('tracker-color-main-enabled', widget.active);
-                colorMainPicker.set_sensitive(widget.active);
-            });
-            colorMainPicker.set_sensitive(trackerColorToggle.active);
-            const colorMainBox = new Gtk.Box({
-                orientation: Gtk.Orientation.HORIZONTAL,
-            });
-            colorMainBox.append(trackerColorToggle);
-            colorMainBox.append(colorMainPicker);
-            colorMainRow.add_suffix(colorMainBox);
-            drawingGroup.add(colorMainRow);
-            const colorClickRow = new Adw.ActionRow({
-                title: _('Colors on Click'),
-                subtitle: _('Colors when left, middle, and right-clicking'),
-            });
-            const isWayland = Gdk.Display.get_default().constructor.name.includes('Wayland');
-            if (isWayland) {
-                colorClickRow.set_tooltip_text(
-                    _('Click highlighting does not work in applications on Wayland. See README.')
-                );
-            } else {
-                colorClickRow.set_tooltip_text(_('Middle-click highlighting does not work on x11. See README.'));
-            }
-            const colorClickBox = new Gtk.Box({
-                orientation: Gtk.Orientation.HORIZONTAL,
-            });
-            ['tracker-color-left', 'tracker-color-middle', 'tracker-color-right'].forEach((key) => {
-                colorClickBox.append(newColorPicker(this.settings, key));
-            });
-            colorClickRow.add_suffix(colorClickBox);
-            drawingGroup.add(colorClickRow);
-            //#endregion
+#: eye-on-cursor/settings/eyeSettings.js:70
+msgid "Number of eyes"
+msgstr ""
 
-            //#region Tracker opacity
-            const opacityRow = new Adw.SpinRow({
-                title: _('Opacity'),
-                subtitle: _('Opacity of the tracker'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 0,
-                    upper: 100,
-                    step_increment: 10,
-                }),
-                value: this.settings.get_int('tracker-opacity'),
-            });
-            opacityRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('tracker-opacity', widget.value);
-            });
-            drawingGroup.add(opacityRow);
-            //#endregion
+#: eye-on-cursor/settings/eyeSettings.js:81
+msgid "Displaying more eyes may reduce performance."
+msgstr ""
 
-            //#region Tracker refresh rate
-            const refreshRow = new Adw.SpinRow({
-                title: _('Refresh Rate'),
-                subtitle: _('Hz'),
-                adjustment: new Gtk.Adjustment({
-                    lower: 1,
-                    upper: 144,
-                    step_increment: 1,
-                }),
-                value: this.settings.get_int('tracker-refresh-rate'),
-            });
-            refreshRow.adjustment.connect('value-changed', (widget) => {
-                this.settings.set_int('tracker-refresh-rate', widget.value);
-            });
-            refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
-            drawingGroup.add(refreshRow);
-            //#endregion
-            //#endregion
+#: eye-on-cursor/settings/eyeSettings.js:87
+msgid "Left"
+msgstr ""
 
-            //#region Tracker keybinding
-            const keybindGroup = new Adw.PreferencesGroup({
-                title: _('Keybinding'),
-            });
-            this.add(keybindGroup);
+#: eye-on-cursor/settings/eyeSettings.js:87
+msgid "Center"
+msgstr ""
 
-            // Create row
-            const keybindRow = new KeybindingRow(this.settings, 'tracker-keybinding', _('Toggle Tracker'));
-            keybindGroup.set_header_suffix(keybindRow.resetButton);
-            keybindGroup.add(keybindRow);
-            //#endregion
+#: eye-on-cursor/settings/eyeSettings.js:87
+msgid "Right"
+msgstr ""
 
-            //#region About group
-            const aboutGroup = new Adw.PreferencesGroup({
-                title: _('Credits'),
-            });
-            this.add(aboutGroup);
-            const aboutRow = new EyeAboutRow(this.metadata, this.path);
-            aboutGroup.add(aboutRow);
-            //#endregion
-        }
-    }
-);
+#: eye-on-cursor/settings/eyeSettings.js:92
+msgid "Position"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:93
+msgid "Position of the eyes on the panel"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:105
+msgid "Index"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:106
+msgid "Index of the eyes on the panel segment"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:122
+msgid "Width"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:123
+msgid "Drawing space and padding"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:139
+msgid "Menu"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:140
+msgid "Enable the eye submenu"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:152
+#: eye-on-cursor/settings/trackerSettings.js:55
+msgid "Appearance"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:158
+msgid "Natural"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:158
+msgid "Round"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:158
+msgid "Comic"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:161
+#: eye-on-cursor/settings/trackerSettings.js:81
+msgid "Shape"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:162
+msgid "Shape of the eyes"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:174
+msgid "Outline Mode"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:175
+msgid "Draw the eyes as outline only"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:186
+msgid "Strokes"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:187
+msgid "Thickness of the strokes in outline mode"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:236
+msgid "Iris Color"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:237
+msgid "Custom color for the iris"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:266
+#: eye-on-cursor/settings/trackerSettings.js:283
+msgid "Refresh Rate"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:267
+#: eye-on-cursor/settings/trackerSettings.js:284
+msgid "Hz"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:278
+#: eye-on-cursor/settings/trackerSettings.js:295
+msgid "Higher refresh rates may impact performance."
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:285
+msgid "Blinking"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:290
+msgid "Eyelid Color"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:301
+msgid "Manual"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:301
+msgid "Synced"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:301
+msgid "Unsynced"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:304
+msgid "Blink Mode"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:305
+msgid "Choose how eyes blink"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:319
+msgid "Manual Blink"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:328
+msgid "Synced Blinking Interval"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:329
+msgid "Seconds between synchronized blinks"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:346
+msgid "Unsynced Blinking Interval"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:347
+msgid "Range of seconds between random blinks"
+msgstr ""
+
+#: eye-on-cursor/settings/eyeSettings.js:415
+msgid "to"
+msgstr ""
+
+#: eye-on-cursor/settings/keybinding.js:46
+msgid "Set a shortcut"
+msgstr ""
+
+#: eye-on-cursor/settings/keybinding.js:55
+msgid "New shortcut…"
+msgstr ""
+
+#: eye-on-cursor/settings/keybinding.js:98
+msgid "Press Esc to cancel or Backspace to disable the shortcut"
+msgstr ""
+
+#: eye-on-cursor/settings/about.js:81
+msgid "About"
+msgstr ""
+
+#: eye-on-cursor/settings/about.js:82
+msgid "Development information and credits"
+msgstr ""
+
+#: eye-on-cursor/settings/about.js:114
+msgctxt "(USER)NAME EMAIL/URL"
+msgid "translator_credits"
+msgstr ""
+
+#: eye-on-cursor/settings/about.js:120
+msgid "Extension Page"
+msgstr ""
+
+#: eye-on-cursor/settings/about.js:123
+msgid "Donate"
+msgstr ""
+
+#: eye-on-cursor/settings/about.js:124
+msgid "Forked from"
+msgstr ""
+
+#: eye-on-cursor/settings/about.js:127
+msgid "Cinnamon Fork"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:46
+msgid "Mouse Tracker"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:82
+msgid "Shape of the tracker"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:93
+msgid "Select a Tracker"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:161
+msgid "Size"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:162
+msgid "Size of the tracker"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:211
+msgid "Color"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:212
+msgid "Custom color for the tracker"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:241
+msgid "Colors on Click"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:242
+msgid "Colors when left, middle, and right-clicking"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:248
+msgid "Click highlighting does not work in applications on Wayland. See README."
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:252
+msgid "Middle-click highlighting does not work on x11. See README."
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:266
+msgid "Opacity"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:267
+msgid "Opacity of the tracker"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:301
+msgid "Keybinding"
+msgstr ""
+
+#: eye-on-cursor/settings/trackerSettings.js:316
+msgid "Credits"
+msgstr ""
+
