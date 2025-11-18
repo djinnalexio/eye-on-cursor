@@ -8,37 +8,38 @@ ISSUES_URL = https://github.com/djinnalexio/eye-on-cursor/issues
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
 VERSION = 2.1.0
 
-.phony: pack install uninstall prefs test test-prefs-settings test-prefs-window update-pot
+.phony: pack install uninstall enable disable prefs test test-gnome48 test-prefs-settings test-prefs-window update-pot
 
 pack:
+	# Packing extension into ./$(PACK_NAME)...
 	gnome-extensions pack $(EXTENSION_NAME) \
 		--extra-source="lib" \
 		--extra-source="media" \
 		--extra-source="settings" \
 		--podir="../po" \
 		--force
-	# Extension has been packed into ./$(PACK_NAME).
 
 install: pack
+	# Installing extension...
 	gnome-extensions install --force $(PACK_NAME)
-	# Extension has been installed.
-	# Log out and in to use it, or start testing immediately.
+	# Log out and in to use the extension, or start testing immediately.
 
 uninstall:
+	# Uninstalling extension...
 	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_NAME)
 	gnome-extensions uninstall $(EXTENSION_UUID)
-	# Extension has been uninstalled and settings purged.
+
+enable:
+	# Enabling extension...
+	gnome-extensions enable $(EXTENSION_UUID)
+
+disable:
+	# Disabling extension...
+	gnome-extensions disable $(EXTENSION_UUID)
 
 prefs:
+	# Opening Preferences...
 	gnome-extensions prefs $(EXTENSION_UUID)
-	# Opened Preferences.
-
-test-gnome48: install
-	# Running a nested GNOME Shell:
-	env MUTTER_DEBUG_DUMMY_MODE_SPECS=960x540 \
-		SHELL_DEBUG=backtrace-warnings \
-		G_MESSAGES_DEBUG='GNOME Shell' \
-		dbus-run-session -- gnome-shell --nested --wayland
 
 test: install
 	# Running a nested GNOME Shell:
@@ -47,8 +48,15 @@ test: install
 		G_MESSAGES_DEBUG='GNOME Shell' \
 		dbus-run-session -- gnome-shell --devkit
 
+test-gnome48: install
+	# Running a nested GNOME Shell (GNOME 48 mode):
+	env MUTTER_DEBUG_DUMMY_MODE_SPECS=960x540 \
+		SHELL_DEBUG=backtrace-warnings \
+		G_MESSAGES_DEBUG='GNOME Shell' \
+		dbus-run-session -- gnome-shell --nested --wayland
+
 test-prefs-settings: install prefs
-	# Monitoring settings values:
+	# Monitoring settings value changes:
 	dconf watch /org/gnome/shell/extensions/$(EXTENSION_NAME)/
 
 test-prefs-window: install prefs
@@ -56,6 +64,7 @@ test-prefs-window: install prefs
 	journalctl -f -o cat /usr/bin/gjs
 
 update-pot:
+	# Updating POT file...
 	find $(EXTENSION_NAME)/ -iname "*.js" | xargs xgettext \
 		--output=po/$(EXTENSION_NAME).pot \
 		--from-code=UTF-8 \
