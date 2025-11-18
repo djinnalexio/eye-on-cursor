@@ -1,6 +1,5 @@
+// SPDX-FileCopyrightText: 2024-2025 djinnalexio
 // SPDX-License-Identifier: GPL-3.0-or-later
-// SPDX-FileCopyrightText: djinnalexio
-
 import prettier from 'eslint-plugin-prettier/recommended';
 import js from '@eslint/js';
 

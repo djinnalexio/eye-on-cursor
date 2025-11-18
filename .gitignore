@@ -1,5 +1,5 @@
+# SPDX-FileCopyrightText: 2024-2025 djinnalexio
 # SPDX-License-Identifier: GPL-3.0-or-later
-# SPDX-FileCopyrightText: djinnalexio
 
 # Ignore Node.js dependencies
 node_modules/

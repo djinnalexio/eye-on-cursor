@@ -1,6 +1,5 @@
+# SPDX-FileCopyrightText: 2024-2025 djinnalexio
 # SPDX-License-Identifier: GPL-3.0-or-later
-# SPDX-FileCopyrightText: djinnalexio
-
 COPYRIGHT_HOLDER = djinnalexio
 EXTENSION_NAME = eye-on-cursor
 EXTENSION_UUID = eye-on-cursor@djinnalexio.github.io
