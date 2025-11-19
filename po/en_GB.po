@@ -3,7 +3,11 @@ msgstr ""
 "Project-Id-Version: eye-on-cursor\n"
 "Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
 "POT-Creation-Date: 2025-11-19 09:20+0100\n"
+<<<<<<< HEAD
 "PO-Revision-Date: 2025-11-19 17:37\n"
+=======
+"PO-Revision-Date: 2025-11-19 15:23\n"
+>>>>>>> 6fd2a09 (New translations eye-on-cursor.pot (English, United Kingdom))
 "Last-Translator: \n"
 "Language-Team: English, United Kingdom\n"
 "Language: en_GB\n"
