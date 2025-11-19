@@ -37,10 +37,14 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
     <ol> ordered and <ul> unordered lists with <li> list items, and <code> code. */
 const releaseNotes =
-    '<p>Fixes &amp; Improvements:</p>\
+    '<p>New:</p>\
     <ul>\
-        <li>Fixed tracker getting stuck on old icon when changing shape or color</li>\
-    </ul >\
+        <li>Added more translations</li>\
+    </ul>\
+    <p>Fixes &amp; Improvements:</p>\
+    <ul>\
+        <li>Fixed tracker not updating when changing shape or color</li>\
+    </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
 //#endregion
