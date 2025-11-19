@@ -1,20 +1,23 @@
 <h1 align="center">Eye on Cursor</h1>
 <p align="center">
   <a href="https://github.com/djinnalexio/eye-on-cursor/blob/main/LICENSE">
-    <img alt="GitHub License" src="https://img.shields.io/github/license/djinnalexio/eye-on-cursor?style=for-the-badge&logo=gnu">
+    <img alt="GitHub License" src="https://img.shields.io/github/license/djinnalexio/eye-on-cursor?&logo=gnu">
   </a>
   <a href="https://github.com/djinnalexio/eye-on-cursor/releases/latest">
-    <img alt="Latest Release" src="https://img.shields.io/github/v/release/djinnalexio/eye-on-cursor?label=Latest%20Release&style=for-the-badge&logo=github&color=red">
+    <img alt="Latest Release" src="https://img.shields.io/github/v/release/djinnalexio/eye-on-cursor?label=Latest%20Release&logo=github&color=red">
+  </a>
+  <a href="https://crowdin.com/project/eye-on-cursor">
+    <img alt="Crowdin" src="https://badges.crowdin.net/eye-on-cursor/localized.svg">
   </a>
 </p>
 <p align="center">
   <a href="https://extensions.gnome.org/extension/7036/eye-on-cursor/">
-    <img alt="GNOME versions" src="https://img.shields.io/badge/supported_shell_versions-47_|_48|_49-green?style=for-the-badge&logo=gnome">
-    <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2F7036%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&label=GNOME%20extensions&cacheSeconds=86400&style=for-the-badge&logo=gnome">
+    <img alt="GNOME versions" src="https://img.shields.io/badge/supported_shell_versions-45_>>>_49-green?logo=gnome">
+    <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2F7036%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&label=GNOME%20extensions&cacheSeconds=86400&logo=gnome">
   </a>
 </p>
 <p align="center">
-  <img alt="logo" height="100" src="./eye-on-cursor/media/eye-on-cursor-logo.svg">
+  <img alt="logo" height="100" src="./src/media/eye-on-cursor-logo.svg">
 </p>
 <h3 align="center">Let your desktop "keep an eye" on your mouse!</h3>
 
