@@ -9,33 +9,33 @@ files:
     type: gettext
     languages_mapping:
       locale:
-        af-ZA: af
-        ar-SA: ar
-        ca-ES: ca
-        cs-CZ: cs
-        da-DK: da
-        de-DE: de
-        el-GR: el
+        af: af
+        ar: ar
+        ca: ca
+        cs: cs
+        da: da
+        de: de
+        el: el
         en-GB: en_GB
-        es-ES: es
-        fi-FI: fi
-        fr-FR: fr
-        he-IL: he
-        hu-HU: hu
-        it-IT: it
-        ja-JP: ja
-        ko-KR: ko
-        nl-NL: nl
-        no-NO: no
-        pl-PL: pl
-        pt-BR: pt
+        es: es
+        fi: fi
+        fr: fr
+        he: he
+        hu: hu
+        it: it
+        ja: ja
+        ko: ko
+        nl: nl
+        no: no
+        pl: pl
+        pt: pt
         pt-PT: pt_PT
-        ro-RO: ro
-        ru-RU: ru
-        sr-SP: sr
-        sv-SE: sv
-        tr-TR: tr
-        uk-UA: uk
-        vi-VN: vi
+        ro: ro
+        ru: ru
+        sr: sr
+        sv: sv
+        tr: tr
+        uk: uk
+        vi: vi
         zh-CN: zh_CN
         zh-TW: zh_TW
