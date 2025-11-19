@@ -1,0 +1,312 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: eye-on-cursor\n"
+"Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
+"POT-Creation-Date: 2025-11-19 09:20+0100\n"
+"PO-Revision-Date: 2025-11-19 15:23\n"
+"Last-Translator: \n"
+"Language-Team: English, United Kingdom\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: eye-on-cursor\n"
+"X-Crowdin-Project-ID: 734021\n"
+"X-Crowdin-Language: en-GB\n"
+"X-Crowdin-File: /main/po/eye-on-cursor.pot\n"
+"X-Crowdin-File-ID: 40\n"
+
+#: src/settings/eyeSettings.js:30
+msgid "Eyes"
+msgstr "Eyes"
+
+#: src/settings/eyeSettings.js:38
+msgid "Layout"
+msgstr "Layout"
+
+#: src/settings/eyeSettings.js:44
+msgid "Active"
+msgstr "Active"
+
+#: src/settings/eyeSettings.js:45
+msgid "Enable the eyes"
+msgstr "Enable the eyes"
+
+#: src/settings/eyeSettings.js:56
+msgid "Count"
+msgstr "Count"
+
+#: src/settings/eyeSettings.js:57
+msgid "Number of eyes"
+msgstr "Number of eyes"
+
+#: src/settings/eyeSettings.js:68
+msgid "Displaying more eyes may reduce performance."
+msgstr "Displaying more eyes may reduce performance."
+
+#: src/settings/eyeSettings.js:74
+msgid "Left"
+msgstr "Left"
+
+#: src/settings/eyeSettings.js:74
+msgid "Center"
+msgstr "Centre"
+
+#: src/settings/eyeSettings.js:74
+msgid "Right"
+msgstr "Right"
+
+#: src/settings/eyeSettings.js:79
+msgid "Position"
+msgstr "Position"
+
+#: src/settings/eyeSettings.js:80
+msgid "Position of the eyes on the panel"
+msgstr "Position of the eyes on the panel"
+
+#: src/settings/eyeSettings.js:92
+msgid "Index"
+msgstr "Index"
+
+#: src/settings/eyeSettings.js:93
+msgid "Index of the eyes on the panel segment"
+msgstr "Index of the eyes on the panel segment"
+
+#: src/settings/eyeSettings.js:109
+msgid "Width"
+msgstr "Width"
+
+#: src/settings/eyeSettings.js:110
+msgid "Drawing space and padding"
+msgstr "Drawing space and padding"
+
+#: src/settings/eyeSettings.js:126
+msgid "Menu"
+msgstr "Menu"
+
+#: src/settings/eyeSettings.js:127
+msgid "Enable the eye submenu"
+msgstr "Enable the eye submenu"
+
+#: src/settings/eyeSettings.js:139 src/settings/trackerSettings.js:42
+msgid "Appearance"
+msgstr "Appearance"
+
+#: src/settings/eyeSettings.js:145
+msgid "Natural"
+msgstr "Natural"
+
+#: src/settings/eyeSettings.js:145
+msgid "Round"
+msgstr "Round"
+
+#: src/settings/eyeSettings.js:145
+msgid "Comic"
+msgstr "Comic"
+
+#: src/settings/eyeSettings.js:148 src/settings/trackerSettings.js:68
+msgid "Shape"
+msgstr "Shape"
+
+#: src/settings/eyeSettings.js:149
+msgid "Shape of the eyes"
+msgstr "Shape of the eyes"
+
+#: src/settings/eyeSettings.js:161
+msgid "Outline Mode"
+msgstr "Outline Mode"
+
+#: src/settings/eyeSettings.js:162
+msgid "Draw the eyes as outline only"
+msgstr "Draw the eyes as outline only"
+
+#: src/settings/eyeSettings.js:173
+msgid "Strokes"
+msgstr "Strokes"
+
+#: src/settings/eyeSettings.js:174
+msgid "Thickness of the strokes in outline mode"
+msgstr "Thickness of the strokes in outline mode"
+
+#: src/settings/eyeSettings.js:223
+msgid "Iris Color"
+msgstr "Iris Colour"
+
+#: src/settings/eyeSettings.js:224
+msgid "Custom color for the iris"
+msgstr "Custom colour for the iris"
+
+#: src/settings/eyeSettings.js:253 src/settings/trackerSettings.js:269
+msgid "Refresh Rate"
+msgstr "Refresh Rate"
+
+#: src/settings/eyeSettings.js:254 src/settings/trackerSettings.js:270
+msgid "Hz"
+msgstr "Hz"
+
+#: src/settings/eyeSettings.js:265 src/settings/trackerSettings.js:281
+msgid "Higher refresh rates may impact performance."
+msgstr "Higher refresh rates may impact performance."
+
+#: src/settings/eyeSettings.js:272
+msgid "Blinking"
+msgstr "Blinking"
+
+#: src/settings/eyeSettings.js:277
+msgid "Eyelid Color"
+msgstr "Eyelid Colour"
+
+#: src/settings/eyeSettings.js:288
+msgid "Manual"
+msgstr "Manual"
+
+#: src/settings/eyeSettings.js:288
+msgid "Synced"
+msgstr "Synced"
+
+#: src/settings/eyeSettings.js:288
+msgid "Unsynced"
+msgstr "Unsynced"
+
+#: src/settings/eyeSettings.js:291
+msgid "Blink Mode"
+msgstr "Blink Mode"
+
+#: src/settings/eyeSettings.js:292
+msgid "Choose how eyes blink"
+msgstr "Choose how eyes blink"
+
+#: src/settings/eyeSettings.js:306
+msgid "Manual Blink"
+msgstr "Manual Blink"
+
+#: src/settings/eyeSettings.js:315
+msgid "Synced Blinking Interval"
+msgstr "Synced Blinking Interval"
+
+#: src/settings/eyeSettings.js:316
+msgid "Seconds between synchronized blinks"
+msgstr "Seconds between synchronised blinks"
+
+#: src/settings/eyeSettings.js:333
+msgid "Unsynced Blinking Interval"
+msgstr "Unsynced Blinking Interval"
+
+#: src/settings/eyeSettings.js:334
+msgid "Range of seconds between random blinks"
+msgstr "Range of seconds between random blinks"
+
+#: src/settings/eyeSettings.js:402
+msgid "to"
+msgstr "to"
+
+#: src/settings/about.js:60
+msgid "About"
+msgstr "About"
+
+#: src/settings/about.js:61
+msgid "Development information and credits"
+msgstr "Development information and credits"
+
+#: src/settings/about.js:93
+msgctxt "(USER)NAME EMAIL/URL"
+msgid "translator_credits"
+msgstr "djinnalexio https://github.com/djinnalexio/"
+
+#: src/settings/about.js:99
+msgid "Extension Page"
+msgstr "Extension Page"
+
+#: src/settings/about.js:102
+msgid "Donate"
+msgstr "Donate"
+
+#: src/settings/about.js:103
+msgid "Forked from"
+msgstr "Forked from"
+
+#: src/settings/about.js:106
+msgid "Cinnamon Fork"
+msgstr "Cinnamon Fork"
+
+#: src/settings/keybinding.js:33 src/settings/keybinding.js:84
+msgid "Set a shortcut"
+msgstr "Set a shortcut"
+
+#: src/settings/keybinding.js:42
+msgid "New shortcut…"
+msgstr "New shortcut…"
+
+#: src/settings/keybinding.js:85
+msgid "Press Esc to cancel or Backspace to disable the shortcut"
+msgstr "Press Esc to cancel or Backspace to disable the shortcut"
+
+#: src/settings/trackerSettings.js:33
+msgid "Mouse Tracker"
+msgstr "Mouse Tracker"
+
+#: src/settings/trackerSettings.js:69
+msgid "Shape of the tracker"
+msgstr "Shape of the tracker"
+
+#: src/settings/trackerSettings.js:80
+msgid "Select a Tracker"
+msgstr "Select a Tracker"
+
+#: src/settings/trackerSettings.js:148
+msgid "Size"
+msgstr "Size"
+
+#: src/settings/trackerSettings.js:149
+msgid "Size of the tracker"
+msgstr "Size of the tracker"
+
+#: src/settings/trackerSettings.js:198
+msgid "Color"
+msgstr "Colour"
+
+#: src/settings/trackerSettings.js:199
+msgid "Custom color for the tracker"
+msgstr "Custom colour for the tracker"
+
+#: src/settings/trackerSettings.js:227
+msgid "Colors on Click"
+msgstr "Colours on Click"
+
+#: src/settings/trackerSettings.js:228
+msgid "Colors when left, middle, and right-clicking"
+msgstr "Colours when left, middle, and right-clicking"
+
+#: src/settings/trackerSettings.js:234
+msgid "Click highlighting does not work in applications on Wayland. See README."
+msgstr "Click highlighting does not work in applications on Wayland. See README."
+
+#: src/settings/trackerSettings.js:238
+msgid "Middle-click highlighting does not work on x11. See README."
+msgstr "Middle-click highlighting does not work on x11. See README."
+
+#: src/settings/trackerSettings.js:252
+msgid "Opacity"
+msgstr "Opacity"
+
+#: src/settings/trackerSettings.js:253
+msgid "Opacity of the tracker"
+msgstr "Opacity of the tracker"
+
+#: src/settings/trackerSettings.js:287
+msgid "Keybinding"
+msgstr "Keybinding"
+
+#: src/settings/trackerSettings.js:294 src/lib/eye.js:103
+msgid "Toggle Tracker"
+msgstr "Toggle Tracker"
+
+#: src/settings/trackerSettings.js:302
+msgid "Credits"
+msgstr "Credits"
+
+#: src/lib/eye.js:108
+msgid "Settings"
+msgstr "Settings"
+
