@@ -1,41 +1,49 @@
-project_id_env: EYE_ON_CURSOR_CROWDIN_PROJECT_ID
-api_token_env: CROWDIN_PERSONAL_TOKEN
+'project_id_env': 'EYE_ON_CURSOR_CROWDIN_PROJECT_ID'
+'api_token_env': 'CROWDIN_PERSONAL_TOKEN'
 
-preserve_hierarchy: true
+'preserve_hierarchy': 'true'
 
-files:
-  - source: /po/eye-on-cursor.pot
-    translation: /po/%locale%.po
-    type: gettext
-    languages_mapping:
-      locale:
-        af: af
-        ar: ar
-        ca: ca
-        cs: cs
-        da: da
-        de: de
-        el: el
-        en-GB: en_GB
-        es: es
-        fi: fi
-        fr: fr
-        he: he
-        hu: hu
-        it: it
-        ja: ja
-        ko: ko
-        nl: nl
-        no: no
-        pl: pl
-        pt: pt
-        pt-PT: pt_PT
-        ro: ro
-        ru: ru
-        sr: sr
-        sv: sv
-        tr: tr
-        uk: uk
-        vi: vi
-        zh-CN: zh_CN
-        zh-TW: zh_TW
+'files':
+    [
+        {
+            'source': '/po/eye-on-cursor.pot',
+            'translation': '/po/%two_letters_code%.po',
+            'type': 'gettext',
+            'languages_mapping':
+                {
+                    'two_letters_code':
+                        {
+                            'af': 'af',
+                            'ar': 'ar',
+                            'ca': 'ca',
+                            'cs': 'cs',
+                            'da': 'da',
+                            'de': 'de',
+                            'el': 'el',
+                            'en-GB': 'en_GB',
+                            'es': 'es',
+                            'fi': 'fi',
+                            'fr': 'fr',
+                            'he': 'he',
+                            'hu': 'hu',
+                            'it': 'it',
+                            'ja': 'ja',
+                            'ko': 'ko',
+                            'nl': 'nl',
+                            'no': 'no',
+                            'pl': 'pl',
+                            'pt': 'pt',
+                            'pt-PT': 'pt_PT',
+                            'ro': 'ro',
+                            'ru': 'ru',
+                            'sr': 'sr',
+                            'sv': 'sv',
+                            'tr': 'tr',
+                            'uk': 'uk',
+                            'vi': 'vi',
+                            'zh-CN': 'zh_CN',
+                            'zh-TW': zh_TW ",
+                        },
+                },
+        },
+    ]
