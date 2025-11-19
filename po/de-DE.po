@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: eye-on-cursor\n"
 "Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
 "POT-Creation-Date: 2025-11-19 09:20+0100\n"
-"PO-Revision-Date: 2025-11-19 08:46\n"
+"PO-Revision-Date: 2025-11-19 12:07\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -19,294 +19,294 @@ msgstr ""
 
 #: src/settings/eyeSettings.js:30
 msgid "Eyes"
-msgstr ""
+msgstr "Augen"
 
 #: src/settings/eyeSettings.js:38
 msgid "Layout"
-msgstr ""
+msgstr "Layout"
 
 #: src/settings/eyeSettings.js:44
 msgid "Active"
-msgstr ""
+msgstr "Aktiv"
 
 #: src/settings/eyeSettings.js:45
 msgid "Enable the eyes"
-msgstr ""
+msgstr "Augen aktivieren"
 
 #: src/settings/eyeSettings.js:56
 msgid "Count"
-msgstr ""
+msgstr "Anzahl"
 
 #: src/settings/eyeSettings.js:57
 msgid "Number of eyes"
-msgstr ""
+msgstr "Anzahl der Augen"
 
 #: src/settings/eyeSettings.js:68
 msgid "Displaying more eyes may reduce performance."
-msgstr ""
+msgstr "Die Anzeige von mehr Augen kann die Leistung verringern."
 
 #: src/settings/eyeSettings.js:74
 msgid "Left"
-msgstr ""
+msgstr "Links"
 
 #: src/settings/eyeSettings.js:74
 msgid "Center"
-msgstr ""
+msgstr "Zentriert"
 
 #: src/settings/eyeSettings.js:74
 msgid "Right"
-msgstr ""
+msgstr "Rechts"
 
 #: src/settings/eyeSettings.js:79
 msgid "Position"
-msgstr ""
+msgstr "Position"
 
 #: src/settings/eyeSettings.js:80
 msgid "Position of the eyes on the panel"
-msgstr ""
+msgstr "Position der Augen an der Leiste"
 
 #: src/settings/eyeSettings.js:92
 msgid "Index"
-msgstr ""
+msgstr "Index"
 
 #: src/settings/eyeSettings.js:93
 msgid "Index of the eyes on the panel segment"
-msgstr ""
+msgstr "Index der Augen auf das Panel-Segment"
 
 #: src/settings/eyeSettings.js:109
 msgid "Width"
-msgstr ""
+msgstr "Breite"
 
 #: src/settings/eyeSettings.js:110
 msgid "Drawing space and padding"
-msgstr ""
+msgstr "Raum und Polster zeichnen"
 
 #: src/settings/eyeSettings.js:126
 msgid "Menu"
-msgstr ""
+msgstr "Menü"
 
 #: src/settings/eyeSettings.js:127
 msgid "Enable the eye submenu"
-msgstr ""
+msgstr "Untermenü „Auge“ aktivieren"
 
 #: src/settings/eyeSettings.js:139 src/settings/trackerSettings.js:42
 msgid "Appearance"
-msgstr ""
+msgstr "Erscheinung"
 
 #: src/settings/eyeSettings.js:145
 msgid "Natural"
-msgstr ""
+msgstr "Natürlich"
 
 #: src/settings/eyeSettings.js:145
 msgid "Round"
-msgstr ""
+msgstr "Runde"
 
 #: src/settings/eyeSettings.js:145
 msgid "Comic"
-msgstr ""
+msgstr "Comic"
 
 #: src/settings/eyeSettings.js:148 src/settings/trackerSettings.js:68
 msgid "Shape"
-msgstr ""
+msgstr "Form"
 
 #: src/settings/eyeSettings.js:149
 msgid "Shape of the eyes"
-msgstr ""
+msgstr "Augenform"
 
 #: src/settings/eyeSettings.js:161
 msgid "Outline Mode"
-msgstr ""
+msgstr "Kontur-Modus"
 
 #: src/settings/eyeSettings.js:162
 msgid "Draw the eyes as outline only"
-msgstr ""
+msgstr "Zeichne die Augen nur als Umriss"
 
 #: src/settings/eyeSettings.js:173
 msgid "Strokes"
-msgstr ""
+msgstr "Striche"
 
 #: src/settings/eyeSettings.js:174
 msgid "Thickness of the strokes in outline mode"
-msgstr ""
+msgstr "Stärke der Striche im Umrissmodus"
 
 #: src/settings/eyeSettings.js:223
 msgid "Iris Color"
-msgstr ""
+msgstr "Iris Farbe"
 
 #: src/settings/eyeSettings.js:224
 msgid "Custom color for the iris"
-msgstr ""
+msgstr "Benutzerdefinierte Farbe für die Iris"
 
 #: src/settings/eyeSettings.js:253 src/settings/trackerSettings.js:269
 msgid "Refresh Rate"
-msgstr ""
+msgstr "Aktualisierungsrate"
 
 #: src/settings/eyeSettings.js:254 src/settings/trackerSettings.js:270
 msgid "Hz"
-msgstr ""
+msgstr "Hz"
 
 #: src/settings/eyeSettings.js:265 src/settings/trackerSettings.js:281
 msgid "Higher refresh rates may impact performance."
-msgstr ""
+msgstr "Höhere Aktualisierungsraten können die Performance beeinflussen."
 
 #: src/settings/eyeSettings.js:272
 msgid "Blinking"
-msgstr ""
+msgstr "Blinkend"
 
 #: src/settings/eyeSettings.js:277
 msgid "Eyelid Color"
-msgstr ""
+msgstr "Augenlid-Farbe"
 
 #: src/settings/eyeSettings.js:288
 msgid "Manual"
-msgstr ""
+msgstr "Manuell"
 
 #: src/settings/eyeSettings.js:288
 msgid "Synced"
-msgstr ""
+msgstr "Synchronisiert"
 
 #: src/settings/eyeSettings.js:288
 msgid "Unsynced"
-msgstr ""
+msgstr "Nicht synchronisiert"
 
 #: src/settings/eyeSettings.js:291
 msgid "Blink Mode"
-msgstr ""
+msgstr "Blinzel-Modus"
 
 #: src/settings/eyeSettings.js:292
 msgid "Choose how eyes blink"
-msgstr ""
+msgstr "Wähle wie Augen blinken"
 
 #: src/settings/eyeSettings.js:306
 msgid "Manual Blink"
-msgstr ""
+msgstr "Manuelles Blinken"
 
 #: src/settings/eyeSettings.js:315
 msgid "Synced Blinking Interval"
-msgstr ""
+msgstr "Synchronisiertes Blinkintervall"
 
 #: src/settings/eyeSettings.js:316
 msgid "Seconds between synchronized blinks"
-msgstr ""
+msgstr "Sekunden zwischen synchronisierten Blinken"
 
 #: src/settings/eyeSettings.js:333
 msgid "Unsynced Blinking Interval"
-msgstr ""
+msgstr "Nicht synchronisiertes Blinkintervall"
 
 #: src/settings/eyeSettings.js:334
 msgid "Range of seconds between random blinks"
-msgstr ""
+msgstr "Bereich der Sekunden zwischen zufälligen Blinzeln"
 
 #: src/settings/eyeSettings.js:402
 msgid "to"
-msgstr ""
+msgstr "zu"
 
 #: src/settings/about.js:60
 msgid "About"
-msgstr ""
+msgstr "Über"
 
 #: src/settings/about.js:61
 msgid "Development information and credits"
-msgstr ""
+msgstr "Entwicklungsinformationen und Credits"
 
 #: src/settings/about.js:93
 msgctxt "(USER)NAME EMAIL/URL"
 msgid "translator_credits"
-msgstr ""
+msgstr "djinnalexio https://github.com/djinnalexio/"
 
 #: src/settings/about.js:99
 msgid "Extension Page"
-msgstr ""
+msgstr "Erweiterungsseite"
 
 #: src/settings/about.js:102
 msgid "Donate"
-msgstr ""
+msgstr "Spenden"
 
 #: src/settings/about.js:103
 msgid "Forked from"
-msgstr ""
+msgstr "Abgeleitet von"
 
 #: src/settings/about.js:106
 msgid "Cinnamon Fork"
-msgstr ""
+msgstr "Cinnamon-Fork"
 
 #: src/settings/keybinding.js:33 src/settings/keybinding.js:84
 msgid "Set a shortcut"
-msgstr ""
+msgstr "Verknüpfung festlegen"
 
 #: src/settings/keybinding.js:42
 msgid "New shortcut…"
-msgstr ""
+msgstr "Neue Verknüpfung…"
 
 #: src/settings/keybinding.js:85
 msgid "Press Esc to cancel or Backspace to disable the shortcut"
-msgstr ""
+msgstr "Drücken Sie Esc zum Abbrechen oder Backspace, um die Tastenkombination zu deaktivieren"
 
 #: src/settings/trackerSettings.js:33
 msgid "Mouse Tracker"
-msgstr ""
+msgstr "Maus-Tracker"
 
 #: src/settings/trackerSettings.js:69
 msgid "Shape of the tracker"
-msgstr ""
+msgstr "Form des Tracker"
 
 #: src/settings/trackerSettings.js:80
 msgid "Select a Tracker"
-msgstr ""
+msgstr "Tracker auswählen"
 
 #: src/settings/trackerSettings.js:148
 msgid "Size"
-msgstr ""
+msgstr "Größe"
 
 #: src/settings/trackerSettings.js:149
 msgid "Size of the tracker"
-msgstr ""
+msgstr "Größe des Trackers"
 
 #: src/settings/trackerSettings.js:198
 msgid "Color"
-msgstr ""
+msgstr "Farbe"
 
 #: src/settings/trackerSettings.js:199
 msgid "Custom color for the tracker"
-msgstr ""
+msgstr "Benutzerdefinierte Farbe für den Tracker"
 
 #: src/settings/trackerSettings.js:227
 msgid "Colors on Click"
-msgstr ""
+msgstr "Farben bei Klick"
 
 #: src/settings/trackerSettings.js:228
 msgid "Colors when left, middle, and right-clicking"
-msgstr ""
+msgstr "Farben bei Linksklick, Mitte und Rechtsklick"
 
 #: src/settings/trackerSettings.js:234
 msgid "Click highlighting does not work in applications on Wayland. See README."
-msgstr ""
+msgstr "Klicken Sie auf Hervorhebung funktioniert nicht in Anwendungen auf Wayland. Siehe README."
 
 #: src/settings/trackerSettings.js:238
 msgid "Middle-click highlighting does not work on x11. See README."
-msgstr ""
+msgstr "Mittelklick-Hervorhebung funktioniert unter X11 nicht. Siehe README."
 
 #: src/settings/trackerSettings.js:252
 msgid "Opacity"
-msgstr ""
+msgstr "Deckkraft"
 
 #: src/settings/trackerSettings.js:253
 msgid "Opacity of the tracker"
-msgstr ""
+msgstr "Deckkraft des Trackers"
 
 #: src/settings/trackerSettings.js:287
 msgid "Keybinding"
-msgstr ""
+msgstr "Tastenbelegung"
 
 #: src/settings/trackerSettings.js:294 src/lib/eye.js:103
 msgid "Toggle Tracker"
-msgstr ""
+msgstr "Tracker umschalten"
 
 #: src/settings/trackerSettings.js:302
 msgid "Credits"
-msgstr ""
+msgstr "Credits"
 
 #: src/lib/eye.js:108
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
