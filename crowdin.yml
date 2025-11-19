@@ -4,11 +4,11 @@ api_token_env: CROWDIN_PERSONAL_TOKEN
 preserve_hierarchy: true
 
 files:
-    - source: /po/eye-on-cursor.pot
-      translation: /po/%locale%.po
-      type: gettext
-      languages_mapping:
+  - source: /po/eye-on-cursor.pot
+    translation: /po/%locale%.po
+    type: gettext
+    languages_mapping:
       locale:
-          en-GB: en_GB
-          zh-CN: zh_CN
-          zh-TW: zh_TW
+        en-GB: en_GB
+        zh-CN: zh_CN
+        zh-TW: zh_TW
