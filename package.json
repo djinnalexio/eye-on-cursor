@@ -13,8 +13,8 @@
         "url": "https://github.com/djinnalexio/eye-on-cursor/issues"
     },
     "scripts": {
-        "format": "prettier ./eye-on-cursor/ --write",
-        "lint": "eslint ./eye-on-cursor/ --fix",
+        "format": "prettier ./src/ --write",
+        "lint": "eslint ./src/ --fix",
         "test": "make test"
     },
     "prettier": {
