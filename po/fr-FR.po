@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: eye-on-cursor\n"
 "Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
 "POT-Creation-Date: 2025-11-19 09:20+0100\n"
-"PO-Revision-Date: 2025-11-19 08:46\n"
+"PO-Revision-Date: 2025-11-19 12:07\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -272,7 +272,7 @@ msgstr "Couleur personnalisée pour le traqueur"
 
 #: src/settings/trackerSettings.js:227
 msgid "Colors on Click"
-msgstr "Couleurs des clic"
+msgstr "Couleurs du clic"
 
 #: src/settings/trackerSettings.js:228
 msgid "Colors when left, middle, and right-clicking"
