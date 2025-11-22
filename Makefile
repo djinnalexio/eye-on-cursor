@@ -26,7 +26,7 @@ install: pack
 uninstall:
 	# Uninstalling extension...
 	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_NAME)/
-	# gnome-extensions uninstall $(EXTENSION_UUID)
+	gnome-extensions uninstall $(EXTENSION_UUID)
 
 enable:
 	# Enabling extension...
