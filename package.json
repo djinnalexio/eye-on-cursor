@@ -3,7 +3,7 @@
     "version": "2.1.1",
     "description": "Let your desktop \"keep an eye\" on your mouse! And with the included cursor indicator, keep track of your pointer's every action!",
     "license": "GPL-3.0-or-later",
-    "main": "eye-on-cursor/extension.js",
+    "main": "src/extension.js",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/djinnalexio/eye-on-cursor.git"
