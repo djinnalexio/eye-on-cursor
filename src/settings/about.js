@@ -1,7 +1,7 @@
 /*
  * Eye on Cursor GNOME Shell extension
  *
- * SPDX-FileCopyrightText: 2024-2025 djinnalexio
+ * SPDX-FileCopyrightText: 2024-2026 djinnalexio
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 'use strict';
@@ -31,7 +31,7 @@ const designers = [];
 const developers = ['djinnalexio https://github.com/djinnalexio/'];
 const documenters = [];
 
-const copyright = '© 2024-2025 djinnalexio';
+const copyright = '© 2024-2026 djinnalexio';
 const developerName = 'djinnalexio';
 const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
