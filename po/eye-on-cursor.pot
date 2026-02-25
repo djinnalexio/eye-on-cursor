@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: eye-on-cursor 2.1.1\n"
+"Project-Id-Version: eye-on-cursor 2.2.0\n"
 "Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
 "POT-Creation-Date: 2025-11-19 09:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"

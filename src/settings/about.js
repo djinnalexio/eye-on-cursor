@@ -39,11 +39,7 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 const releaseNotes =
     '<p>New:</p>\
     <ul>\
-        <li>Added more translations</li>\
-    </ul>\
-    <p>Fixes &amp; Improvements:</p>\
-    <ul>\
-        <li>Fixed tracker not updating when changing shape or color</li>\
+        <li>Add GNOME 50 support</li>\
     </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
