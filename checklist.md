@@ -17,6 +17,8 @@
 
 - [ ] move the po folder inside src so that it can be automatically picked up by the pack command and update makefile and crowdin accordingly.
 
+- [ ] remove crowdin (not worth the setup) 
+
 - [ ] add upload command to make
 
 - [ ] change pack_name in makefile to '$(EXTENSION_NAME).shell-extension.zip'
