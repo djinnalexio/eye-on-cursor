@@ -78,7 +78,6 @@ export class TrackerManager {
         this.mouseListener = null;
         this.activeClick = null;
         this.clickResetPending = false;
-        this.isWayland = Meta.is_wayland_compositor();
         this.clickMaxTimeoutID = {id: null};
         this.clickReleaseTimeoutID = {id: null};
         this.trackerPositionUpdaterID = {id: null};
@@ -133,6 +132,10 @@ export class TrackerManager {
             this.toggleTracker.bind(this)
         );
 
+        // Check if the session is wayland. Assume true if the check function is missing (GNOME 50+)
+        this.isWayland = (Meta.is_wayland_compositor !== undefined) ? Meta.is_wayland_compositor() : true;
+        
+        // If on X11, use `Atspi` as the event listener
         if (!this.isWayland) Atspi.init();
 
         // Connect change in accent color to tracker redraw
@@ -517,6 +520,9 @@ export class TrackerManager {
         // Disconnect keybinding
         Main.wm.removeKeybinding('tracker-keybinding');
 
+        // Disconnect Atspi
+        if (!this.isWayland) Atspi.exit();
+        
         // Destroy tracker
         this.trackerIcon?.destroy();
         this.trackerIcon = null;

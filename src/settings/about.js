@@ -37,9 +37,9 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 /* The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
     <ol> ordered and <ul> unordered lists with <li> list items, and <code> code. */
 const releaseNotes =
-    '<p>New:</p>\
+    '<p>Bug fixes:</p>\
     <ul>\
-        <li>Add GNOME 50 support</li>\
+        <li>Handled undefined wayland check on GNOME 50+</li>\
     </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
