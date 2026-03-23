@@ -14,11 +14,3 @@
 - [ ] add a timeout to tracker to only make it visible while cursor is moving
 
 - [ ] to fix the issue when tracker prevents dragging windows in overview mode, maybe remove the tracker during click
-
-- [ ] move the po folder inside src so that it can be automatically picked up by the pack command and update makefile and crowdin accordingly.
-
-- [ ] remove crowdin (not worth the setup) 
-
-- [ ] add upload command to make
-
-- [ ] change pack_name in makefile to '$(EXTENSION_NAME).shell-extension.zip'

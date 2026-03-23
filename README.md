@@ -6,9 +6,6 @@
   <a href="https://github.com/djinnalexio/eye-on-cursor/releases/latest">
     <img alt="Latest Release" src="https://img.shields.io/github/v/release/djinnalexio/eye-on-cursor?label=Latest%20Release&logo=github&color=red">
   </a>
-  <a href="https://crowdin.com/project/eye-on-cursor">
-    <img alt="Crowdin" src="https://badges.crowdin.net/eye-on-cursor/localized.svg">
-  </a>
 </p>
 <p align="center">
   <a href="https://extensions.gnome.org/extension/7036/eye-on-cursor/">

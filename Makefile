@@ -11,12 +11,10 @@ VERSION = 2.2.1
 
 pack:
 	# Packing extension into ./$(PACK_NAME)...
-	gnome-extensions pack ./src \
+	gnome-extensions pack ./src -f \
 		--extra-source="lib" \
 		--extra-source="media" \
-		--extra-source="settings" \
-		--podir="../po" \
-		--force
+		--extra-source="settings"
 
 install: pack
 	# Installing extension...
@@ -65,7 +63,7 @@ test-prefs-window: install prefs
 update-pot:
 	# Updating POT file...
 	find ./src -iname "*.js" | xargs xgettext \
-		--output=po/$(EXTENSION_NAME).pot \
+		--output=src/po/$(EXTENSION_NAME).pot \
 		--from-code=UTF-8 \
 		--package-name=$(EXTENSION_NAME)  \
 		--package-version=$(VERSION) \
