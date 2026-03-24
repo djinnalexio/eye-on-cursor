@@ -9,8 +9,8 @@
 </p>
 <p align="center">
   <a href="https://extensions.gnome.org/extension/7036/eye-on-cursor/">
-    <img alt="GNOME versions" src="https://img.shields.io/badge/supported_shell_versions-45_>>>_50-green?logo=gnome">
-    <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2F7036%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&label=GNOME%20extensions&cacheSeconds=86400&logo=gnome">
+    <img alt="GNOME versions" src="https://img.shields.io/badge/GNOME_version-≤_50-green?logo=gnome">
+    <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?label=GNOME%20extensions&url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2F7036%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&cacheSeconds=86400&logo=gnome">
   </a>
 </p>
 <p align="center">
@@ -24,6 +24,8 @@
 
 <p align="center">
 <img alt="" height="300" src="assets/tracking.gif">
+</p>
+<p align="center">
 <img alt="" height="300" src="assets/biblicallyAccurate.png">
 </p>
 <p align="center">
@@ -49,18 +51,22 @@
 
 ### From GitHub
 
+> ⚠️ **Note:** When installing this extension manually from GitHub, it will **not receive automatic updates** from the GNOME Extensions website.
+
+
 1. Go to [the latest release](https://github.com/djinnalexio/eye-on-cursor/releases/latest) and download the extension zip file.
-2. At the location of the downloaded zip file, run:
 
-   ```bash
-   gnome-extensions install --force eye-on-cursor@djinnalexio.github.io.shell-extension.zip
-   ```
+2. At the location of the downloaded zip file, run the install command:
 
-3. Log out and back in, then enable the extension in your extensions app or with:
+  ```bash
+  gnome-extensions install --force eye-on-cursor@djinnalexio.github.io.shell-extension.zip
+  ```
 
-    ```bash
-    gnome-extensions enable eye-on-cursor@djinnalexio.github.io
-    ```
+3. Log out of your session and log back in, then enable the extension using your Extensions manager app or by running:
+
+  ```bash
+  gnome-extensions enable eye-on-cursor@djinnalexio.github.io
+  ```
 
 ## Acknowledgements
 
