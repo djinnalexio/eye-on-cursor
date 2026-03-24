@@ -1,13 +1,14 @@
 # SPDX-FileCopyrightText: 2024-2026 djinnalexio
 # SPDX-License-Identifier: GPL-3.0-or-later
 COPYRIGHT_HOLDER = djinnalexio
+EGO_USERNAME = djinnalexio
 EXTENSION_NAME = eye-on-cursor
 EXTENSION_UUID = eye-on-cursor@djinnalexio.github.io
 ISSUES_URL = https://github.com/djinnalexio/eye-on-cursor/issues
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
 VERSION = 2.2.1
 
-.phony: pack install uninstall enable disable prefs test test-gnome48 test-prefs-settings test-prefs-window update-pot
+.phony: pack install uninstall enable disable prefs test test-gnome48 test-prefs-settings test-prefs-window update-pot upload
 
 pack:
 	# Packing extension into ./$(PACK_NAME)...
@@ -15,11 +16,11 @@ pack:
 		--extra-source="lib" \
 		--extra-source="media" \
 		--extra-source="settings"
-
+		
 install: pack
 	# Installing extension...
 	gnome-extensions install --force $(PACK_NAME)
-	# Log out and in to use the extension, or start testing immediately.
+	# Log out of the session and then back in to use the extension, or start testing immediately.
 
 uninstall:
 	# Uninstalling extension...
@@ -69,3 +70,8 @@ update-pot:
 		--package-version=$(VERSION) \
 		--copyright-holder=$(COPYRIGHT_HOLDER) \
 		--msgid-bugs-address=$(ISSUES_URL)
+
+upload: pack
+	# Uploading $(PACK_NAME) to https://extensions.gnome.org
+	# Enter EGO password:
+	gnome-extensions upload $(PACK_NAME) --accept-tos -u $(EGO_USERNAME) -P "-"
