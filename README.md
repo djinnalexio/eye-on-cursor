@@ -86,17 +86,13 @@ If you have contributed in any way, feel free to add yourself to the `credits.js
 
 From the root of the repo, run `make install` to install the extension and start using it in the next session or run `make test` to start debugging immediately in a nested shell.
 
-`Makefile` contains a few other commands useful for debugging.
-
 ### Known Issues
 
-- On Wayland, the mouse tracker click highlighting feature does not function within application windows.
+- On **Wayland**, the mouse tracker uses `globe.stage` to listen to clicks:
+  - clicks within application windows are not registered. Only clicks in the Shell (background, panel, etc.) are higlighted.
 
-  Wayland handles events differently compared to X11, isolating them to the window where they occur. On x11, **Eye on Cursor** uses `Atspi` to listen to mouse clicks, which doesn't work at all on Wayland. On Wayland, the extension thus resorts to listening with `globe.stage` instead, with its caveat that only clicks in the Shell (background, panel, etc.) are registered.
-
-- On x11, middle click is not registered.
-
-  `Atspi` does not register middle clicks.
+- On **x11**, the mouse tracker uses `Atspi` listen to clicks:
+  - middle click is not registered.
 
 ### Documentation on Developing GNOME Extensions
 
