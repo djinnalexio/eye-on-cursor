@@ -69,6 +69,10 @@ export class TrackerManager {
         this.glyphsDir = `${extensionObject.path}/media/glyphs`;
         this.settings = extensionObject.settings;
 
+        // Check if accent color variable exists (GNOME 47+)
+        this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+        this.accentColorKeyFound = this.interfaceSettings.list_keys().includes(ACCENT_COLORS_KEY);
+
         // Initialize state variables
         this.enabled = false;
         this.currentColor = null;
@@ -86,7 +90,9 @@ export class TrackerManager {
         // Initialize settings values
         this.shape = this.settings.get_string('tracker-shape');
         this.size = this.settings.get_int('tracker-size');
-        this.colorMainEnabled = this.settings.get_boolean('tracker-color-main-enabled');
+        this.colorMainEnabled = this.accentColorKeyFound
+            ? this.settings.get_boolean('tracker-color-main-enabled')
+            : true;
         this.colorMain = this.settings.get_string('tracker-color-main');
         this.colorLeft = this.settings.get_string('tracker-color-left');
         this.colorMiddle = this.settings.get_string('tracker-color-middle');
@@ -94,9 +100,25 @@ export class TrackerManager {
         this.opacity = this.settings.get_int('tracker-opacity');
         this.refreshRate = this.settings.get_int('tracker-refresh-rate');
 
-        // Use desktop accent color as default tracker color
-        this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-        this.colorDefault = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+        // Use desktop accent color as default tracker color (GNOME 47+)
+        if (this.accentColorKeyFound) {
+            this.colorDefault = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+
+            // Connect change in accent color to tracker redraw
+            this.defaultColorHandler = this.interfaceSettings.connect(
+                `changed::${ACCENT_COLORS_KEY}`,
+                () => {
+                    this.colorDefault =
+                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                    this.updateCacheTrackers(this.shape, [this.colorDefault]);
+                    this.colorMainEnabled
+                        ? this.updateTrackerIcon(this.shape, this.colorMain)
+                        : this.updateTrackerIcon(this.shape, this.colorDefault);
+                }
+            );
+        } else {
+            this.colorDefault = DISABLED_COLOR;
+        }
 
         // Create tracker icons in cache based on the initial settings
         this.cacheDir = this.getCacheDir();
@@ -133,23 +155,11 @@ export class TrackerManager {
         );
 
         // Check if the session is wayland. Assume true if the check function is missing (GNOME 50+)
-        this.isWayland = (Meta.is_wayland_compositor !== undefined) ? Meta.is_wayland_compositor() : true;
-        
+        this.isWayland =
+            Meta.is_wayland_compositor !== undefined ? Meta.is_wayland_compositor() : true;
+
         // If on X11, use `Atspi` as the event listener
         if (!this.isWayland) Atspi.init();
-
-        // Connect change in accent color to tracker redraw
-        this.defaultColorHandler = this.interfaceSettings.connect(
-            `changed::${ACCENT_COLORS_KEY}`,
-            () => {
-                this.colorDefault =
-                    ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-                this.updateCacheTrackers(this.shape, [this.colorDefault]);
-                this.colorMainEnabled
-                    ? this.updateTrackerIcon(this.shape, this.colorMain)
-                    : this.updateTrackerIcon(this.shape, this.colorDefault);
-            }
-        );
     }
 
     // Change tracker icon
@@ -440,7 +450,9 @@ export class TrackerManager {
         // Get new settings
         const newShape = this.settings.get_string('tracker-shape');
         const newSize = this.settings.get_int('tracker-size');
-        const newColorMainEnabled = this.settings.get_boolean('tracker-color-main-enabled');
+        const newColorMainEnabled = this.accentColorKeyFound
+            ? this.settings.get_boolean('tracker-color-main-enabled')
+            : true;
         const newColorMain = this.settings.get_string('tracker-color-main');
         const newColorLeft = this.settings.get_string('tracker-color-left');
         const newColorMiddle = this.settings.get_string('tracker-color-middle');
@@ -522,13 +534,14 @@ export class TrackerManager {
 
         // Disconnect Atspi
         if (!this.isWayland) Atspi.exit();
-        
+
         // Destroy tracker
         this.trackerIcon?.destroy();
         this.trackerIcon = null;
 
         // Disconnect settings
         this.settings = null;
+        this.interfaceSettings = null;
     }
     //#endregion
 }

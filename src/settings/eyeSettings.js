@@ -33,6 +33,10 @@ export const EyePage = GObject.registerClass(
 
             this.settings = extensionObject.getSettings();
 
+            // Check if accent color variable exists (GNOME 47+)
+            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+            this.accentColorKeyFound = this.interfaceSettings.list_keys().includes('accent-color');
+
             //#region Eye placement group
             const placementGroup = new Adw.PreferencesGroup({
                 title: _('Layout'),
@@ -226,22 +230,26 @@ export const EyePage = GObject.registerClass(
 
             const irisColorPicker = newColorPicker(this.settings, 'eye-color-iris');
 
-            // Iris Color Toggle
-            const irisColorToggle = new Gtk.CheckButton({
-                active: this.settings.get_boolean('eye-color-iris-enabled'),
-                hexpand: false,
-                margin_end: 8,
-                valign: Gtk.Align.CENTER,
-                vexpand: false,
-            });
-            irisColorToggle.connect('toggled', widget => {
-                this.settings.set_boolean('eye-color-iris-enabled', widget.active);
-                irisColorPicker.set_sensitive(widget.active);
-            });
-            irisColorPicker.set_sensitive(irisColorToggle.active);
-
             const colorBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
-            colorBox.append(irisColorToggle);
+
+            // Iris Color Toggle (GNOME 47+)
+            if (this.accentColorKeyFound) {
+                // Accent color as default
+                const irisColorToggle = new Gtk.CheckButton({
+                    active: this.settings.get_boolean('eye-color-iris-enabled'),
+                    hexpand: false,
+                    margin_end: 8,
+                    valign: Gtk.Align.CENTER,
+                    vexpand: false,
+                });
+                irisColorToggle.connect('toggled', widget => {
+                    this.settings.set_boolean('eye-color-iris-enabled', widget.active);
+                    irisColorPicker.set_sensitive(widget.active);
+                });
+                irisColorPicker.set_sensitive(irisColorToggle.active);
+                colorBox.append(irisColorToggle);
+            }
+
             colorBox.append(irisColorPicker);
 
             colorRow.add_suffix(colorBox);

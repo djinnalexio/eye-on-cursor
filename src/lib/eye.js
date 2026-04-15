@@ -35,6 +35,7 @@ const ACCENT_COLORS = {
     slate: '#6f8396',
 };
 const ACCENT_COLORS_KEY = 'accent-color';
+const DEFAULT_COLOR = '#b5b5b5';
 const EYE_SETTINGS = [
     'eye-reactive',
     'eye-shape',
@@ -68,6 +69,12 @@ export const Eye = GObject.registerClass(
             this.path = extensionObject.path;
             this.settings = extensionObject.settings;
 
+            // Check if accent color variable exists (GNOME 47+)
+            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+            this.accentColorKeyFound = this.interfaceSettings
+                .list_keys()
+                .includes(ACCENT_COLORS_KEY);
+
             // Attach mouse tracker
             this.mouseTracker = trackerManager;
             this.trackerColor = null;
@@ -87,7 +94,9 @@ export const Eye = GObject.registerClass(
             this.lineMode = this.settings.get_boolean('eye-line-mode');
             this.lineWidth = this.settings.get_int('eye-line-width') / 10;
             this.width = this.settings.get_int('eye-width');
-            this.irisColorEnabled = this.settings.get_boolean('eye-color-iris-enabled');
+            this.irisColorEnabled = this.accentColorKeyFound
+                ? this.settings.get_boolean('eye-color-iris-enabled')
+                : true;
             this.irisColor = this.settings.get_string('eye-color-iris');
             this.refreshRate = this.settings.get_int('eye-refresh-rate');
             this.eyelidColor = this.settings.get_string('eye-color-eyelid');
@@ -117,17 +126,21 @@ export const Eye = GObject.registerClass(
             this.area = new St.DrawingArea({width: this.width});
             this.add_child(this.area);
 
-            // Use desktop accent color as default eye color
-            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-            this.defaultColor = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-            this.defaultColorHandler = this.interfaceSettings.connect(
-                `changed::${ACCENT_COLORS_KEY}`,
-                () => {
-                    this.defaultColor =
-                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-                    this.area.queue_repaint();
-                }
-            );
+            // Use desktop accent color as default eye color (GNOME 47+)
+            if (this.accentColorKeyFound) {
+                this.defaultColor =
+                    ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                this.defaultColorHandler = this.interfaceSettings.connect(
+                    `changed::${ACCENT_COLORS_KEY}`,
+                    () => {
+                        this.defaultColor =
+                            ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                        this.area.queue_repaint();
+                    }
+                );
+            } else {
+                this.defaultColor = DEFAULT_COLOR;
+            }
 
             // Connect repaint signal of the area to repaint function
             this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
@@ -227,7 +240,9 @@ export const Eye = GObject.registerClass(
             const newLineMode = this.settings.get_boolean('eye-line-mode');
             const newLineWidth = this.settings.get_int('eye-line-width');
             const newWidth = this.settings.get_int('eye-width');
-            const newIrisColorEnabled = this.settings.get_boolean('eye-color-iris-enabled');
+            const newIrisColorEnabled = this.accentColorKeyFound
+                ? this.settings.get_boolean('eye-color-iris-enabled')
+                : true;
             const newIrisColor = this.settings.get_string('eye-color-iris');
             const newRefreshRate = this.settings.get_int('eye-refresh-rate');
             const newEyelidColor = this.settings.get_string('eye-color-eyelid');

@@ -38,6 +38,10 @@ export const TrackerPage = GObject.registerClass(
             this.path = extensionObject.path;
             this.settings = extensionObject.getSettings();
 
+            // Check if accent color variable exists (GNOME 47+)
+            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+            this.accentColorKeyFound = this.interfaceSettings.list_keys().includes('accent-color');
+
             //#region Tracker drawing group
             const drawingGroup = new Adw.PreferencesGroup({title: _('Appearance')});
             this.add(drawingGroup);
@@ -201,23 +205,26 @@ export const TrackerPage = GObject.registerClass(
 
             const colorMainPicker = newColorPicker(this.settings, 'tracker-color-main');
 
-            // Tracker Main Color Toggle
-            const trackerColorToggle = new Gtk.CheckButton({
-                active: this.settings.get_boolean('tracker-color-main-enabled'),
-                hexpand: false,
-                margin_end: 8,
-                valign: Gtk.Align.CENTER,
-                vexpand: false,
-            });
-            trackerColorToggle.connect('toggled', widget => {
-                this.settings.set_boolean('tracker-color-main-enabled', widget.active);
-                colorMainPicker.set_sensitive(widget.active);
-            });
-            colorMainPicker.set_sensitive(trackerColorToggle.active);
-
             const colorMainBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
 
-            colorMainBox.append(trackerColorToggle);
+            // Tracker Main Color Toggle (GNOME 47+)
+            if (this.accentColorKeyFound) {
+                // Accent color as default
+                const trackerColorToggle = new Gtk.CheckButton({
+                    active: this.settings.get_boolean('tracker-color-main-enabled'),
+                    hexpand: false,
+                    margin_end: 8,
+                    valign: Gtk.Align.CENTER,
+                    vexpand: false,
+                });
+                trackerColorToggle.connect('toggled', widget => {
+                    this.settings.set_boolean('tracker-color-main-enabled', widget.active);
+                    colorMainPicker.set_sensitive(widget.active);
+                });
+                colorMainPicker.set_sensitive(trackerColorToggle.active);
+                colorMainBox.append(trackerColorToggle);
+            }
+
             colorMainBox.append(colorMainPicker);
 
             colorMainRow.add_suffix(colorMainBox);
@@ -298,12 +305,14 @@ export const TrackerPage = GObject.registerClass(
             keybindGroup.add(keybindRow);
             //#endregion
 
-            //#region About group
-            const aboutGroup = new Adw.PreferencesGroup({title: _('Credits')});
-            this.add(aboutGroup);
+            //#region About group (GNOME 46+)
+            if (Adw.AboutDialog !== undefined) {
+                const aboutGroup = new Adw.PreferencesGroup({title: _('Credits')});
+                this.add(aboutGroup);
 
-            const aboutRow = new EyeAboutRow(this.metadata, this.path);
-            aboutGroup.add(aboutRow);
+                const aboutRow = new EyeAboutRow(this.metadata, this.path);
+                aboutGroup.add(aboutRow);
+            }
             //#endregion
         }
     }
