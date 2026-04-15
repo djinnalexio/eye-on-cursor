@@ -8,18 +8,14 @@ ISSUES_URL = https://github.com/djinnalexio/eye-on-cursor/issues
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
 VERSION = 2.2.1
 
-.phony: pack install uninstall enable disable prefs test test-gnome48 test-prefs-settings test-prefs-window update-pot upload
-
 pack:
 	# Packing extension into ./$(PACK_NAME)...
-	gnome-extensions pack ./src -f \
-		--extra-source="lib" \
-		--extra-source="media" \
-		--extra-source="settings"
-		
+	gnome-extensions pack ./src -f --extra-source="lib" \
+		--extra-source="media" --extra-source="settings"
+
 install: pack
 	# Installing extension...
-	gnome-extensions install --force $(PACK_NAME)
+	gnome-extensions install $(PACK_NAME) -f
 	# Log out of the session and then back in to use the extension, or start testing immediately.
 
 uninstall:
@@ -38,20 +34,6 @@ disable:
 prefs:
 	# Opening Preferences...
 	gnome-extensions prefs $(EXTENSION_UUID)
-
-test: install
-	# Running a nested GNOME Shell:
-	env MUTTER_DEBUG_DUMMY_MODE_SPECS=960x540 \
-		SHELL_DEBUG=backtrace-warnings \
-		G_MESSAGES_DEBUG='GNOME Shell' \
-		dbus-run-session -- gnome-shell --devkit
-
-test-gnome48: install
-	# Running a nested GNOME Shell (GNOME 48 mode):
-	env MUTTER_DEBUG_DUMMY_MODE_SPECS=960x540 \
-		SHELL_DEBUG=backtrace-warnings \
-		G_MESSAGES_DEBUG='GNOME Shell' \
-		dbus-run-session -- gnome-shell --nested --wayland
 
 test-prefs-settings: install prefs
 	# Monitoring settings value changes:
