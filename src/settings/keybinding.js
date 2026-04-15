@@ -7,9 +7,9 @@
 'use strict';
 
 //#region Import libraries
-import GObject from 'gi://GObject';
 import Adw from 'gi://Adw';
 import Gdk from 'gi://Gdk';
+import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';

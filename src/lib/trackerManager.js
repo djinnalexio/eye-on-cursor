@@ -9,8 +9,8 @@
 //#region Import libraries
 import Atspi from 'gi://Atspi';
 import Clutter from 'gi://Clutter';
-import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 import St from 'gi://St';

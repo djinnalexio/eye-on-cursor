@@ -8,15 +8,14 @@
 
 //#region Import libraries
 import Adw from 'gi://Adw';
-import GObject from 'gi://GObject';
 import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 import {EyeAboutRow} from './about.js';
-
 import {KeybindingRow} from './keybinding.js';
 //#endregion
 
