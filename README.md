@@ -53,20 +53,19 @@
 
 > ⚠️ **Note:** When installing this extension manually from GitHub, it will **not receive automatic updates** from the GNOME Extensions website.
 
-
 1. Go to [the latest release](https://github.com/djinnalexio/eye-on-cursor/releases/latest) and download the extension zip file.
 
 2. At the location of the downloaded zip file, run the install command:
 
-  ```bash
-  gnome-extensions install --force eye-on-cursor@djinnalexio.github.io.shell-extension.zip
-  ```
+    ```bash
+    gnome-extensions install --force eye-on-cursor@djinnalexio.github.io.shell-extension.zip
+    ```
 
 3. Log out of your session and log back in, then enable the extension using your Extensions manager app or by running:
 
-  ```bash
-  gnome-extensions enable eye-on-cursor@djinnalexio.github.io
-  ```
+    ```bash
+    gnome-extensions enable eye-on-cursor@djinnalexio.github.io
+    ```
 
 ## Acknowledgements
 
@@ -89,7 +88,7 @@ From the root of the repo, run `make install` to install the extension and start
 ### Known Issues
 
 - On **Wayland**, the mouse tracker uses `globe.stage` to listen to clicks:
-  - clicks within application windows are not registered. Only clicks in the Shell (background, panel, etc.) are higlighted.
+  - clicks within application windows are not registered. Only clicks in the Shell (background, panel, etc.) are highlighted.
 
 - On **x11**, the mouse tracker uses `Atspi` listen to clicks:
   - middle click is not registered.
@@ -100,6 +99,7 @@ Resources to get you started:
 
 - [Extensions Guide](https://gjs.guide/extensions)
 - [GNOME Shell Extensions Review Guidelines](https://gjs.guide/extensions/review-guidelines/review-guidelines.html)
+- [GJS Introduction](https://gjs.guide/guides/gjs/intro.html)
 - [GNOME GJS Code Conventions](https://gjs.guide/guides/gjs/style-guide.html#code-conventions)
 - [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/)
 - [GJS Documentation](https://gitlab.gnome.org/GNOME/gjs/-/tree/HEAD/doc#gjs)
