@@ -66,7 +66,7 @@ export class TrackerManager {
     constructor(extensionObject) {
         // Get extension object properties
         this.gettextDomain = extensionObject.metadata['gettext-domain'];
-        this.glyphsDir = `${extensionObject.path}/media/glyphs`;
+        this.glyphsDir = GLib.build_filenamev([extensionObject.path, 'media', 'glyphs']);
         this.settings = extensionObject.settings;
 
         // Check if accent color variable exists (GNOME 47+)
@@ -164,7 +164,8 @@ export class TrackerManager {
 
     // Change tracker icon
     updateTrackerIcon(shape, color) {
-        this.trackerIcon.gicon = Gio.icon_new_for_string(`${this.cacheDir}/${shape}_${color}.svg`);
+        const trackerIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
+        this.trackerIcon.gicon = Gio.icon_new_for_string(trackerIconPath);
         this.currentColor = color;
     }
     //#endregion
@@ -172,7 +173,11 @@ export class TrackerManager {
     //#region Cache icons functions
     // Create/return a cache directory for colored trackers
     getCacheDir() {
-        const cacheDirPath = `${GLib.get_user_cache_dir()}/${this.gettextDomain}/trackers`;
+        const cacheDirPath = GLib.build_filenamev([
+            GLib.get_user_cache_dir(),
+            this.gettextDomain,
+            'trackers',
+        ]);
         try {
             if (!GLib.file_test(cacheDirPath, GLib.FileTest.IS_DIR)) {
                 GLib.mkdir_with_parents(cacheDirPath, CACHE_DIR_PERMISSIONS);
@@ -186,7 +191,7 @@ export class TrackerManager {
     // Create cached tracker icons for a given shape and array of colors
     updateCacheTrackers(shape, colorArray) {
         colorArray.forEach(color => {
-            const cachedSVGpath = `${this.cacheDir}/${shape}_${color}.svg`;
+            const cachedSVGpath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
             const cachedSVG = Gio.File.new_for_path(cachedSVGpath);
             // Create a cached tracker icon if it doesn't exist
             if (!cachedSVG.query_exists(null)) {
@@ -195,7 +200,8 @@ export class TrackerManager {
                     cachedSVG.create(Gio.FileCreateFlags.NONE, null);
 
                     // Get template SVG
-                    const shapeSVG = Gio.File.new_for_path(`${this.glyphsDir}/${shape}.svg`);
+                    const pathSVG = GLib.build_filenamev([this.glyphsDir, `${shape}.svg`]);
+                    const shapeSVG = Gio.File.new_for_path(pathSVG);
 
                     // Load contents of the shape SVG
                     const [, contents] = shapeSVG.load_contents(null);

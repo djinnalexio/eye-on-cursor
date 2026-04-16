@@ -10,6 +10,7 @@
 import GObject from 'gi://GObject';
 import Adw from 'gi://Adw';
 import Gdk from 'gi://Gdk';
+import GLib from 'gi://GLib';
 import Gtk from 'gi://Gtk';
 
 import {
@@ -71,8 +72,9 @@ export const EyeAboutRow = GObject.registerClass(
 
             // Add path for custom icons
             this.iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
-            if (!this.iconTheme.get_search_path().includes(`${path}/media/`))
-                this.iconTheme.add_search_path(`${path}/media/`);
+            this.iconThemePath = GLib.build_filenamev([path, 'media']);
+            if (!this.iconTheme.get_search_path().includes(this.iconThemePath))
+                this.iconTheme.add_search_path(this.iconThemePath);
 
             //#region About dialog
             this.aboutWindow = new Adw.AboutDialog({

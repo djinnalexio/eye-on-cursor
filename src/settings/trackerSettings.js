@@ -10,6 +10,7 @@
 import Adw from 'gi://Adw';
 import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 
@@ -64,7 +65,7 @@ export const TrackerPage = GObject.registerClass(
                 return svgsList;
             }
 
-            const shapeDir = `${this.path}/media/glyphs/`;
+            const shapeDir = GLib.build_filenamev([this.path, 'media', 'glyphs']);
             const shapeList = getSVGsList(shapeDir);
 
             const shapeRow = new Adw.ActionRow({
@@ -99,7 +100,7 @@ export const TrackerPage = GObject.registerClass(
 
             shapeList.forEach(shape => {
                 const displayName = shape.replaceAll('_', ' ');
-                const filePath = `${shapeDir}/${shape}.svg`;
+                const filePath = GLib.build_filenamev([shapeDir, `${shape}.svg`]);
 
                 const flowItem = new Gtk.FlowBoxChild();
                 flowItem.shape = shape;
