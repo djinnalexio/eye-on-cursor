@@ -41,6 +41,7 @@ const releaseNotes =
     '<p>Improvements:</p>\
     <ul>\
         <li>Added backward support for GNOME 45 &amp; 46</li>\
+        <li>Implemented asynchronous IO for tracker</li>\
     </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';

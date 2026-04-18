@@ -41,7 +41,6 @@
 
 - **Eyes Follow Cursor:** As many eyes as you want in the panel to follow the cursor movements, providing a fun and interactive experience.
 - **Customizable Mouse Tracker:** Highlights clicks and tracks mouse movements with customizable settings to fit your preferences.
-- **Click Highlighting:** Visual feedback for mouse clicks, making it easier to keep track of your actions, especially useful for presentations or demonstrations.
 
 ## Installation
 
@@ -75,15 +74,13 @@ This extension is forked from [Eye and Mouse Extended](https://extensions.gnome.
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue if you have any suggestions or find any bugs.
+First off, thanks for taking the time to contribute! ❤️
 
-Translations and new glyphs for the mouse tracker are greatly appreciated as well!
+If you want to **ask a question**, **offer a suggestion**, or **report a bug**, feel free to open an [issue](https://github.com/djinnalexio/eye-on-cursor/issues/new).
+
+You can also submit pull requests to provide **translations**, **new tracker icons**, or **bug fixes**.
 
 If you have contributed in any way, feel free to add yourself to the `credits.js` file in `settings`.
-
-### Development
-
-From the root of the repo, run `make install` to install the extension and start using it in the next session or run `make test` to start debugging immediately in a nested shell.
 
 ### Known Issues
 
@@ -93,18 +90,7 @@ From the root of the repo, run `make install` to install the extension and start
 - On **x11**, the mouse tracker uses `Atspi` listen to clicks:
   - middle click is not registered.
 
-### Documentation on Developing GNOME Extensions
+### Resources
 
-Resources to get you started:
-
-- [Extensions Guide](https://gjs.guide/extensions)
-- [GNOME Shell Extensions Review Guidelines](https://gjs.guide/extensions/review-guidelines/review-guidelines.html)
-- [GJS Introduction](https://gjs.guide/guides/gjs/intro.html)
-- [GNOME GJS Code Conventions](https://gjs.guide/guides/gjs/style-guide.html#code-conventions)
-- [GNOME Human Interface Guidelines](https://developer.gnome.org/hig/)
-- [GJS Documentation](https://gitlab.gnome.org/GNOME/gjs/-/tree/HEAD/doc#gjs)
-- [GJS API Documentation](https://gjs-docs.gnome.org/)
-- [ADW Widgets Documentation](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/widget-gallery.html)
-- [GTK Widgets Documentation](https://docs.gtk.org/gtk4/visual_index.html)
-- [GNOME Shell Source Code](https://gitlab.gnome.org/GNOME/gnome-shell#gnome-shell)
-- [Poedit](https://flathub.org/apps/net.poedit.Poedit)
+- [GNOME Shell Extensions Guide](https://gjs.guide/extensions)
+- [Poedit Translation Editor](https://flathub.org/apps/net.poedit.Poedit)

@@ -6,7 +6,7 @@ EXTENSION_NAME = eye-on-cursor
 EXTENSION_UUID = eye-on-cursor@djinnalexio.github.io
 ISSUES_URL = https://github.com/djinnalexio/eye-on-cursor/issues
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
-VERSION = 2.3.0
+VERSION = 2.3.1
 
 pack:
 	# Packing extension into ./$(PACK_NAME)...
