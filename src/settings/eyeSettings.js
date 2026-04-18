@@ -34,10 +34,6 @@ export const EyePage = GObject.registerClass(
 
             this.settings = extensionObject.getSettings();
 
-            // Check if accent color variable exists (GNOME 47+)
-            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-            this.accentColorKeyFound = this.interfaceSettings.list_keys().includes('accent-color');
-
             //#region Eye placement group
             const placementGroup = new Adw.PreferencesGroup({
                 title: _('Layout'),
@@ -234,6 +230,8 @@ export const EyePage = GObject.registerClass(
             const colorBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
 
             // Iris Color Toggle (GNOME 47+)
+            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+            this.accentColorKeyFound = this.interfaceSettings.list_keys().includes('accent-color');
             if (this.accentColorKeyFound) {
                 // Accent color as default
                 const irisColorToggle = new Gtk.CheckButton({

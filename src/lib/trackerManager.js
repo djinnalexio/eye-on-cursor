@@ -15,6 +15,7 @@ import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 import St from 'gi://St';
 
+import * as Config from 'resource:///org/gnome/shell/misc/config.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as Timeout from './timeout.js';
 //#endregion
@@ -51,6 +52,7 @@ const TRACKER_SETTINGS = [
     'tracker-opacity',
     'tracker-refresh-rate',
 ];
+const SHELL_VERSION = Number(Config.PACKAGE_VERSION.split('.')[0]);
 //#endregion
 
 //#region Defining Tracker
@@ -69,10 +71,6 @@ export class TrackerManager {
         this.glyphsDir = GLib.build_filenamev([extensionObject.path, 'media', 'glyphs']);
         this.settings = extensionObject.settings;
 
-        // Check if accent color variable exists (GNOME 47+)
-        this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-        this.accentColorKeyFound = this.interfaceSettings.list_keys().includes(ACCENT_COLORS_KEY);
-
         // Initialize state variables
         this.enabled = false;
         this.currentColor = null;
@@ -90,9 +88,8 @@ export class TrackerManager {
         // Initialize settings values
         this.shape = this.settings.get_string('tracker-shape');
         this.size = this.settings.get_int('tracker-size');
-        this.colorMainEnabled = this.accentColorKeyFound
-            ? this.settings.get_boolean('tracker-color-main-enabled')
-            : true;
+        this.colorMainEnabled =
+            SHELL_VERSION >= 47 ? this.settings.get_boolean('tracker-color-main-enabled') : true;
         this.colorMain = this.settings.get_string('tracker-color-main');
         this.colorLeft = this.settings.get_string('tracker-color-left');
         this.colorMiddle = this.settings.get_string('tracker-color-middle');
@@ -101,7 +98,9 @@ export class TrackerManager {
         this.refreshRate = this.settings.get_int('tracker-refresh-rate');
 
         // Use desktop accent color as default tracker color (GNOME 47+)
-        if (this.accentColorKeyFound) {
+        if (SHELL_VERSION >= 47) {
+            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+
             this.colorDefault = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
 
             // Connect change in accent color to tracker redraw
@@ -154,9 +153,8 @@ export class TrackerManager {
             this.toggleTracker.bind(this)
         );
 
-        // Check if the session is wayland. Assume true if the check function is missing (GNOME 50+)
-        this.isWayland =
-            Meta.is_wayland_compositor !== undefined ? Meta.is_wayland_compositor() : true;
+        // Check if the session is wayland. (GNOME 50+: Assume true if the check function is missing)
+        this.isWayland = Meta.is_wayland_compositor ? Meta.is_wayland_compositor() : true;
 
         // If on X11, use `Atspi` as the event listener
         if (!this.isWayland) Atspi.init();
@@ -456,9 +454,8 @@ export class TrackerManager {
         // Get new settings
         const newShape = this.settings.get_string('tracker-shape');
         const newSize = this.settings.get_int('tracker-size');
-        const newColorMainEnabled = this.accentColorKeyFound
-            ? this.settings.get_boolean('tracker-color-main-enabled')
-            : true;
+        const newColorMainEnabled =
+            SHELL_VERSION >= 47 ? this.settings.get_boolean('tracker-color-main-enabled') : true;
         const newColorMain = this.settings.get_string('tracker-color-main');
         const newColorLeft = this.settings.get_string('tracker-color-left');
         const newColorMiddle = this.settings.get_string('tracker-color-middle');

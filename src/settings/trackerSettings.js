@@ -38,10 +38,6 @@ export const TrackerPage = GObject.registerClass(
             this.path = extensionObject.path;
             this.settings = extensionObject.getSettings();
 
-            // Check if accent color variable exists (GNOME 47+)
-            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-            this.accentColorKeyFound = this.interfaceSettings.list_keys().includes('accent-color');
-
             //#region Tracker drawing group
             const drawingGroup = new Adw.PreferencesGroup({title: _('Appearance')});
             this.add(drawingGroup);
@@ -208,6 +204,8 @@ export const TrackerPage = GObject.registerClass(
             const colorMainBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
 
             // Tracker Main Color Toggle (GNOME 47+)
+            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+            this.accentColorKeyFound = this.interfaceSettings.list_keys().includes('accent-color');
             if (this.accentColorKeyFound) {
                 // Accent color as default
                 const trackerColorToggle = new Gtk.CheckButton({
@@ -306,7 +304,7 @@ export const TrackerPage = GObject.registerClass(
             //#endregion
 
             //#region About group (GNOME 46+)
-            if (Adw.AboutDialog !== undefined) {
+            if (Adw.AboutDialog) {
                 const aboutGroup = new Adw.PreferencesGroup({title: _('Credits')});
                 this.add(aboutGroup);
 
