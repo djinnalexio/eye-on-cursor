@@ -14,7 +14,8 @@
     },
     "scripts": {
         "format": "prettier ./src/ --write",
-        "lint": "eslint ./src/ --fix"
+        "lint": "eslint ./src/ --fix",
+        "test": "make test"
     },
     "prettier": {
         "arrowParens": "avoid",

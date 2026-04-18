@@ -16,11 +16,11 @@ pack:
 install: pack
 	# Installing extension...
 	gnome-extensions install $(PACK_NAME) -f
-	# Log out of the session and then back in to use the extension, or start testing immediately.
+	# Log out of the session and then back in to use the extension.
 
 uninstall:
 	# Uninstalling extension...
-	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_NAME)/
+	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_NAME)/ && \
 	gnome-extensions uninstall $(EXTENSION_UUID)
 
 enable:
@@ -34,6 +34,18 @@ disable:
 prefs:
 	# Opening Preferences...
 	gnome-extensions prefs $(EXTENSION_UUID)
+
+test: install
+	# Launching a nested instance of GNOME Shell...
+	if [ "$$(gnome-shell --version | awk '{print int($$3)}')" -ge 49 ]; then \
+		G_MESSAGES_DEBUG='GNOME Shell' \
+		SHELL_DEBUG=all \
+		dbus-run-session gnome-shell --devkit; \
+	else \
+		G_MESSAGES_DEBUG='GNOME Shell' \
+		SHELL_DEBUG=all \
+		dbus-run-session gnome-shell --nested; \
+	fi
 
 test-prefs-settings: install prefs
 	# Monitoring settings value changes:
