@@ -35,7 +35,7 @@ const ACCENT_COLORS = {
     slate: '#6f8396',
 };
 const ACCENT_COLORS_KEY = 'accent-color';
-const DISABLED_COLOR = '#1C2A2B'; // Disabled color so that there is a change when toggling the tracker
+const DISABLED_COLOR = '#1c2a2b'; // Disabled color so that there is a change when toggling the tracker
 const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
 const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
 const CLICK_MAX_DEBOUNCE = 5000; // Max highlighting duration after receiving BUTTON PRESSED signal
@@ -54,6 +54,10 @@ const TRACKER_SETTINGS = [
 ];
 const SHELL_VERSION = Number(Config.PACKAGE_VERSION.split('.')[0]);
 //#endregion
+
+// Enable async/await with asynchronous methods in platform libraries
+Gio._promisify(Gio.File.prototype, 'load_contents_async');
+Gio._promisify(Gio.File.prototype, 'replace_contents_async');
 
 //#region Defining Tracker
 export class TrackerManager {
@@ -106,10 +110,10 @@ export class TrackerManager {
             // Connect change in accent color to tracker redraw
             this.defaultColorHandler = this.interfaceSettings.connect(
                 `changed::${ACCENT_COLORS_KEY}`,
-                () => {
+                async () => {
                     this.colorDefault =
                         ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-                    this.updateCacheTrackers(this.shape, [this.colorDefault]);
+                    await this.updateCacheTrackers(this.shape, [this.colorDefault]);
                     this.colorMainEnabled
                         ? this.updateTrackerIcon(this.shape, this.colorMain)
                         : this.updateTrackerIcon(this.shape, this.colorDefault);
@@ -119,17 +123,7 @@ export class TrackerManager {
             this.colorDefault = DISABLED_COLOR;
         }
 
-        // Create tracker icons in cache based on the initial settings
-        this.cacheDir = this.getCacheDir();
-        this.updateCacheTrackers(this.shape, [
-            this.colorDefault,
-            this.colorMain,
-            this.colorLeft,
-            this.colorMiddle,
-            this.colorRight,
-        ]);
-
-        // Create the tracker icon
+        // Create the tracker icon object
         this.trackerIcon = new St.Icon({
             reactive: false,
             can_focus: false,
@@ -137,7 +131,22 @@ export class TrackerManager {
         });
         this.trackerIcon.icon_size = this.size;
         this.trackerIcon.opacity = Math.ceil(this.opacity * 2.55); // Convert from 0-100 to 0-255 range
-        this.updateTrackerIcon(this.shape, DISABLED_COLOR);
+
+        // Create tracker icons files in cache based on the initial settings
+        this.cacheDir = this.getCacheDir();
+        this.updateCacheTrackers(this.shape, [
+            this.colorDefault,
+            this.colorMain,
+            this.colorLeft,
+            this.colorMiddle,
+            this.colorRight,
+        ])
+            .then(() => {
+                this.updateTrackerIcon(this.shape, DISABLED_COLOR);
+            })
+            .catch(e => {
+                throw new Error(`Failed to create cache trackers: ${e.message}`);
+            });
 
         // Connect change in settings to update function
         this.settingsHandlers = TRACKER_SETTINGS.map(key =>
@@ -187,49 +196,44 @@ export class TrackerManager {
     }
 
     // Create cached tracker icons for a given shape and array of colors
-    updateCacheTrackers(shape, colorArray) {
-        colorArray.forEach(color => {
-            const cachedSVGpath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
-            const cachedSVG = Gio.File.new_for_path(cachedSVGpath);
-            // Create a cached tracker icon if it doesn't exist
-            if (!cachedSVG.query_exists(null)) {
-                try {
-                    // Create empty file
-                    cachedSVG.create(Gio.FileCreateFlags.NONE, null);
+    async updateCacheTrackers(shape, colorArray) {
+        const tasks = colorArray.map(async color => {
+            // Get the cached tracker icon file for this shape and color
+            const cachedIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
+            const cachedIcon = Gio.File.new_for_path(cachedIconPath);
 
-                    // Get template SVG
-                    const pathSVG = GLib.build_filenamev([this.glyphsDir, `${shape}.svg`]);
-                    const shapeSVG = Gio.File.new_for_path(pathSVG);
+            try {
+                // Get template shape
+                const templatePath = GLib.build_filenamev([this.glyphsDir, `${shape}.svg`]);
+                const template = Gio.File.new_for_path(templatePath);
 
-                    // Load contents of the shape SVG
-                    const [, contents] = shapeSVG.load_contents(null);
+                // Load contents of the template
+                const [contents, _etag] = await template.load_contents_async(null);
 
-                    // Decode SVG contents
-                    const decoder = new TextDecoder();
-                    let decodedContents = decoder.decode(contents);
+                // Decode SVG contents
+                const decoder = new TextDecoder();
+                let decodedContents = decoder.decode(contents);
 
-                    // Replace color in SVG contents
-                    decodedContents = decodedContents.replace('#000000', color);
+                // Replace color in SVG contents
+                decodedContents = decodedContents.replace('#000000', color);
 
-                    // Encode SVG contents back to bytes
-                    const encoder = new TextEncoder();
-                    const encodedContents = encoder.encode(decodedContents);
+                // Encode SVG contents back to bytes
+                const encoder = new TextEncoder();
+                const encodedContents = encoder.encode(decodedContents);
 
-                    // Fill cachedSVG with modified contents
-                    cachedSVG.replace_contents(
-                        encodedContents,
-                        null,
-                        false,
-                        Gio.FileCreateFlags.REPLACE_DESTINATION,
-                        null
-                    );
-                } catch (e) {
-                    throw new Error(
-                        `Failed to create cache tracker at ${cachedSVGpath}: ${e.message}`
-                    );
-                }
+                // Fill cached icon file with modified contents
+                await cachedIcon.replace_contents_async(
+                    encodedContents,
+                    null,
+                    false,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION,
+                    null
+                );
+            } catch (e) {
+                throw new Error(`Failed to create cache tracker ${cachedIconPath}: ${e.message}`);
             }
         });
+        await Promise.all(tasks);
     }
     //#endregion
 
@@ -450,7 +454,7 @@ export class TrackerManager {
     //#endregion
 
     //#region Properties update functions
-    updateTrackerProperties() {
+    async updateTrackerProperties() {
         // Get new settings
         const newShape = this.settings.get_string('tracker-shape');
         const newSize = this.settings.get_int('tracker-size');
@@ -472,7 +476,7 @@ export class TrackerManager {
             this.colorMiddle !== newColorMiddle ||
             this.colorRight !== newColorRight
         ) {
-            this.updateCacheTrackers(newShape, [
+            await this.updateCacheTrackers(newShape, [
                 this.colorDefault,
                 newColorMain,
                 newColorLeft,
