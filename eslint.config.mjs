@@ -1,51 +1,69 @@
 // SPDX-FileCopyrightText: 2024-2026 djinnalexio
 // SPDX-License-Identifier: GPL-3.0-or-later
-import prettier from 'eslint-plugin-prettier/recommended';
-import js from '@eslint/js';
 
-export default [
-    js.configs.recommended,
+import {defineConfig} from '@eslint/config-helpers';
+import gnome from 'eslint-config-gnome';
+import stylistic from '@stylistic/eslint-plugin';
+
+const scopedFiles = ['eslint.config.mjs', 'src/**/*.js'];
+
+export default defineConfig([
+    ...gnome.configs.recommended.map((config) => ({
+        ...config,
+        files: scopedFiles,
+    })),
+    ...gnome.configs.jsdoc.map((config) => ({
+        ...config,
+        files: scopedFiles,
+    })),
+    ...[stylistic.configs['disable-legacy']].map((config) => ({
+        ...config,
+        files: scopedFiles,
+    })),
     {
+        files: scopedFiles,
         languageOptions: {
             globals: {
-                ARGV: 'readonly',
-                Debugger: 'readonly',
                 GIRepositoryGType: 'readonly',
-                globalThis: 'readonly',
-                imports: 'readonly',
-                Intl: 'readonly',
-                log: 'readonly',
-                logError: 'readonly',
                 pkg: 'readonly',
-                print: 'readonly',
-                printerr: 'readonly',
-                window: 'readonly',
-                TextEncoder: 'readonly',
-                TextDecoder: 'readonly',
-                console: 'readonly',
-                setTimeout: 'readonly',
-                setInterval: 'readonly',
-                clearTimeout: 'readonly',
-                clearInterval: 'readonly',
-            },
-            parserOptions: {
-                ecmaVersion: 2024,
-                sourceType: 'module',
+                // GNOME Shell Only
+                _: 'readonly',
+                C_: 'readonly',
+                N_: 'readonly',
+                global: 'readonly',
+                ngettext: 'readonly',
             },
         },
+        plugins: {'@stylistic': stylistic},
         rules: {
-            // See: https://eslint.org/docs/latest/rules/#possible-problems
-            'array-callback-return': 'error',
-            'no-await-in-loop': 'error',
-            'no-constant-binary-expression': 'error',
+            //#region GNOME rules
+            // See https://gitlab.gnome.org/GNOME/gnome-shell-extensions/-/blob/main/tools/eslint.config.js
+            // See https://gitlab.gnome.org/World/javascript/eslint-config-gnome/-/blob/main/src/configs/gnome-recommended.js?ref_type=heads
+            'camelcase': ['error', {properties: 'never'}],
+            'consistent-return': 'error',
+            'eqeqeq': ['error', 'smart'],
+            'prefer-arrow-callback': 'error',
+            'prefer-const': ['error', {destructuring: 'all'}],
+            'jsdoc/require-jsdoc': [
+                'warn',
+                {
+                    exemptEmptyFunctions: true,
+                    publicOnly: {esm: true},
+                    contexts: ['FunctionDeclaration', "MethodDefinition[kind='constructor']"],
+                },
+            ],
+            'jsdoc/require-param-description': 'warn',
+            'jsdoc/require-param-type': 'warn',
+            //#endregion
+
+            //#region Possible problems
+            // See https://eslint.org/docs/latest/rules/#possible-problems
             'no-constructor-return': 'error',
-            'no-new-native-nonconstructor': 'error',
             'no-promise-executor-return': 'error',
-            'no-self-compare': 'error',
             'no-template-curly-in-string': 'error',
             'no-unmodified-loop-condition': 'error',
             'no-unreachable-loop': 'error',
-            'no-unused-private-class-members': 'error',
+            'no-unused-expressions': ['error', {allowTernary: true}],
             'no-use-before-define': [
                 'error',
                 {
@@ -55,35 +73,176 @@ export default [
                     allowNamedExports: true,
                 },
             ],
-            // See: https://eslint.org/docs/latest/rules/#suggestions
-            'block-scoped-var': 'error',
-            complexity: 'warn',
-            'consistent-return': 'error',
+            //#endregion
+
+            //#region Suggestions
+            // See https://eslint.org/docs/latest/rules/#suggestions
+            'arrow-body-style': ['error', 'as-needed'],
+            'capitalized-comments': [
+                'warn',
+                'always',
+                {ignoreConsecutiveComments: true},
+            ],
+            'complexity': 'warn',
             'default-param-last': 'error',
-            eqeqeq: 'error',
-            'no-array-constructor': 'error',
-            'no-caller': 'error',
+            'no-console': 'warn',
             'no-extend-native': 'error',
-            'no-extra-bind': 'error',
             'no-extra-label': 'error',
-            'no-iterator': 'error',
-            'no-label-var': 'error',
-            'no-loop-func': 'error',
             'no-multi-assign': 'warn',
-            'no-new-object': 'error',
-            'no-new-wrappers': 'error',
-            'no-proto': 'error',
-            'no-shadow': 'warn',
-            'no-unused-vars': [
-                'error',
+            'no-new': 'error',
+            // 'no-shadow' flags the very common GNOME syntax
+            //  const foo = GObject.registerClass({}, class foo extends Object {});
+            'no-shadow': 'off',
+            'no-var': 'warn',
+            //#endregion
+
+            //#region Formatting
+            // See https://eslint.style/rules#rules
+            '@stylistic/array-bracket-newline': ['warn', {multiline: true}],
+            '@stylistic/array-bracket-spacing': 'warn',
+            '@stylistic/array-element-newline': [
+                'warn',
                 {
-                    varsIgnorePattern: '^_',
-                    argsIgnorePattern: '^_',
+                    multiline: true,
+                    minItems: 3,
                 },
             ],
-            'no-var': 'warn',
-            'unicode-bom': 'error',
-            // GJS Restrictions
+            '@stylistic/arrow-parens': 'warn',
+            '@stylistic/arrow-spacing': 'warn',
+            '@stylistic/block-spacing': 'warn',
+            '@stylistic/brace-style': 'warn',
+            '@stylistic/comma-dangle': [
+                'warn',
+                {
+                    arrays: 'always-multiline',
+                    objects: 'always-multiline',
+                    imports: 'always-multiline',
+                    functions: 'never',
+                },
+            ],
+            '@stylistic/comma-spacing': 'warn',
+            '@stylistic/comma-style': 'warn',
+            '@stylistic/computed-property-spacing': 'warn',
+            '@stylistic/eol-last': 'warn',
+            '@stylistic/indent': [
+                'warn',
+                4,
+                {
+                // Allow not indenting the body of GObject.registerClass, since in the future
+                // it's intended to be a decorator
+                    ignoredNodes:
+                    [
+                        'CallExpression[callee.object.name=GObject]' +
+                        '[callee.property.name=registerClass] > ClassExpression:first-child',
+                    ],
+                    // Allow dedenting chained member expressions
+                    MemberExpression: 'off',
+                },
+            ],
+            '@stylistic/key-spacing': 'warn',
+            '@stylistic/keyword-spacing': 'warn',
+            '@stylistic/linebreak-style': 'warn',
+            '@stylistic/lines-between-class-members': [
+                'warn',
+                'always',
+                {exceptAfterSingleLine: true},
+            ],
+            '@stylistic/max-len': [
+                'warn',
+                {
+                    code: 100,
+                    ignoreComments: true,
+                },
+            ],
+            '@stylistic/max-statements-per-line': 'warn',
+            '@stylistic/multiline-comment-style': ['warn', 'separate-lines'],
+            '@stylistic/new-parens': 'warn',
+            '@stylistic/no-extra-parens': [
+                'warn',
+                'all',
+                {
+                    conditionalAssign: false,
+                    nestedBinaryExpressions: false,
+                    nestedConditionalExpressions: false,
+                    returnAssign: false,
+                },
+            ],
+            '@stylistic/function-call-spacing': 'error',
+            '@stylistic/no-extra-semi': 'warn',
+            '@stylistic/no-mixed-operators': 'error',
+            '@stylistic/no-multi-spaces': 'warn',
+            '@stylistic/no-multiple-empty-lines': ['warn', {max: 1}],
+            '@stylistic/no-tabs': 'warn',
+            '@stylistic/no-trailing-spaces': 'warn',
+            '@stylistic/no-whitespace-before-property': 'error',
+            '@stylistic/nonblock-statement-body-position': ['warn', 'below'],
+            '@stylistic/object-curly-newline': [
+                'warn',
+                {
+                    consistent: true,
+                    multiline: true,
+                },
+            ],
+            '@stylistic/object-curly-spacing': 'warn',
+            '@stylistic/object-property-newline': 'warn',
+            '@stylistic/operator-linebreak': 'error',
+            '@stylistic/padded-blocks': ['error', 'never'],
+            '@stylistic/quote-props': ['warn', 'consistent-as-needed'],
+            '@stylistic/quotes': [
+                'warn',
+                'single',
+                {avoidEscape: true},
+            ],
+            '@stylistic/rest-spread-spacing': ['error'],
+            '@stylistic/semi': 'warn',
+            '@stylistic/semi-spacing': [
+                'error',
+                {
+                    before: false,
+                    after: true,
+                },
+            ],
+            '@stylistic/semi-style': 'error',
+            '@stylistic/space-before-blocks': 'error',
+            '@stylistic/space-before-function-paren': [
+                'error',
+                {
+                    named: 'never',
+                    anonymous: 'always',
+                    asyncArrow: 'always',
+                },
+            ],
+            '@stylistic/space-in-parens': 'warn',
+            '@stylistic/space-infix-ops': ['error', {int32Hint: false}],
+            '@stylistic/space-unary-ops': 'error',
+            '@stylistic/spaced-comment': [
+                'warn',
+                'always',
+                {
+                    line: {
+                        markers: [
+                            '/',
+                            '#region',
+                            '#endregion',
+                        ],
+                        exceptions: ['-', '+'],
+                    },
+                    block: {
+                        markers: ['!'],
+                        exceptions: ['*'],
+                        balanced: true,
+                    },
+                },
+            ],
+            '@stylistic/switch-colon-spacing': 'warn',
+            '@stylistic/template-curly-spacing': 'warn',
+            '@stylistic/template-tag-spacing': 'error',
+            '@stylistic/wrap-iife': ['error', 'inside'],
+            '@stylistic/yield-star-spacing': 'error',
+            //#endregion
+
+            //#region GJS Restrictions
+            // See https://gitlab.gnome.org/World/javascript/gjs-guide/-/blob/main/src/guides/gjs/style-guide/eslint.config.js?ref_type=heads
             'no-restricted-globals': [
                 'error',
                 {
@@ -135,26 +294,14 @@ export default [
                 'error',
                 {
                     selector:
-                        'MethodDefinition[key.name="_init"] CallExpression[arguments.length<=1][callee.object.type="Super"][callee.property.name="_init"]',
+                    'MethodDefinition[key.name="_init"] ' +
+                    'CallExpression[arguments.length<=1]' +
+                    '[callee.object.type="Super"]' +
+                    '[callee.property.name="_init"]',
                     message: 'Use constructor() and super()',
                 },
             ],
+            //#endregion
         },
     },
-    {
-        // Custom options
-        languageOptions: {
-            globals: {
-                global: 'readonly',
-            },
-        },
-        rules: {
-            curly: ['error', 'multi-or-nest', 'consistent'],
-            'func-style': ['error', 'declaration'],
-            'no-console': 'warn',
-            'prefer-const': 'warn',
-            strict: ['off', 'safe'],
-        },
-    },
-    prettier,
-];
+]);
