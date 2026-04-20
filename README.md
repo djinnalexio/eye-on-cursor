@@ -93,4 +93,5 @@ If you have contributed in any way, feel free to add yourself to the `credits.js
 ### Resources
 
 - [GNOME Shell Extensions Guide](https://gjs.guide/extensions)
+- [GNOME Developer Documentation](https://developer.gnome.org/documentation/index.html)
 - [Poedit Translation Editor](https://flathub.org/apps/net.poedit.Poedit)
