@@ -1,10 +1,7 @@
-/*
- * Eye on Cursor GNOME Shell extension
- *
- * SPDX-FileCopyrightText: 2024-2026 djinnalexio
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-'use strict';
+// SPDX-FileCopyrightText: 2012-2013 azathoth
+// SPDX-FileCopyrightText: 2020-2023 Eye and Mouse Extended Contributors
+// SPDX-FileCopyrightText: 2024-2026 djinnalexio
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //#region Constants
 const IRIS_SCALE = 0.5;

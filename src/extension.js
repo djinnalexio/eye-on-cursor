@@ -1,10 +1,5 @@
-/*
- * Eye on Cursor GNOME Shell extension
- *
- * SPDX-FileCopyrightText: 2024-2026 djinnalexio
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-'use strict';
+// SPDX-FileCopyrightText: 2024-2026 djinnalexio
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //#region Import libraries
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
