@@ -98,12 +98,14 @@ export const EyeAboutRow = GObject.registerClass(
                 'https://extensions.gnome.org/extension/7036/eye-on-cursor/'
             );
             this.aboutWindow.add_link(_('Donate'), 'https://github.com/sponsors/djinnalexio');
-            this.aboutWindow.add_acknowledgement_section(_('Forked from'), [
-                'Eye and Mouse Extended https://extensions.gnome.org/extension/3139/eye-extended/',
-            ]);
-            this.aboutWindow.add_acknowledgement_section(_('Cinnamon Fork'), [
-                'C-eyes https://github.com/anaximeno/c-eyes',
-            ]);
+            this.aboutWindow.add_acknowledgement_section(
+                _('Forked from'),
+                ['Eye and Mouse Extended https://extensions.gnome.org/extension/3139/eye-extended/']
+            );
+            this.aboutWindow.add_acknowledgement_section(
+                _('Cinnamon Fork'),
+                ['Cinnamon Eyes https://cinnamon-spices.linuxmint.com/applets/view/363']
+            );
             //#endregion
 
             this.connect('activated', () => {

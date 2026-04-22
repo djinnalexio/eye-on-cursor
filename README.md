@@ -70,7 +70,7 @@
 
 This extension is forked from [Eye and Mouse Extended](https://extensions.gnome.org/extension/3139/eye-extended/) by [Alexey Lovchikov](https://github.com/alexeylovchikov).
 
-**Eye and Mouse Extended** also has a fork for the Cinnamon Desktop, [c-eyes](https://github.com/anaximeno/c-eyes), created by [anaximeno](https://github.com/anaximeno/).
+**Eye and Mouse Extended** also has a fork for the Cinnamon Desktop, [Cinnamon Eyes](https://cinnamon-spices.linuxmint.com/applets/view/363), created by [anaximeno](https://github.com/anaximeno/).
 
 ## Contributing
 
