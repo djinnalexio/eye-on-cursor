@@ -89,7 +89,7 @@ class KeybindingRow extends Adw.ActionRow {
             hexpand: false,
             vexpand: false,
         });
-        this.resetButton.connect('clicked', this.resetKeybind.bind(this));
+        this.resetButton.connect('clicked', this.resetKeybinding.bind(this));
 
         // Hide reset button if no shortcut is set
         if (!this.label.accelerator)
@@ -108,7 +108,7 @@ class KeybindingRow extends Adw.ActionRow {
     //#endregion
 
     //#region Keybinding methods
-    resetKeybind() {
+    resetKeybinding() {
         this.label.accelerator = '';
         this.resetButton.visible = false;
     }
@@ -150,7 +150,7 @@ class KeybindingRow extends Adw.ActionRow {
 
         // If Backspace is pressed, reset keybinding
         if (keyval === Gdk.KEY_BackSpace) {
-            this.resetKeybind();
+            this.resetKeybinding();
             this.captureWindow.destroy();
             return Gdk.EVENT_STOP;
         }

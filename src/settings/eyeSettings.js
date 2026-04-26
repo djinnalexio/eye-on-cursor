@@ -277,14 +277,14 @@ class EyePage extends Adw.PreferencesPage {
         //#endregion
 
         //#region Blink keybinding
-        const blinkKeybindRow = new KeybindingRow(
+        const blinkKeybindingRow = new KeybindingRow(
             this.settings,
             'eye-blink-keybinding',
             _('Manual Blink')
         );
 
-        blinkGroup.set_header_suffix(blinkKeybindRow.resetButton);
-        blinkGroup.add(blinkKeybindRow);
+        blinkGroup.set_header_suffix(blinkKeybindingRow.resetButton);
+        blinkGroup.add(blinkKeybindingRow);
         //#endregion
 
         //#region Blink interval
@@ -333,7 +333,7 @@ class EyePage extends Adw.PreferencesPage {
         const maxIntervalButton = new Gtk.SpinButton({
             adjustment: new Gtk.Adjustment({
                 lower: blinkIntervalRange[0] + MIN_GAP,
-                upper: 60, // TODO increase max blinkinterval to 1 hour
+                upper: 60, // TODO increase max blinkInterval to 1 hour
                 step_increment: 0.1,
             }),
             digits: 1,

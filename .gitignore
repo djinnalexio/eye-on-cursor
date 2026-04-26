@@ -4,9 +4,6 @@
 # Ignore Node.js dependencies
 node_modules/
 
-# Ignore ESLint cache
-.eslintcache
-
 # Ignore workspace settings
 .idea
 .vscode/

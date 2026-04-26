@@ -250,17 +250,17 @@ class TrackerPage extends Adw.PreferencesPage {
         //#endregion
 
         //#region Tracker keybinding
-        const keybindGroup = new Adw.PreferencesGroup({title: _('Keybinding')});
-        this.add(keybindGroup);
+        const keybindingGroup = new Adw.PreferencesGroup({title: _('Keybinding')});
+        this.add(keybindingGroup);
 
-        const keybindRow = new KeybindingRow(
+        const keybindingRow = new KeybindingRow(
             this.settings,
             'tracker-keybinding',
             _('Toggle Tracker')
         );
 
-        keybindGroup.set_header_suffix(keybindRow.resetButton);
-        keybindGroup.add(keybindRow);
+        keybindingGroup.set_header_suffix(keybindingRow.resetButton);
+        keybindingGroup.add(keybindingRow);
         //#endregion
 
         //#region About group
