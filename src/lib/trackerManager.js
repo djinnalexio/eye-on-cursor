@@ -160,6 +160,10 @@ export class TrackerManager {
             ));
         }
 
+        this.colorMainEnabled
+            ? this.currentColor = this.colorMain
+            : this.currentColor = this.colorAccent;
+
         // Connect toggle tracker shortcut
         Main.wm.addKeybinding(
             'tracker-keybinding',
