@@ -109,7 +109,7 @@ class Eye extends PanelMenu.Button {
 
         // Add popups
         this.menuItems = [
-            this.createPopupMenuItem(
+            this.createPopupMenuItem( // TODO replace with PopupSwitchMenuItem
                 _('Toggle Tracker'),
                 'view-reveal-symbolic',
                 this.mouseTracker.toggleTracker.bind(this.mouseTracker)

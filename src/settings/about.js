@@ -38,6 +38,7 @@ const releaseNotes =
     <ul>\
         <li>fixed first frame of tracker not rendering</li>\
         <li>fixed tracker briefly appearing at out-of-date location when being re-enabled</li>\
+        <li>increased max blink interval to one hour</li>\
     </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
@@ -54,8 +55,7 @@ export const AboutRow = GObject.registerClass(
 class AboutRow extends Adw.ActionRow {
     constructor(metadata, path) {
         super({
-            title: _('About'),
-            subtitle: _('Development information and credits'),
+            title: _('About Eye on Cursor'),
             activatable: true,
         });
 

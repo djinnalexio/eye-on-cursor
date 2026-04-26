@@ -121,7 +121,7 @@ class EyePage extends Adw.PreferencesPage {
         //#region Eye reactivity
         const reactiveRow = new Adw.SwitchRow({
             title: _('Menu'),
-            subtitle: _('Enable the eye submenu'), // TODO rename to menu
+            subtitle: _('Enable the eye menu'),
             active: this.settings.get_boolean('eye-reactive'),
         });
         reactiveRow.connect('notify::active', (widget) =>
@@ -159,8 +159,8 @@ class EyePage extends Adw.PreferencesPage {
 
         //#region Eye outline mode
         const lineModeRow = new Adw.SwitchRow({
-            title: _('Outline Mode'), // TODO rename to sketch
-            subtitle: _('Draw the eyes as outline only'),
+            title: _('Sketch Mode'),
+            subtitle: _('Only draw the outline'),
             active: this.settings.get_boolean('eye-line-mode'),
         });
         lineModeRow.connect('notify::active', (widget) =>
@@ -171,7 +171,7 @@ class EyePage extends Adw.PreferencesPage {
 
         //#region Eye line width
         const lineWidthRow = new Adw.SpinRow({
-            title: _('Strokes'), // TODO rename to line width/line thickness/line weight/brush size
+            title: _('Line Thickness'),
             subtitle: _('Thickness of the strokes in outline mode'),
             adjustment: new Gtk.Adjustment({
                 lower: 0,
@@ -289,11 +289,11 @@ class EyePage extends Adw.PreferencesPage {
 
         //#region Blink interval
         const blinkIntervalRow = new Adw.SpinRow({
-            title: _('Synced Blinking Interval'), // TODO rename to regular blink interval
-            subtitle: _('Seconds between synchronized blinks'),
+            title: _('Regular Blink Interval'),
+            subtitle: _('Duration in seconds between blinks'),
             adjustment: new Gtk.Adjustment({
                 lower: 0.1,
-                upper: 60,
+                upper: 3600,
                 step_increment: 0.1,
             }),
             digits: 1,
@@ -307,8 +307,8 @@ class EyePage extends Adw.PreferencesPage {
 
         //#region Blink interval range
         const blinkIntervalRangeRow = new Adw.ActionRow({
-            title: _('Unsynced Blinking Interval'), // TODO rename to random blink interval
-            subtitle: _('Range of seconds between random blinks'),
+            title: _('Random Blink Interval'),
+            subtitle: _('Range of durations in seconds between random blinks'),
         });
 
         const blinkIntervalRange = this.settings
@@ -333,7 +333,7 @@ class EyePage extends Adw.PreferencesPage {
         const maxIntervalButton = new Gtk.SpinButton({
             adjustment: new Gtk.Adjustment({
                 lower: blinkIntervalRange[0] + MIN_GAP,
-                upper: 60, // TODO increase max blinkInterval to 1 hour
+                upper: 3600,
                 step_increment: 0.1,
             }),
             digits: 1,
