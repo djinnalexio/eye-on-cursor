@@ -263,14 +263,12 @@ class TrackerPage extends Adw.PreferencesPage {
         keybindGroup.add(keybindRow);
         //#endregion
 
-        //#region About group (GNOME 46+)
-        if (Adw.AboutDialog) { // TODO Drop GNOME 45
-            const aboutGroup = new Adw.PreferencesGroup({title: _('Credits')});
-            this.add(aboutGroup);
+        //#region About group
+        const aboutGroup = new Adw.PreferencesGroup({title: _('Credits')});
+        this.add(aboutGroup);
 
-            const aboutRow = new AboutRow(extension.metadata, extension.path);
-            aboutGroup.add(aboutRow);
-        }
+        const aboutRow = new AboutRow(extension.metadata, extension.path);
+        aboutGroup.add(aboutRow);
         //#endregion
     }
 });

@@ -30,10 +30,14 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 // The string for `release_notes` supports <p> paragraphs, <em> emphasis, and <code> code,
 // <ol> ordered and <ul> unordered lists with <li> list items, and <code> code.
 const releaseNotes =
-    '<p>Improvements:</p>\
+    '<p>New:</p>\
     <ul>\
-        <li>Added backward support for GNOME 45 &amp; 46</li>\
-        <li>Implemented asynchronous IO for tracker</li>\
+        <li></li>\
+    </ul>\
+    <p>Fixes &amp; Improvements:</p>\
+    <ul>\
+        <li>fixed first frame of tracker not rendering</li>\
+        <li>fixed tracker briefly appearing at out-of-date location when being re-enabled</li>\
     </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
