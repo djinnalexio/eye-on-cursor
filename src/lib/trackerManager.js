@@ -101,6 +101,10 @@ export class TrackerManager {
         this.opacity = this.settings.get_int('tracker-opacity');
         this.refreshRate = this.settings.get_int('tracker-refresh-rate');
 
+        // Connect change in settings to update method
+        this.settingsHandlers = TRACKER_SETTINGS.map((key) =>
+            this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this)));
+
         // Create the tracker object
         this.tracker = new St.Icon({
             reactive: false,
@@ -124,28 +128,6 @@ export class TrackerManager {
             throw new Error(`Failed to create cache directory at ${this.cacheDir}: ${e.message}`);
         }
 
-        // Use desktop accent color as default tracker color (GNOME 47+)
-        if (this.hasAccentColor) {
-            this.colorAccent = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-            this.updateCacheTrackers(this.shape, [this.colorAccent])
-            .catch((e) => {
-                throw new Error(`Failed to create cache tracker for accent color: ${e.message}`);
-            });
-
-            // Connect change in accent color to tracker redraw
-            this.accentColorHandler = this.interfaceSettings.connect(
-                `changed::${ACCENT_COLORS_KEY}`,
-                async () => {
-                    this.colorAccent =
-                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-                    await this.updateCacheTrackers(this.shape, [this.colorAccent]);
-                    this.colorMainEnabled
-                        ? this.updateTrackerIcon(this.shape, this.colorMain)
-                        : this.updateTrackerIcon(this.shape, this.colorAccent);
-                }
-            );
-        }
-
         // Create tracker icons files in cache based on the initial settings
         this.updateCacheTrackers(this.shape, [
             this.colorMain,
@@ -156,9 +138,27 @@ export class TrackerManager {
             throw new Error(`Failed to create cache trackers: ${e.message}`);
         });
 
-        // Connect change in settings to update method
-        this.settingsHandlers = TRACKER_SETTINGS.map((key) =>
-            this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this)));
+        // Use desktop accent color as default tracker color (GNOME 47+)
+        if (this.hasAccentColor) {
+            this.colorAccent = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+            this.updateCacheTrackers(this.shape, [this.colorAccent])
+            .catch((e) => {
+                throw new Error(`Failed to create cache tracker for accent color: ${e.message}`);
+            });
+
+            // Connect change in accent color to tracker redraw
+            this.settingsHandlers.push(this.interfaceSettings.connect(
+                `changed::${ACCENT_COLORS_KEY}`,
+                async () => {
+                    this.colorAccent =
+                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                    await this.updateCacheTrackers(this.shape, [this.colorAccent]);
+                    this.colorMainEnabled
+                        ? this.updateTrackerIcon(this.shape, this.colorMain)
+                        : this.updateTrackerIcon(this.shape, this.colorAccent);
+                }
+            ));
+        }
 
         // Connect toggle tracker shortcut
         Main.wm.addKeybinding(
@@ -518,12 +518,8 @@ export class TrackerManager {
         this.disableTracker();
 
         // Disconnect settings signal handlers
-        this.settingsHandlers?.forEach((connection) => this.settings.disconnect(connection));
+        this.settingsHandlers.forEach((connection) => this.settings.disconnect(connection));
         this.settingsHandlers = null;
-
-        if (this.accentColorHandler)
-            this.interfaceSettings.disconnect(this.accentColorHandler);
-        this.accentColorHandler = null;
 
         // Disconnect keybinding
         Main.wm.removeKeybinding('tracker-keybinding');
@@ -533,10 +529,10 @@ export class TrackerManager {
             Atspi.exit();
 
         // Destroy tracker
-        this.tracker?.destroy();
+        this.tracker.destroy();
         this.tracker = null;
 
-        // Disconnect settings
+        // Drop settings objects
         this.settings = null;
         this.interfaceSettings = null;
     }

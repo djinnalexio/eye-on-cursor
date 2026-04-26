@@ -95,6 +95,19 @@ class Eye extends PanelMenu.Button {
             this.settings.connect(`changed::${key}`, this.updateEyeProperties.bind(this))
         );
 
+        // Use desktop accent color as default eye color (GNOME 47+)
+        if (this.hasAccentColor) {
+            this.accentColor = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+            this.settingsHandlers.push(this.interfaceSettings.connect(
+                `changed::${ACCENT_COLORS_KEY}`,
+                () => {
+                    this.accentColor =
+                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                    this.area.queue_repaint();
+                }
+            ));
+        }
+
         // Add popups
         this.menuItems = [
             this.createPopupMenuItem(
@@ -114,19 +127,6 @@ class Eye extends PanelMenu.Button {
         this.area = new St.DrawingArea({width: this.width});
         // TODO see interaction if any between area width and button width
         this.add_child(this.area);
-
-        // Use desktop accent color as default eye color (GNOME 47+)
-        if (this.hasAccentColor) {
-            this.accentColor = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-            this.accentColorHandler = this.interfaceSettings.connect(
-                `changed::${ACCENT_COLORS_KEY}`,
-                () => {
-                    this.accentColor =
-                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-                    this.area.queue_repaint();
-                }
-            );
-        }
 
         // Connect the repaint signal of the area to the repaint method
         this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
@@ -293,18 +293,14 @@ class Eye extends PanelMenu.Button {
         this.area = null;
 
         // Disconnect settings signal handlers
-        this.settingsHandlers?.forEach((connection) => this.settings.disconnect(connection));
+        this.settingsHandlers.forEach((connection) => this.settings.disconnect(connection));
         this.settingsHandlers = null;
 
-        if (this.accentColorHandler)
-            this.interfaceSettings.disconnect(this.accentColorHandler);
-        this.accentColorHandler = null;
-
         // Destroy popups
-        this.menuItems.forEach((menuItem) => menuItem?.destroy());
+        this.menuItems.forEach((menuItem) => menuItem.destroy());
         this.menuItems = [];
 
-        // Disconnect settings
+        // Drop settings objects
         this.settings = null;
         this.interfaceSettings = null;
 

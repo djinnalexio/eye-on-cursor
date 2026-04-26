@@ -13,6 +13,11 @@ import {TrackerManager} from './lib/trackerManager.js';
  * The **Eye on Cursor** GNOME Shell extension.
  */
 export default class EyeOnCursorExtension extends Extension {
+    // DO NOT create objects, connect signals or add main loop sources here
+    // constructor(metadata) {
+    //     super(metadata);
+    // }
+
     //#region Enable
     /**
      * Enables the extension.
@@ -51,18 +56,16 @@ export default class EyeOnCursorExtension extends Extension {
      * Disables the extension.
      */
     disable() {
-        this.placementSettingHandlers?.forEach((connection) =>
-            this.settings.disconnect(connection)
-        );
+        this.placementSettingHandlers.forEach((connection) => this.settings.disconnect(connection));
         this.placementSettingHandlers = null;
 
         destroyEyes(this.eyeArray);
         this.eyeArray = null;
 
-        this.mouseTracker?.destroy();
+        this.mouseTracker.destroy();
         this.mouseTracker = null;
 
-        this.blinkController?.destroy();
+        this.blinkController.destroy();
         this.blinkController = null;
 
         this.settings = null;

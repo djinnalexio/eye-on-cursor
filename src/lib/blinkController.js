@@ -235,13 +235,13 @@ export class BlinkController {
         Timeout.clearTimeout(this.unsyncedDebounce);
 
         // Disconnect settings signal handlers
-        this.settingsHandlers?.forEach((connection) => this.settings.disconnect(connection));
+        this.settingsHandlers.forEach((connection) => this.settings.disconnect(connection));
         this.settingsHandlers = null;
 
         // Disconnect keybinding
         Main.wm.removeKeybinding('eye-blink-keybinding');
 
-        // Disconnect settings
+        // Drop settings objects
         this.settings = null;
     }
     //#endregion
