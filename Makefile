@@ -18,9 +18,12 @@ install: pack
 	gnome-extensions install $(PACK_NAME) -f
 	# Log out of the session and then back in to use the extension.
 
-uninstall:
+reset:
+	rm -rf ~/.cache/$(EXTENSION_NAME)
+	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_NAME)/
+
+uninstall: reset
 	# Uninstalling extension...
-	dconf reset -f /org/gnome/shell/extensions/$(EXTENSION_NAME)/ && \
 	gnome-extensions uninstall $(EXTENSION_UUID)
 
 enable:
@@ -37,11 +40,13 @@ prefs:
 
 test: install
 	# Launching a nested instance of GNOME Shell...
+	clear
 	if [ "$$(gnome-shell --version | awk '{print int($$3)}')" -ge 49 ]; then \
 		G_MESSAGES_DEBUG='GNOME Shell' \
 		SHELL_DEBUG=all \
 		dbus-run-session gnome-shell --devkit; \
 	else \
+		MUTTER_DEBUG_DUMMY_MODE_SPECS=960x540 \
 		G_MESSAGES_DEBUG='GNOME Shell' \
 		SHELL_DEBUG=all \
 		dbus-run-session gnome-shell --nested; \
@@ -57,7 +62,7 @@ test-prefs-window: install prefs
 
 update-pot:
 	# Updating POT file...
-	find ./src -iname "*.js" | xargs xgettext \
+	find src -iname "*.js" | xargs xgettext \
 		--output=src/po/$(EXTENSION_NAME).pot \
 		--from-code=UTF-8 \
 		--package-name=$(EXTENSION_NAME)  \

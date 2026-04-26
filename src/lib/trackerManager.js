@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2024-2026 djinnalexio
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-//#region Import libraries
+//#region Imports
 import Atspi from 'gi://Atspi';
 import Clutter from 'gi://Clutter';
 import Gio from 'gi://Gio';
@@ -11,9 +11,9 @@ import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 import St from 'gi://St';
 
-import * as Config from 'resource:///org/gnome/shell/misc/config.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import * as Timeout from './timeout.js';
+
+import * as Timeout from './timeoutUtils.js';
 //#endregion
 
 //#region Constants
@@ -31,7 +31,6 @@ const ACCENT_COLORS = {
     slate: '#6f8396',
 };
 const ACCENT_COLORS_KEY = 'accent-color';
-const DISABLED_COLOR = '#1c2a2b'; // Disabled color so that there is a change when toggling the tracker
 const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
 const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
 const CLICK_MAX_DEBOUNCE = 5000; // Max highlighting duration after receiving BUTTON PRESSED signal
@@ -48,28 +47,32 @@ const TRACKER_SETTINGS = [
     'tracker-opacity',
     'tracker-refresh-rate',
 ];
-const SHELL_VERSION = Number(Config.PACKAGE_VERSION.split('.')[0]);
 //#endregion
 
 // Enable async/await with asynchronous methods in platform libraries
 Gio._promisify(Gio.File.prototype, 'load_contents_async');
 Gio._promisify(Gio.File.prototype, 'replace_contents_async');
 
-//#region Defining Tracker
+/**
+ * An object that controls an icon that follows and reacts to the cursor.
+ *
+ * @param {EyeOnCursorExtension} extension - The extension instance.
+ */
 export class TrackerManager {
-    /**
-     * Creates an instance of TrackerManager, which controls an icon that follows
-     * and reacts to the cursor.
-     *
-     * @param {Extension} extensionObject - The extension object.
-     */
-
     //#region Constructor
-    constructor(extensionObject) {
+    constructor(extension) {
         // Get extension object properties
-        this.gettextDomain = extensionObject.metadata['gettext-domain'];
-        this.glyphsDir = GLib.build_filenamev([extensionObject.path, 'media', 'glyphs']);
-        this.settings = extensionObject.settings;
+        this.gettextDomain = extension.metadata['gettext-domain'];
+        this.glyphsDir = GLib.build_filenamev([
+            extension.path,
+            'media',
+            'glyphs',
+        ]);
+        this.settings = extension.getSettings();
+
+        // Check if accent color variable exists (GNOME 47+)
+        this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
+        this.hasAccentColor = this.interfaceSettings.list_keys().includes(ACCENT_COLORS_KEY);
 
         // Initialize state variables
         this.enabled = false;
@@ -80,16 +83,17 @@ export class TrackerManager {
         this.mouseListener = null;
         this.activeClick = null;
         this.clickResetPending = false;
-        this.clickMaxTimeoutID = {id: null};
-        this.clickReleaseTimeoutID = {id: null};
-        this.trackerPositionUpdaterID = {id: null};
-        this.trackerRaiseTimeoutID = {id: null};
+        this.clickMaxTimeout = new Timeout.Timeout();
+        this.clickReleaseTimeout = new Timeout.Timeout();
+        this.trackerPositionUpdater = new Timeout.Timeout();
+        this.trackerRaiseTimeout = new Timeout.Timeout();
 
         // Initialize settings values
         this.shape = this.settings.get_string('tracker-shape');
         this.size = this.settings.get_int('tracker-size');
-        this.colorMainEnabled =
-            SHELL_VERSION >= 47 ? this.settings.get_boolean('tracker-color-main-enabled') : true;
+        this.colorMainEnabled = this.hasAccentColor
+            ? this.settings.get_boolean('tracker-color-main-enabled')
+            : true;
         this.colorMain = this.settings.get_string('tracker-color-main');
         this.colorLeft = this.settings.get_string('tracker-color-left');
         this.colorMiddle = this.settings.get_string('tracker-color-middle');
@@ -97,57 +101,64 @@ export class TrackerManager {
         this.opacity = this.settings.get_int('tracker-opacity');
         this.refreshRate = this.settings.get_int('tracker-refresh-rate');
 
-        // Use desktop accent color as default tracker color (GNOME 47+)
-        if (SHELL_VERSION >= 47) {
-            this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-
-            this.colorDefault = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-
-            // Connect change in accent color to tracker redraw
-            this.defaultColorHandler = this.interfaceSettings.connect(
-                `changed::${ACCENT_COLORS_KEY}`,
-                async () => {
-                    this.colorDefault =
-                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-                    await this.updateCacheTrackers(this.shape, [this.colorDefault]);
-                    this.colorMainEnabled
-                        ? this.updateTrackerIcon(this.shape, this.colorMain)
-                        : this.updateTrackerIcon(this.shape, this.colorDefault);
-                }
-            );
-        } else {
-            this.colorDefault = DISABLED_COLOR;
-        }
-
-        // Create the tracker icon object
-        this.trackerIcon = new St.Icon({
+        // Create the tracker object
+        this.tracker = new St.Icon({
             reactive: false,
             can_focus: false,
             track_hover: false,
         });
-        this.trackerIcon.icon_size = this.size;
-        this.trackerIcon.opacity = Math.ceil(this.opacity * 2.55); // Convert from 0-100 to 0-255 range
+        this.tracker.icon_size = this.size;
+        this.tracker.opacity = Math.ceil(this.opacity * 2.55); // Convert from 0-100 to 0-255 range
+
+        // Get the cache directory for colored trackers
+        this.cacheDir = GLib.build_filenamev([
+            GLib.get_user_cache_dir(),
+            this.gettextDomain,
+            'trackers',
+        ]);
+        // Create the cache directory if it doesn't exist
+        try {
+            if (!GLib.file_test(this.cacheDir, GLib.FileTest.IS_DIR))
+                GLib.mkdir_with_parents(this.cacheDir, CACHE_DIR_PERMISSIONS);
+        } catch (e) {
+            throw new Error(`Failed to create cache directory at ${this.cacheDir}: ${e.message}`);
+        }
+
+        // Use desktop accent color as default tracker color (GNOME 47+)
+        if (this.hasAccentColor) {
+            this.colorAccent = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+            this.updateCacheTrackers(this.shape, [this.colorAccent])
+            .catch((e) => {
+                throw new Error(`Failed to create cache tracker for accent color: ${e.message}`);
+            });
+
+            // Connect change in accent color to tracker redraw
+            this.accentColorHandler = this.interfaceSettings.connect(
+                `changed::${ACCENT_COLORS_KEY}`,
+                async () => {
+                    this.colorAccent =
+                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                    await this.updateCacheTrackers(this.shape, [this.colorAccent]);
+                    this.colorMainEnabled
+                        ? this.updateTrackerIcon(this.shape, this.colorMain)
+                        : this.updateTrackerIcon(this.shape, this.colorAccent);
+                }
+            );
+        }
 
         // Create tracker icons files in cache based on the initial settings
-        this.cacheDir = this.getCacheDir();
         this.updateCacheTrackers(this.shape, [
-            this.colorDefault,
             this.colorMain,
             this.colorLeft,
             this.colorMiddle,
             this.colorRight,
-        ])
-            .then(() => {
-                this.updateTrackerIcon(this.shape, DISABLED_COLOR);
-            })
-            .catch(e => {
-                throw new Error(`Failed to create cache trackers: ${e.message}`);
-            });
+        ]).catch((e) => {
+            throw new Error(`Failed to create cache trackers: ${e.message}`);
+        });
 
-        // Connect change in settings to update function
-        this.settingsHandlers = TRACKER_SETTINGS.map(key =>
-            this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this))
-        );
+        // Connect change in settings to update method
+        this.settingsHandlers = TRACKER_SETTINGS.map((key) =>
+            this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this)));
 
         // Connect toggle tracker shortcut
         Main.wm.addKeybinding(
@@ -158,53 +169,30 @@ export class TrackerManager {
             this.toggleTracker.bind(this)
         );
 
-        // Check if the session is wayland. (GNOME 50+: Assume true if the check function is missing)
+        // Check if running on wayland (GNOME 50+ is Wayland only)
         this.isWayland = Meta.is_wayland_compositor ? Meta.is_wayland_compositor() : true;
 
         // If on X11, use `Atspi` as the event listener
-        if (!this.isWayland) Atspi.init();
-    }
-
-    // Change tracker icon
-    updateTrackerIcon(shape, color) {
-        const trackerIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
-        this.trackerIcon.gicon = Gio.icon_new_for_string(trackerIconPath);
-        this.currentColor = color;
+        if (!this.isWayland)
+            Atspi.init();
     }
     //#endregion
 
-    //#region Cache icons functions
-    // Create/return a cache directory for colored trackers
-    getCacheDir() {
-        const cacheDirPath = GLib.build_filenamev([
-            GLib.get_user_cache_dir(),
-            this.gettextDomain,
-            'trackers',
-        ]);
-        try {
-            if (!GLib.file_test(cacheDirPath, GLib.FileTest.IS_DIR)) {
-                GLib.mkdir_with_parents(cacheDirPath, CACHE_DIR_PERMISSIONS);
-            }
-        } catch (e) {
-            throw new Error(`Failed to create cache dir at ${cacheDirPath}: ${e.message}`);
-        }
-        return cacheDirPath;
-    }
-
+    //#region Cache icons methods
     // Create cached tracker icons for a given shape and array of colors
     async updateCacheTrackers(shape, colorArray) {
-        const tasks = colorArray.map(async color => {
+    // TODO only tracker uses hex color code format so conversion should happen here
+        const tasks = colorArray.map(async (color) => {
             // Get the cached tracker icon file for this shape and color
-            const cachedIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
-            const cachedIcon = Gio.File.new_for_path(cachedIconPath);
-
+            const cacheIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
+            const cacheIcon = Gio.File.new_for_path(cacheIconPath);
             try {
                 // Get template shape
                 const templatePath = GLib.build_filenamev([this.glyphsDir, `${shape}.svg`]);
                 const template = Gio.File.new_for_path(templatePath);
 
                 // Load contents of the template
-                const [contents, _etag] = await template.load_contents_async(null);
+                const [contents, etag_] = await template.load_contents_async(null);
 
                 // Decode SVG contents
                 const decoder = new TextDecoder();
@@ -213,12 +201,12 @@ export class TrackerManager {
                 // Replace color in SVG contents
                 decodedContents = decodedContents.replace('#000000', color);
 
-                // Encode SVG contents back to bytes
+                // Encode SVG contents back into bytes
                 const encoder = new TextEncoder();
                 const encodedContents = encoder.encode(decodedContents);
 
                 // Fill cached icon file with modified contents
-                await cachedIcon.replace_contents_async(
+                await cacheIcon.replace_contents_async(
                     encodedContents,
                     null,
                     false,
@@ -226,37 +214,46 @@ export class TrackerManager {
                     null
                 );
             } catch (e) {
-                throw new Error(`Failed to create cache tracker ${cachedIconPath}: ${e.message}`);
+                throw new Error(`Failed to create cache tracker ${cacheIconPath}: ${e.message}`);
             }
         });
         await Promise.all(tasks);
     }
+
+    // Change tracker icon
+    updateTrackerIcon(shape, color) {
+    // TODO only tracker uses hex color code format so conversion should happen here
+        const trackerIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
+        this.tracker.gicon = Gio.icon_new_for_string(trackerIconPath);
+        this.currentColor = color;
+    }
     //#endregion
 
-    //#region Position updater function
+    //#region Position updater
     updateTrackerPosition() {
-        if (this.trackerIcon) {
+        if (this.tracker) {
             // Get mouse coordinates
             const [mouseX, mouseY] = global.get_pointer();
 
-            // Offset so that the cursor appears in the center of the tracker
-            const newPositionX = mouseX - this.size / 2;
-            const newPositionY = mouseY - this.size / 2;
+            // Offset so that the tracker is aligned with the point of the cursor
+            const newPositionX = mouseX - (this.size / 2);
+            const newPositionY = mouseY - (this.size / 2);
 
-            // If mouse has moved and tracker is on screen, update icon position
+            // Only update icon position if tracker is on screen AND mouse has moved
             if (
-                this.trackerIcon.get_parent() &&
+                this.tracker.get_parent() &&
                 (this.lastPositionX !== newPositionX || this.lastPositionY !== newPositionY)
             ) {
-                this.trackerIcon.set_position(newPositionX, newPositionY);
-                Main.uiGroup.set_child_above_sibling(this.trackerIcon, null); // Keep tracker on top of UI elements
+                this.tracker.set_position(newPositionX, newPositionY);
+                // Keep tracker on top of other UI elements
+                Main.uiGroup.set_child_above_sibling(this.tracker, null);
                 [this.lastPositionX, this.lastPositionY] = [newPositionX, newPositionY];
             }
         }
     }
     //#endregion
 
-    //#region Toggle tracker functions
+    //#region Tracker toggle
     toggleTracker() {
         this.enabled ? this.disableTracker() : this.enableTracker();
     }
@@ -265,18 +262,17 @@ export class TrackerManager {
         this.enabled = true;
 
         // Start Updater
-        Timeout.setInterval(
-            this.trackerPositionUpdaterID,
+        this.trackerPositionUpdater = Timeout.setInterval(
             this.updateTrackerPosition.bind(this),
             1000 / this.refreshRate
         );
 
         // Add tracker to desktop
-        Main.uiGroup.add_child(this.trackerIcon);
+        Main.uiGroup.add_child(this.tracker);
+        this.updateTrackerPosition(); // Needs tracker to be part of uiGroup
         this.colorMainEnabled
             ? this.updateTrackerIcon(this.shape, this.colorMain)
-            : this.updateTrackerIcon(this.shape, this.colorDefault);
-        this.updateTrackerPosition();
+            : this.updateTrackerIcon(this.shape, this.colorAccent);
 
         // Connect mouse click events
         if (this.isWayland) {
@@ -292,12 +288,13 @@ export class TrackerManager {
 
     disableTracker() {
         this.enabled = false;
-        this.currentColor = DISABLED_COLOR;
 
         // Clear timeouts
-        [this.clickMaxTimeoutID, this.clickReleaseTimeoutID, this.trackerRaiseTimeoutID].forEach(
-            timeout => Timeout.clearTimeout(timeout)
-        );
+        [
+            this.clickMaxTimeout,
+            this.clickReleaseTimeout,
+            this.trackerRaiseTimeout,
+        ].forEach((timeout) => Timeout.clearTimeout(timeout));
 
         // Disconnect mouse click events
         if (this.capturedEvent) {
@@ -310,31 +307,31 @@ export class TrackerManager {
         }
 
         // Remove tracker from desktop
-        if (this.trackerIcon && this.trackerIcon.get_parent() === Main.uiGroup) {
-            Main.uiGroup.remove_child(this.trackerIcon);
-        }
+        if (this.tracker && this.tracker.get_parent() === Main.uiGroup)
+            Main.uiGroup.remove_child(this.tracker);
+
+        this.tracker.gicon = null;
 
         // Stop updating the tracker position
-        Timeout.clearInterval(this.trackerPositionUpdaterID);
+        Timeout.clearInterval(this.trackerPositionUpdater);
     }
     //#endregion
 
-    //#region Monitor Click functions
-    // Button press function
-    handleMousePress(button) {
+    //#region Button Press methods
+    // Button press method
+    handleMouseButtonPress(button) {
         switch (button) {
             // Button presses
             case 1:
-                this.handleButtonPress(button, this.colorLeft);
+                this.handleClick(button, this.colorLeft);
                 break;
             case 2:
-                this.handleButtonPress(button, this.colorMiddle);
+                this.handleClick(button, this.colorMiddle);
                 break;
             case 3:
-                this.handleButtonPress(button, this.colorRight);
+                this.handleClick(button, this.colorRight);
                 break;
             default:
-                return;
         }
     }
 
@@ -342,10 +339,10 @@ export class TrackerManager {
     onStageMouseEvent(actor, event) {
         if (event.type() === Clutter.EventType.BUTTON_PRESS) {
             const button = event.get_button();
-            this.handleMousePress(button);
+            this.handleMouseButtonPress(button);
         } else if (event.type() === Clutter.EventType.BUTTON_RELEASE) {
             const button = event.get_button();
-            this.handleButtonRelease(button);
+            this.handleClickRelease(button);
         }
     }
 
@@ -356,13 +353,15 @@ export class TrackerManager {
         if (match) {
             const button = parseInt(match[1], 10);
             const action = match[2];
-            if (action === 'p') this.handleMousePress(button);
-            else if (action === 'r') this.handleButtonRelease(button);
+            if (action === 'p')
+                this.handleMouseButtonPress(button);
+            else if (action === 'r')
+                this.handleClickRelease(button);
         }
     }
 
-    //#region Handle click functions
-    handleButtonPress(button, color) {
+    //#region Click highlighting
+    handleClick(button, color) {
         // Set the active button
         this.activeClick = button;
         this.clickResetPending = false;
@@ -371,35 +370,32 @@ export class TrackerManager {
         this.updateTrackerIcon(this.shape, color);
 
         // Move the tracker on top of any new UI element that appears after click
-        Timeout.clearTimeout(this.trackerRaiseTimeoutID);
-        Timeout.setTimeout(
-            this.trackerRaiseTimeoutID,
-            () => {
-                Main.uiGroup.set_child_above_sibling(this.trackerIcon, null);
-            },
+        Timeout.clearTimeout(this.trackerRaiseTimeout);
+        this.trackerRaiseTimeout = Timeout.setTimeout(
+            () => Main.uiGroup.set_child_above_sibling(this.tracker, null),
             TRACKER_RAISE_DELAY
         );
 
         // Set a maximum timeout to revert the color
-        Timeout.clearTimeout(this.clickMaxTimeoutID);
-        Timeout.setTimeout(this.clickMaxTimeoutID, this.resetColor.bind(this), CLICK_MAX_DEBOUNCE);
+        Timeout.clearTimeout(this.clickMaxTimeout);
+        this.clickMaxTimeout = Timeout.setTimeout(this.resetColor.bind(this), CLICK_MAX_DEBOUNCE);
 
         // Create an animated icon
         let animatedIcon = new St.Icon({
-            x: this.trackerIcon.x,
-            y: this.trackerIcon.y,
+            x: this.tracker.x,
+            y: this.tracker.y,
             reactive: false,
             can_focus: false,
             track_hover: false,
-            icon_size: this.trackerIcon.icon_size,
-            opacity: this.trackerIcon.opacity,
+            icon_size: this.tracker.icon_size,
+            opacity: this.tracker.opacity,
             gicon: Gio.icon_new_for_string(`${this.cacheDir}/${this.shape}_${color}.svg`),
         });
 
         // Add animated icon to the UI group
         Main.uiGroup.add_child(animatedIcon);
 
-        // Offset so that the center of the animated icon stays on the tracker
+        // Offset so that the animation is aligned with the point of the cursor
         const rippleOffset = (animatedIcon.icon_size * (CLICK_RIPPLE_SCALE - 1)) / 2;
 
         // Play ripple effect
@@ -411,7 +407,7 @@ export class TrackerManager {
             opacity: 0,
             duration: CLICK_MIN_DEBOUNCE * 2,
             mode: Clutter.AnimationMode.EASE_OUT_QUAD,
-            onComplete: function () {
+            onComplete() {
                 Main.uiGroup.remove_child(animatedIcon);
                 animatedIcon.destroy();
                 animatedIcon = null;
@@ -419,16 +415,14 @@ export class TrackerManager {
         });
     }
 
-    handleButtonRelease(button) {
+    handleClickRelease(button) {
         // Debounce the release event
-        Timeout.clearTimeout(this.clickReleaseTimeoutID);
-        Timeout.setTimeout(
-            this.clickReleaseTimeoutID,
+        Timeout.clearTimeout(this.clickReleaseTimeout);
+        this.clickReleaseTimeout = Timeout.setTimeout(
             () => {
                 // Only reset if no new click event has occurred in the meantime
-                if (this.activeClick === button && this.clickResetPending) {
+                if (this.activeClick === button && this.clickResetPending)
                     this.resetColor();
-                }
             },
             CLICK_MIN_DEBOUNCE
         );
@@ -436,26 +430,27 @@ export class TrackerManager {
     }
 
     resetColor() {
-        // Reset the tracker icon to the default color
+        // Reset the tracker icon to the main color
         this.colorMainEnabled
             ? this.updateTrackerIcon(this.shape, this.colorMain)
-            : this.updateTrackerIcon(this.shape, this.colorDefault);
+            : this.updateTrackerIcon(this.shape, this.colorAccent);
         this.activeClick = null;
         this.clickResetPending = false;
 
         // Clear timeout
-        Timeout.clearTimeout(this.clickMaxTimeoutID);
+        Timeout.clearTimeout(this.clickMaxTimeout);
     }
     //#endregion
     //#endregion
 
-    //#region Properties update functions
+    //#region Properties updater
     async updateTrackerProperties() {
         // Get new settings
         const newShape = this.settings.get_string('tracker-shape');
         const newSize = this.settings.get_int('tracker-size');
-        const newColorMainEnabled =
-            SHELL_VERSION >= 47 ? this.settings.get_boolean('tracker-color-main-enabled') : true;
+        const newColorMainEnabled = this.hasAccentColor
+            ? this.settings.get_boolean('tracker-color-main-enabled')
+            : true;
         const newColorMain = this.settings.get_string('tracker-color-main');
         const newColorLeft = this.settings.get_string('tracker-color-left');
         const newColorMiddle = this.settings.get_string('tracker-color-middle');
@@ -473,7 +468,7 @@ export class TrackerManager {
             this.colorRight !== newColorRight
         ) {
             await this.updateCacheTrackers(newShape, [
-                this.colorDefault,
+                this.colorAccent,
                 newColorMain,
                 newColorLeft,
                 newColorMiddle,
@@ -482,7 +477,7 @@ export class TrackerManager {
 
             newColorMainEnabled
                 ? this.updateTrackerIcon(newShape, newColorMain)
-                : this.updateTrackerIcon(newShape, this.colorDefault);
+                : this.updateTrackerIcon(newShape, this.colorAccent);
 
             this.shape = newShape;
             this.colorMainEnabled = newColorMainEnabled;
@@ -494,22 +489,21 @@ export class TrackerManager {
 
         // Update size if changed
         if (this.size !== newSize) {
-            this.trackerIcon.icon_size = newSize;
+            this.tracker.icon_size = newSize;
             this.size = newSize;
         }
 
         // Update opacity if changed
         if (this.opacity !== newOpacity) {
-            this.trackerIcon.opacity = Math.ceil(newOpacity * 2.55); // Convert from 0-100 to 0-255 range
+            this.tracker.opacity = Math.ceil(newOpacity * 2.55);
             this.opacity = newOpacity;
         }
 
-        // If the position updater is currently running, stop it and start a new one with the updated refresh rate
-        if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdaterID) {
-            Timeout.clearInterval(this.trackerPositionUpdaterID);
-
-            Timeout.setInterval(
-                this.trackerPositionUpdaterID,
+        // If the position updater is currently running, stop it and start a new one with
+        // the updated refresh rate
+        if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdater._id) {
+            Timeout.clearInterval(this.trackerPositionUpdater);
+            this.trackerPositionUpdater = Timeout.setInterval(
                 this.updateTrackerPosition.bind(this),
                 1000 / newRefreshRate
             );
@@ -518,29 +512,29 @@ export class TrackerManager {
     }
     //#endregion
 
-    //#region Destroy function
+    //#region Destroy method
     destroy() {
         // Disable tracker if active
         this.disableTracker();
 
         // Disconnect settings signal handlers
-        this.settingsHandlers?.forEach(connection => this.settings.disconnect(connection));
+        this.settingsHandlers?.forEach((connection) => this.settings.disconnect(connection));
         this.settingsHandlers = null;
 
-        if (this.defaultColorHandler) {
-            this.interfaceSettings.disconnect(this.defaultColorHandler);
-        }
-        this.defaultColorHandler = null;
+        if (this.accentColorHandler)
+            this.interfaceSettings.disconnect(this.accentColorHandler);
+        this.accentColorHandler = null;
 
         // Disconnect keybinding
         Main.wm.removeKeybinding('tracker-keybinding');
 
         // Disconnect Atspi
-        if (!this.isWayland) Atspi.exit();
+        if (!this.isWayland)
+            Atspi.exit();
 
         // Destroy tracker
-        this.trackerIcon?.destroy();
-        this.trackerIcon = null;
+        this.tracker?.destroy();
+        this.tracker = null;
 
         // Disconnect settings
         this.settings = null;
@@ -548,4 +542,3 @@ export class TrackerManager {
     }
     //#endregion
 }
-//#endregion

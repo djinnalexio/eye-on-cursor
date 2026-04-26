@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2024-2026 djinnalexio
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-//#region Import libraries
+//#region Imports
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import {BlinkController} from './lib/blinkController.js';
@@ -9,31 +9,21 @@ import {spawnEyes, destroyEyes} from './lib/eye.js';
 import {TrackerManager} from './lib/trackerManager.js';
 //#endregion
 
-//#region Launching extension
+/**
+ * The **Eye on Cursor** GNOME Shell extension.
+ */
 export default class EyeOnCursorExtension extends Extension {
-    constructor(metadata) {
-        super(metadata);
-        /**
-         * Runs when your extension is loaded, not enabled.
-         *
-         * DO NOT make any changes to GNOME Shell, create any objects, connect any signals
-         * or add any event sources here.
-         *
-         * Extensions **MAY** create and store a reasonable amount of static data
-         * during initialization.
-         */
-    }
-
     //#region Enable
-    // Runs when the extension is enabled or the desktop session is logged in or unlocked
-    // Create objects, connect signals and add main loop sources
+    /**
+     * Enables the extension.
+     */
     enable() {
         this.settings = this.getSettings();
 
         // Create the tracker
         this.mouseTracker = new TrackerManager(this);
 
-        // Create eyes based in starting settings
+        // Create eyes based on starting settings
         this.eyeArray = [];
         spawnEyes(this, this.eyeArray, this.mouseTracker);
 
@@ -41,8 +31,13 @@ export default class EyeOnCursorExtension extends Extension {
         this.blinkController = new BlinkController(this, this.eyeArray);
 
         // Connect eye placement settings
-        this.placementSettings = ['eye-active', 'eye-position', 'eye-index', 'eye-count'];
-        this.placementSettingHandlers = this.placementSettings.map(key =>
+        this.placementSettings = [
+            'eye-active',
+            'eye-position',
+            'eye-index',
+            'eye-count',
+        ];
+        this.placementSettingHandlers = this.placementSettings.map((key) =>
             this.settings.connect(
                 `changed::${key}`,
                 spawnEyes.bind(this, this, this.eyeArray, this.mouseTracker)
@@ -52,10 +47,13 @@ export default class EyeOnCursorExtension extends Extension {
     //#endregion
 
     //#region Disable
-    // Runs when the extension is disabled, uninstalled or the desktop session is exited or locked
-    // Cleanup anything done in enable()
+    /**
+     * Disables the extension.
+     */
     disable() {
-        this.placementSettingHandlers?.forEach(connection => this.settings.disconnect(connection));
+        this.placementSettingHandlers?.forEach((connection) =>
+            this.settings.disconnect(connection)
+        );
         this.placementSettingHandlers = null;
 
         destroyEyes(this.eyeArray);
@@ -71,4 +69,3 @@ export default class EyeOnCursorExtension extends Extension {
     }
     //#endregion
 }
-//#endregion

@@ -44,16 +44,30 @@ export default defineConfig([
             'eqeqeq': ['error', 'smart'],
             'prefer-arrow-callback': 'error',
             'prefer-const': ['error', {destructuring: 'all'}],
+            //#endregion
+
+            //#region JSDoc rules
+            // See https://github.com/gajus/eslint-plugin-jsdoc#rules
+            'jsdoc/require-description': 'warn',
             'jsdoc/require-jsdoc': [
-                'warn',
+                'error',
                 {
+                    require: {
+                        ClassDeclaration: true,
+                    },
                     exemptEmptyFunctions: true,
-                    publicOnly: {esm: true},
-                    contexts: ['FunctionDeclaration', "MethodDefinition[kind='constructor']"],
+                    // Contexts: ['VariableDeclarator[init.callee.object.name="GObject"][init.callee.property.name="registerClass"]'],
+                    // ESLint cannot cleanly put the JSDoc above
+                    // `const Foo = GObject.registerClass({}, class Foo extends GObject {})`
                 },
             ],
             'jsdoc/require-param-description': 'warn',
             'jsdoc/require-param-type': 'warn',
+            'jsdoc/require-returns': 'error',
+            'jsdoc/require-returns-check': 'error',
+            'jsdoc/require-returns-description': 'warn',
+            'jsdoc/require-returns-type': 'warn',
+            'jsdoc/valid-types': 'warn',
             //#endregion
 
             //#region Possible problems
@@ -90,8 +104,8 @@ export default defineConfig([
             'no-extra-label': 'error',
             'no-multi-assign': 'warn',
             'no-new': 'error',
-            // 'no-shadow' flags the very common GNOME syntax
-            //  const foo = GObject.registerClass({}, class foo extends Object {});
+            // 'no-shadow' flags the common GNOME syntax
+            // `const Foo = GObject.registerClass({}, class Foo extends GObject {})`
             'no-shadow': 'off',
             'no-var': 'warn',
             //#endregion
@@ -241,7 +255,7 @@ export default defineConfig([
             '@stylistic/yield-star-spacing': 'error',
             //#endregion
 
-            //#region GJS Restrictions
+            //#region GJS restrictions
             // See https://gitlab.gnome.org/World/javascript/gjs-guide/-/blob/main/src/guides/gjs/style-guide/eslint.config.js?ref_type=heads
             'no-restricted-globals': [
                 'error',

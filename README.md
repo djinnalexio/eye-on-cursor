@@ -20,7 +20,10 @@
 
 ## Overview
 
-**Eye on Cursor** is a fun and practical extension that gives your panel eyes that constantly follow your mouse. This quirky feature, combined with a highly customizable mouse tracker that highlights clicks, makes it easier than ever to monitor your mouse movements, ensuring your pointer gets all the attention it needs.
+**Eye on Cursor** is a fun and practical extension that gives your panel eyes that constantly follow
+your mouse. This quirky feature, combined with a highly customizable mouse tracker that highlights
+clicks, makes it easier than ever to monitor your mouse movements, ensuring your pointer gets all
+the attention it needs.
 
 <p align="center">
 <img alt="" height="300" src="assets/tracking.gif">
@@ -39,8 +42,10 @@
 
 ## Features
 
-- **Eyes Follow Cursor:** As many eyes as you want in the panel to follow the cursor movements, providing a fun and interactive experience.
-- **Customizable Mouse Tracker:** Highlights clicks and tracks mouse movements with customizable settings to fit your preferences.
+- **Eyes Follow Cursor:** As many eyes as you want in the panel to follow the cursor movements,
+  providing a fun and interactive experience.
+- **Customizable Mouse Tracker:** Highlights clicks and tracks mouse movements with customizable
+  settings to fit your preferences.
 
 ## Installation
 
@@ -50,9 +55,11 @@
 
 ### From GitHub
 
-> ⚠️ **Note:** When installing this extension manually from GitHub, it will **not receive automatic updates** from the GNOME Extensions website.
+> ⚠️ **Note:** When installing this extension manually from GitHub, it will
+> **not receive automatic updates** from the GNOME Extensions website.
 
-1. Go to [the latest release](https://github.com/djinnalexio/eye-on-cursor/releases/latest) and download the extension zip file.
+1. Go to [the latest release](https://github.com/djinnalexio/eye-on-cursor/releases/latest) and
+  download the extension zip file.
 
 2. At the location of the downloaded zip file, run the install command:
 
@@ -60,7 +67,8 @@
     gnome-extensions install --force eye-on-cursor@djinnalexio.github.io.shell-extension.zip
     ```
 
-3. Log out of your session and log back in, then enable the extension using your Extensions manager app or by running:
+3. Log out of your session and log back in, then enable the extension using your Extensions manager
+  app or by running:
 
     ```bash
     gnome-extensions enable eye-on-cursor@djinnalexio.github.io
@@ -68,24 +76,32 @@
 
 ## Acknowledgements
 
-This extension is forked from [Eye and Mouse Extended](https://extensions.gnome.org/extension/3139/eye-extended/) by [Alexey Lovchikov](https://github.com/alexeylovchikov).
+This extension is forked from
+[Eye and Mouse Extended](https://extensions.gnome.org/extension/3139/eye-extended/) by
+[Alexey Lovchikov](https://github.com/alexeylovchikov).
 
-**Eye and Mouse Extended** also has a fork for the Cinnamon Desktop, [Cinnamon Eyes](https://cinnamon-spices.linuxmint.com/applets/view/363), created by [anaximeno](https://github.com/anaximeno/).
+**Eye and Mouse Extended** also has a fork for the Cinnamon Desktop,
+[Cinnamon Eyes](https://cinnamon-spices.linuxmint.com/applets/view/363), created by
+[anaximeno](https://github.com/anaximeno/).
 
 ## Contributing
 
 First off, thanks for taking the time to contribute! ❤️
 
-If you want to **ask a question**, **offer a suggestion**, or **report a bug**, feel free to open an [issue](https://github.com/djinnalexio/eye-on-cursor/issues/new).
+If you want to **ask a question**, **offer a suggestion**, or **report a bug**, feel free to open an
+[issue](https://github.com/djinnalexio/eye-on-cursor/issues/new).
 
-You can also submit pull requests to provide **translations**, **new tracker icons**, or **bug fixes**.
+You can also submit pull requests to provide **translations**, **new tracker icons**, or
+**bug fixes**.
 
-If you have contributed in any way, feel free to add yourself to the `credits.js` file in `settings`.
+If you have contributed in any way, feel free to add yourself to the `credits.js` file in
+`settings`.
 
 ### Known Issues
 
 - On **Wayland**, the mouse tracker uses `globe.stage` to listen to clicks:
-  - clicks within application windows are not registered. Only clicks in the Shell (background, panel, etc.) are highlighted.
+  - clicks within application windows are not registered. Only clicks in the Shell (background,
+  panel, etc.) are highlighted.
 
 - On **x11**, the mouse tracker uses `Atspi` listen to clicks:
   - middle click is not registered.
