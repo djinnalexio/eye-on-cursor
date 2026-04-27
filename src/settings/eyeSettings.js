@@ -10,7 +10,7 @@ import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {newColorPicker, KeybindingRow} from './prefsWidgets.js';
+import {newColorPicker, KeybindingRow, ResetRow} from './prefsWidgets.js';
 //#endregion
 
 /**
@@ -27,6 +27,7 @@ class EyePage extends Adw.PreferencesPage {
         });
 
         this.settings = extension.getSettings();
+        this.updateFunctions = [];
 
         //#region Eye placement group
         const placementGroup = new Adw.PreferencesGroup({
@@ -42,6 +43,10 @@ class EyePage extends Adw.PreferencesPage {
         });
         activeRow.connect('notify::active', (widget) =>
             this.settings.set_boolean('eye-active', widget.active)
+        );
+
+        this.updateFunctions.push(
+            () => activeRow.set_active(this.settings.get_boolean('eye-active'))
         );
         placementGroup.add(activeRow);
         //#endregion
@@ -61,6 +66,8 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_int('eye-count', widget.value)
         );
         countRow.set_tooltip_text(_('Displaying more eyes may reduce performance.'));
+
+        this.updateFunctions.push(() => countRow.set_value(this.settings.get_int('eye-count')));
         placementGroup.add(countRow);
         //#endregion
 
@@ -81,6 +88,10 @@ class EyePage extends Adw.PreferencesPage {
         positionRow.connect('notify::selected', (widget) =>
             this.settings.set_enum('eye-position', widget.selected)
         );
+
+        this.updateFunctions.push(
+            () => positionRow.set_selected(this.settings.get_enum('eye-position'))
+        );
         placementGroup.add(positionRow);
         //#endregion
 
@@ -98,6 +109,8 @@ class EyePage extends Adw.PreferencesPage {
         indexRow.adjustment.connect('value-changed', (widget) =>
             this.settings.set_int('eye-index', widget.value)
         );
+
+        this.updateFunctions.push(() => indexRow.set_value(this.settings.get_int('eye-index')));
         placementGroup.add(indexRow);
         //#endregion
 
@@ -115,6 +128,8 @@ class EyePage extends Adw.PreferencesPage {
         widthRow.adjustment.connect('value-changed', (widget) =>
             this.settings.set_int('eye-width', widget.value)
         );
+
+        this.updateFunctions.push(() => widthRow.set_value(this.settings.get_int('eye-width')));
         placementGroup.add(widthRow);
         //#endregion
 
@@ -126,6 +141,10 @@ class EyePage extends Adw.PreferencesPage {
         });
         reactiveRow.connect('notify::active', (widget) =>
             this.settings.set_boolean('eye-reactive', widget.active)
+        );
+
+        this.updateFunctions.push(
+            () => reactiveRow.set_active(this.settings.get_boolean('eye-reactive'))
         );
         placementGroup.add(reactiveRow);
         //#endregion
@@ -154,6 +173,8 @@ class EyePage extends Adw.PreferencesPage {
         shapeRow.connect('notify::selected', (widget) =>
             this.settings.set_enum('eye-shape', widget.selected)
         );
+
+        this.updateFunctions.push(() => shapeRow.set_selected(this.settings.get_enum('eye-shape')));
         drawingGroup.add(shapeRow);
         //#endregion
 
@@ -165,6 +186,10 @@ class EyePage extends Adw.PreferencesPage {
         });
         lineModeRow.connect('notify::active', (widget) =>
             this.settings.set_boolean('eye-line-mode', widget.active)
+        );
+
+        this.updateFunctions.push(
+            () => lineModeRow.set_active(this.settings.get_boolean('eye-line-mode'))
         );
         drawingGroup.add(lineModeRow);
         //#endregion
@@ -183,6 +208,10 @@ class EyePage extends Adw.PreferencesPage {
         lineWidthRow.adjustment.connect('value-changed', (widget) =>
             this.settings.set_int('eye-line-width', widget.value)
         );
+
+        this.updateFunctions.push(
+            () => lineWidthRow.set_value(this.settings.get_int('eye-line-width'))
+        );
         drawingGroup.add(lineWidthRow);
         //#endregion
 
@@ -193,6 +222,12 @@ class EyePage extends Adw.PreferencesPage {
         });
 
         const irisColorPicker = newColorPicker(this.settings, 'eye-color-iris');
+
+        this.updateFunctions.push(() => {
+            const currentColor = irisColorPicker.get_rgba();
+            currentColor.parse(this.settings.get_string('eye-color-iris'));
+            irisColorPicker.set_rgba(currentColor);
+        });
 
         const colorBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
 
@@ -212,6 +247,11 @@ class EyePage extends Adw.PreferencesPage {
                 irisColorPicker.set_sensitive(widget.active);
             });
             irisColorPicker.set_sensitive(irisColorToggle.active);
+
+            this.updateFunctions.push(
+                () =>
+                    irisColorToggle.set_active(this.settings.get_boolean('eye-color-iris-enabled'))
+            );
             colorBox.append(irisColorToggle);
         }
 
@@ -236,6 +276,11 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_int('eye-refresh-rate', widget.value)
         );
         refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
+
+        this.updateFunctions.push(
+            () => refreshRow.set_value(this.settings.get_int('eye-refresh-rate'))
+        );
+
         drawingGroup.add(refreshRow);
         //#endregion
         //#endregion
@@ -249,8 +294,16 @@ class EyePage extends Adw.PreferencesPage {
         //#region Eyelid color
         const colorEyelidRow = new Adw.ActionRow({title: _('Eyelid Color')});
 
+        const eyelidColorPicker = newColorPicker(this.settings, 'eye-color-eyelid');
+
+        this.updateFunctions.push(() => {
+            const currentColor = eyelidColorPicker.get_rgba();
+            currentColor.parse(this.settings.get_string('eye-color-eyelid'));
+            eyelidColorPicker.set_rgba(currentColor);
+        });
+
         const colorEyelidBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
-        colorEyelidBox.append(newColorPicker(this.settings, 'eye-color-eyelid'));
+        colorEyelidBox.append(eyelidColorPicker);
 
         colorEyelidRow.add_suffix(colorEyelidBox);
         blinkGroup.add(colorEyelidRow);
@@ -273,6 +326,10 @@ class EyePage extends Adw.PreferencesPage {
         blinkModeRow.connect('notify::selected', (widget) =>
             this.settings.set_enum('eye-blink-mode', widget.selected)
         );
+
+        this.updateFunctions.push(
+            () => blinkModeRow.set_selected(this.settings.get_enum('eye-blink-mode'))
+        );
         blinkGroup.add(blinkModeRow);
         //#endregion
 
@@ -282,8 +339,9 @@ class EyePage extends Adw.PreferencesPage {
             'eye-blink-keybinding',
             _('Manual Blink')
         );
-
         blinkGroup.set_header_suffix(blinkKeybindingRow.resetButton);
+
+        this.updateFunctions.push(() => blinkKeybindingRow.resetKeybinding());
         blinkGroup.add(blinkKeybindingRow);
         //#endregion
 
@@ -301,6 +359,10 @@ class EyePage extends Adw.PreferencesPage {
         });
         blinkIntervalRow.adjustment.connect('value-changed', (widget) =>
             this.settings.set_double('eye-blink-interval', widget.value)
+        );
+
+        this.updateFunctions.push(
+            () => blinkIntervalRow.set_value(this.settings.get_double('eye-blink-interval'))
         );
         blinkGroup.add(blinkIntervalRow);
         //#endregion
@@ -370,6 +432,14 @@ class EyePage extends Adw.PreferencesPage {
                 );
             });
 
+        this.updateFunctions.push(() => {
+            const [min, max] = this.settings.get_value('eye-blink-interval-range').deep_unpack();
+            minIntervalButton.adjustment.set_upper(max - MIN_GAP);
+            maxIntervalButton.adjustment.set_lower(min + MIN_GAP);
+            minIntervalButton.set_value(min);
+            maxIntervalButton.set_value(max);
+        });
+
         const box = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL});
         box.append(minIntervalButton);
         box.append(new Gtk.Label({
@@ -381,6 +451,20 @@ class EyePage extends Adw.PreferencesPage {
         blinkIntervalRangeRow.add_suffix(box);
         blinkGroup.add(blinkIntervalRangeRow);
         //#endregion
+        //#endregion
+
+        //#region Reset group
+        const resetGroup = new Adw.PreferencesGroup();
+        this.add(resetGroup);
+
+        const resetRow = new ResetRow(
+            this.settings,
+            this.updateFunctions,
+            'eye',
+            _('Reset Eye Settings'),
+            _('Reset all eye settings?')
+        );
+        resetGroup.add(resetRow);
         //#endregion
     }
 });

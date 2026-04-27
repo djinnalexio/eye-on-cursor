@@ -94,7 +94,7 @@ If you want to **ask a question**, **offer a suggestion**, or **report a bug**, 
 You can also submit pull requests to provide **translations**, **new tracker icons**, or
 **bug fixes**.
 
-If you have contributed in any way, feel free to add yourself to the `credits.js` file in
+If you have contributed in any way, feel free to add yourself to the `about.js` file in
 `settings`.
 
 ### Known Issues

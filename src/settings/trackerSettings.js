@@ -12,7 +12,7 @@ import Gtk from 'gi://Gtk';
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
 import {AboutRow} from './about.js';
-import {newColorPicker, KeybindingRow} from './prefsWidgets.js';
+import {newColorPicker, KeybindingRow, ResetRow} from './prefsWidgets.js';
 //#endregion
 
 /**
@@ -29,6 +29,7 @@ class TrackerPage extends Adw.PreferencesPage {
         });
 
         this.settings = extension.getSettings();
+        this.updateFunctions = [];
 
         //#region Tracker drawing group
         const drawingGroup = new Adw.PreferencesGroup({title: _('Appearance')});
@@ -131,6 +132,10 @@ class TrackerPage extends Adw.PreferencesPage {
 
         shapeRow.connect('activated', () => shapeWindow.present(this));
 
+        this.updateFunctions.push(() => {
+            shapeRowLabel.set_label(this.settings.get_string('tracker-shape'));
+        });
+
         drawingGroup.add(shapeRow);
         //#endregion
 
@@ -148,6 +153,8 @@ class TrackerPage extends Adw.PreferencesPage {
         sizeRow.adjustment.connect('value-changed', (widget) =>
             this.settings.set_int('tracker-size', widget.value)
         );
+
+        this.updateFunctions.push(() => sizeRow.set_value(this.settings.get_int('tracker-size')));
         drawingGroup.add(sizeRow);
         //#endregion
 
@@ -158,6 +165,12 @@ class TrackerPage extends Adw.PreferencesPage {
         });
 
         const colorMainPicker = newColorPicker(this.settings, 'tracker-color-main');
+
+        this.updateFunctions.push(() => {
+            const currentColor = colorMainPicker.get_rgba();
+            currentColor.parse(this.settings.get_string('tracker-color-main'));
+            colorMainPicker.set_rgba(currentColor);
+        });
 
         const colorMainBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
 
@@ -177,6 +190,13 @@ class TrackerPage extends Adw.PreferencesPage {
                 colorMainPicker.set_sensitive(widget.active);
             });
             colorMainPicker.set_sensitive(trackerColorToggle.active);
+
+            this.updateFunctions.push(
+                () =>
+                    trackerColorToggle.set_active(
+                        this.settings.get_boolean('tracker-color-main-enabled')
+                    )
+            );
             colorMainBox.append(trackerColorToggle);
         }
 
@@ -195,11 +215,11 @@ class TrackerPage extends Adw.PreferencesPage {
         const isWayland = Gdk.Display.get_default().constructor.name.includes('Wayland');
         if (isWayland) {
             colorClickRow.set_tooltip_text(
-                _('Click highlighting does not work in applications on Wayland.')
+                _('Click highlighting does not work in windows.')
             );
         } else {
             colorClickRow.set_tooltip_text(
-                _('Middle-click highlighting does not work on x11.')
+                _('Middle-click highlighting does not work.')
             );
         }
 
@@ -208,7 +228,18 @@ class TrackerPage extends Adw.PreferencesPage {
             'tracker-color-left',
             'tracker-color-middle',
             'tracker-color-right',
-        ].forEach((key) => colorClickBox.append(newColorPicker(this.settings, key)));
+        ].forEach((key) => {
+            const colorPicker = newColorPicker(this.settings, key);
+
+            this.updateFunctions.push(() => {
+                const currentColor = colorPicker.get_rgba();
+                currentColor.parse(this.settings.get_string(key));
+                colorPicker.set_rgba(currentColor);
+            });
+
+            colorClickBox.append(colorPicker);
+        });
+
         colorClickRow.add_suffix(colorClickBox);
         drawingGroup.add(colorClickRow);
         //#endregion
@@ -226,6 +257,10 @@ class TrackerPage extends Adw.PreferencesPage {
         });
         opacityRow.adjustment.connect('value-changed', (widget) =>
             this.settings.set_int('tracker-opacity', widget.value)
+        );
+
+        this.updateFunctions.push(
+            () => opacityRow.set_value(this.settings.get_int('tracker-opacity'))
         );
         drawingGroup.add(opacityRow);
         //#endregion
@@ -245,6 +280,10 @@ class TrackerPage extends Adw.PreferencesPage {
             this.settings.set_int('tracker-refresh-rate', widget.value)
         );
         refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
+
+        this.updateFunctions.push(
+            () => refreshRow.set_value(this.settings.get_int('tracker-refresh-rate'))
+        );
         drawingGroup.add(refreshRow);
         //#endregion
         //#endregion
@@ -258,13 +297,28 @@ class TrackerPage extends Adw.PreferencesPage {
             'tracker-keybinding',
             _('Toggle Tracker')
         );
-
         keybindingGroup.set_header_suffix(keybindingRow.resetButton);
+
+        this.updateFunctions.push(() => keybindingRow.resetKeybinding());
         keybindingGroup.add(keybindingRow);
         //#endregion
 
+        //#region Reset group
+        const resetGroup = new Adw.PreferencesGroup();
+        this.add(resetGroup);
+
+        const resetRow = new ResetRow(
+            this.settings,
+            this.updateFunctions,
+            'tracker',
+            _('Reset Tracker Settings'),
+            _('Reset all tracker settings?')
+        );
+        resetGroup.add(resetRow);
+        //#endregion
+
         //#region About group
-        const aboutGroup = new Adw.PreferencesGroup({title: _('Credits')});
+        const aboutGroup = new Adw.PreferencesGroup({title: _('Information')});
         this.add(aboutGroup);
 
         const aboutRow = new AboutRow(extension.metadata, extension.path);

@@ -62,7 +62,7 @@ export function newColorPicker(settings, key) {
  */
 export const KeybindingRow = GObject.registerClass(
 class KeybindingRow extends Adw.ActionRow {
-    //#region Constructor
+    //#region Keybinding constructor
     constructor(settings, key, shortcutName) {
         super({
             title: shortcutName,
@@ -85,7 +85,7 @@ class KeybindingRow extends Adw.ActionRow {
         // Button to reset keybinding
         this.resetButton = new Gtk.Button({
             icon_name: 'edit-delete-symbolic',
-            css_classes: ['error'],
+            css_classes: ['destructive-action'],
             hexpand: false,
             vexpand: false,
         });
@@ -225,5 +225,59 @@ class KeybindingRow extends Adw.ActionRow {
     }
     //#endregion
     //#endregion
+});
+//#endregion
+
+//#region Reset row
+/**
+ * A row that allows users to reset all the settings on a page.
+ *
+ * @param {Gio.Settings} settings - The settings object for this extension.
+ * @param {Function[]} updateFunctions - The array of functions that update widget values with
+ * current key values.
+ * @param {string} keyPrefix - The prefix of the keys to reset.
+ * @param {string} title - The title of the row.
+ * @param {string} heading - The heading of the alert dialog.
+ */
+export const ResetRow = GObject.registerClass(
+class ResetRow extends Adw.ActionRow { //
+    constructor(settings, updateFunctions, keyPrefix, title, heading) {
+        super({
+            title,
+            activatable: true,
+            css_classes: ['error'],
+        });
+        this.get_child().set_halign(Gtk.Align.CENTER);
+        this.get_child().add_css_class('heading');
+
+        this.add_prefix(new Gtk.Image({icon_name: 'edit-undo-symbolic'}));
+
+        const resetAlert = new Adw.AlertDialog({
+            heading,
+            body: _('This will set all related settings back to default. ' +
+                'Any customizations you have made will be lost.'),
+        });
+
+        resetAlert.add_response('close', _('Cancel'));
+        resetAlert.add_response('reset', _('Reset'));
+        resetAlert.set_default_response('close');
+        resetAlert.set_response_appearance('reset', Adw.ResponseAppearance.DESTRUCTIVE);
+
+        resetAlert.connect('response::reset', () => {
+            settings.list_keys().forEach((key) => {
+                if (key.startsWith(keyPrefix))
+                    settings.reset(key);
+            });
+            updateFunctions.forEach((func) => func());
+            settings.list_keys().forEach((key) => {
+                if (key.startsWith(keyPrefix))
+                    settings.reset(key);
+            });
+            // HACK this resets the keys, sets the widgets to the now current default values,
+            // then resets the keys again.
+        });
+
+        this.connect('activated', () => resetAlert.present(this));
+    }
 });
 //#endregion

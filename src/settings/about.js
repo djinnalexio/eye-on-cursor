@@ -32,6 +32,7 @@ const issueUrl = 'https://github.com/djinnalexio/eye-on-cursor/issues/';
 const releaseNotes =
     '<p>New:</p>\
     <ul>\
+        <li>added reset settings buttons</li>\
         <li></li>\
     </ul>\
     <p>Fixes &amp; Improvements:</p>\
@@ -39,6 +40,7 @@ const releaseNotes =
         <li>fixed first frame of tracker not rendering</li>\
         <li>fixed tracker briefly appearing at out-of-date location when being re-enabled</li>\
         <li>increased max blink interval to one hour</li>\
+        <li>changed default settings window size</li>\
     </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';

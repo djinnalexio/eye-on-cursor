@@ -25,8 +25,7 @@
 
   <!-- Settings -->
 
-  <schema id='org.gnome.shell.extensions.eye-on-cursor'
-    path='/org/gnome/shell/extensions/eye-on-cursor/'>
+  <schema id='org.gnome.shell.extensions.eye-on-cursor' path='/org/gnome/shell/extensions/eye-on-cursor/'>
 
     <!-- Eye Position Settings -->
 
