@@ -250,7 +250,7 @@ class ResetRow extends Adw.ActionRow { //
         this.get_child().set_halign(Gtk.Align.CENTER);
         this.get_child().add_css_class('heading');
 
-        this.add_prefix(new Gtk.Image({icon_name: 'edit-undo-symbolic'}));
+        this.add_prefix(new Gtk.Image({icon_name: 'view-refresh-symbolic'}));
 
         const resetAlert = new Adw.AlertDialog({
             heading,
