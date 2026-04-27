@@ -8,8 +8,9 @@ const IRIS_SCALE = 0.5;
 const PUPIL_SCALE = 0.4;
 const TOP_LID_SCALE = 0.8;
 const BOTTOM_LID_SCALE = 0.6;
-const COMIC_EYE_SCALE_X = 0.6; // TODO increase cosmic eye width
-const COMIC_EYE_SCALE_Y = 0.9;
+const COMIC_EYE_SCALE_X = 0.7;
+const COMIC_EYE_SCALE_Y = 1;
+// TODO Make eye, iris, and/or pupil sizes into settings
 //#endregion
 
 //#region Main drawing function
@@ -159,7 +160,7 @@ function drawNaturalEye(area, options) {
  * @param {number} scaleX [scaleX=0.95] - The scaling factor for the horizontal axis.
  * @param {number} scaleY [scaleY=0.95] - The scaling factor for the vertical axis.
  */
-function drawRoundEye(area, options, scaleX = 0.95, scaleY = 0.95) {
+function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
     let [mouseX, mouseY] = global.get_pointer();
     const [areaWidth, areaHeight] = area.get_surface_size();
     const [areaCenterX, areaCenterY] =
@@ -171,8 +172,7 @@ function drawRoundEye(area, options, scaleX = 0.95, scaleY = 0.95) {
     const mouseAngle = Math.atan2(mouseY, mouseX);
     let mouseRadius = Math.sqrt((mouseX * mouseX) + (mouseY * mouseY));
 
-    // TODO change the eye radius here instead of using a default scaling to reduce the eye
-    const eyeRadius = areaHeight / 2.3;
+    const eyeRadius = areaHeight / 2.5;
     const irisRadius = eyeRadius * IRIS_SCALE * 1.3;
     const pupilRadius = irisRadius * PUPIL_SCALE;
 
