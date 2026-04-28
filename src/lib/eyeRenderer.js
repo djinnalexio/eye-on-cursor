@@ -254,18 +254,17 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
  * @param {string} hex - The hexadecimal color code.
  */
 function setColorFromHex(cr, hex) { // TODO stop using hex code for colors
-    hex = hex.slice(1);
     const [
         r,
         g,
         b,
     ] = [
-        hex.slice(0, 2),
-        hex.slice(2, 4),
-        hex.slice(4, 6),
+        hex.slice(1, 3),
+        hex.slice(3, 5),
+        hex.slice(5, 7),
     ].map(
         (value) => parseInt(value, 16) / 255.0
     );
-    cr.setSourceRGBA(r, g, b, 1);
+    cr.setSourceRGB(r, g, b);
 }
 //#endregion

@@ -35,15 +35,13 @@ export function newColorPicker(settings, key) {
 
     colorPicker.connect('notify::rgba', (widget) => {
         // Convert 'rgb(255,255,255)' to '#ffffff'
-        const rgbCode = widget.get_rgba().to_string();
         const hexCode =
-            `#${rgbCode
-                    .replace(/^rgb\(|\s+|\)$/g, '') // Remove 'rgb()'
-                    .split(',') // Split numbers at ","
-                    .map((string) => parseInt(string)) // Convert them to int
-                    .map((number) => number.toString(16)) // Convert them to base16
-                    .map((string) => string.length === 1 ? `0${string}` : string) // Add a leading 0
-                    .join('') // Join them back into a string
+            `#${widget.get_rgba().to_string()
+                .replace(/[^\d,]/g, '') // Remove 'rgb()'
+                .split(',') // Split colors into an array at ","
+                // convert to int, convert to base16, add leading 0
+                .map((value) => parseInt(value).toString(16).padStart(2, '0'))
+                .join('') // Join them back into a string
             }`;
         settings.set_string(key, hexCode);
     }); // TODO remove the transition to Hex code
