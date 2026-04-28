@@ -33,20 +33,12 @@ export function newColorPicker(settings, key) {
     currentColor.parse(settings.get_string(key));
     colorPicker.set_rgba(currentColor);
 
-    colorPicker.connect('notify::rgba', (widget) => {
-        // Convert 'rgb(255,255,255)' to '#ffffff'
-        const hexCode =
-            `#${widget.get_rgba().to_string()
-                .replace(/[^\d,]/g, '') // Remove 'rgb()'
-                .split(',') // Split colors into an array at ","
-                // convert to int, convert to base16, add leading 0
-                .map((value) => parseInt(value).toString(16).padStart(2, '0'))
-                .join('') // Join them back into a string
-            }`;
-        settings.set_string(key, hexCode);
-    }); // TODO remove the transition to Hex code
+    colorPicker.connect(
+        'notify::rgba',
+        (widget) => settings.set_string(key, widget.get_rgba().to_string())
+    );
+
     return colorPicker;
-    // And add a function in `extension.js` for a version or two to converts hex to rgb notation
 }
 //#endregion
 
@@ -273,6 +265,7 @@ class ResetRow extends Adw.ActionRow { //
             });
             // HACK this resets the keys, sets the widgets to the now current default values,
             // then resets the keys again.
+            // TODO use unpack https://gjs.guide/guides/glib/gvariant.html#unpacking-variants
         });
 
         this.connect('activated', () => resetAlert.present(this));

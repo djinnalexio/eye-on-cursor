@@ -17,18 +17,17 @@ import * as Timeout from './timeoutUtils.js';
 //#endregion
 
 //#region Constants
-// See https://gitlab.gnome.org/GNOME/libadwaita/-/blob/main/src/adw-accent-color.c?ref_type=heads#L15
-// And https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas/-/blob/master/schemas/org.gnome.desktop.interface.gschema.xml.in?ref_type=heads#L314
+// See https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.3/css-variables.html#accent-colors
 const ACCENT_COLORS = {
-    blue: '#3584e4',
-    teal: '#2190a4',
-    green: '#3a944a',
-    yellow: '#c88800',
-    orange: '#ed5b00',
-    red: '#e62d42',
-    pink: '#d56199',
-    purple: '#9141ac',
-    slate: '#6f8396',
+    blue: 'rgb(53,132,228)', // '#3584e4'
+    teal: 'rgb(33,144,164)', // '#2190a4'
+    green: 'rgb(58,148,74)', // '#3a944a'
+    yellow: 'rgb(200,136,0)', // '#c88800'
+    orange: 'rgb(237,91,0)', // '#ed5b00'
+    red: 'rgb(230,45,66)', // '#e62d42'
+    pink: 'rgb(213,97,153)', // '#d56199'
+    purple: 'rgb(145,65,172)', // '#9141ac'
+    slate: 'rgb(111,131,150)', // '#6f8396'
 };
 const ACCENT_COLORS_KEY = 'accent-color';
 const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
@@ -185,10 +184,10 @@ export class TrackerManager {
     //#region Cache icons methods
     // Create cached tracker icons for a given shape and array of colors
     async updateCacheTrackers(shape, colorArray) {
-    // TODO only tracker uses hex color code format so conversion should happen here
         const tasks = colorArray.map(async (color) => {
             // Get the cached tracker icon file for this shape and color
-            const cacheIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
+            const colorTag = color.replace(/[^\d,]/g, '');
+            const cacheIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${colorTag}.svg`]);
             const cacheIcon = Gio.File.new_for_path(cacheIconPath);
             try {
                 // Get template shape
@@ -226,8 +225,8 @@ export class TrackerManager {
 
     // Change tracker icon
     updateTrackerIcon(shape, color) {
-    // TODO only tracker uses hex color code format so conversion should happen here
-        const trackerIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${color}.svg`]);
+        const colorTag = color.replace(/[^\d,]/g, '');
+        const trackerIconPath = GLib.build_filenamev([this.cacheDir, `${shape}_${colorTag}.svg`]);
         this.tracker.gicon = Gio.icon_new_for_string(trackerIconPath);
         this.currentColor = color;
     }
@@ -385,6 +384,7 @@ export class TrackerManager {
         this.clickMaxTimeout = Timeout.setTimeout(this.resetColor.bind(this), CLICK_MAX_DEBOUNCE);
 
         // Create an animated icon
+        const colorTag = color.replace(/[^\d,]/g, '');
         let animatedIcon = new St.Icon({
             x: this.tracker.x,
             y: this.tracker.y,
@@ -393,7 +393,7 @@ export class TrackerManager {
             track_hover: false,
             icon_size: this.tracker.icon_size,
             opacity: this.tracker.opacity,
-            gicon: Gio.icon_new_for_string(`${this.cacheDir}/${this.shape}_${color}.svg`),
+            gicon: Gio.icon_new_for_string(`${this.cacheDir}/${this.shape}_${colorTag}.svg`),
         });
 
         // Add animated icon to the UI group

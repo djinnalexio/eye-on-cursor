@@ -98,7 +98,7 @@ function drawNaturalEye(area, options) {
     // Drawing the base of the eye
     cr.translate(areaWidth * 0.5, areaHeight * 0.5);
 
-    setColorFromHex(cr, options.sceleraColor);
+    setColor(cr, options.sceleraColor);
     cr.setLineWidth(options.lineWidth);
 
     drawEyelidShape();
@@ -112,7 +112,7 @@ function drawNaturalEye(area, options) {
     cr.translate(irisX * Math.sin(eyeAngle), 0);
     cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
 
-    setColorFromHex(cr, options.irisColor);
+    setColor(cr, options.irisColor);
     cr.setLineWidth(options.lineWidth / irisRadius);
 
     cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
@@ -126,7 +126,7 @@ function drawNaturalEye(area, options) {
     cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
 
     if (!options.lineMode)
-        setColorFromHex(cr, options.pupilColor);
+        setColor(cr, options.pupilColor);
 
     cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
     cr.fill();
@@ -141,7 +141,7 @@ function drawNaturalEye(area, options) {
 
         cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
 
-        setColorFromHex(cr, options.eyelidColor);
+        setColor(cr, options.eyelidColor);
 
         cr.rectangle(0, areaHeight * 0.2, areaWidth, eyelidHeight * options.eyelidLevel);
         cr.fill();
@@ -193,7 +193,7 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
     cr.translate(areaWidth * 0.5, areaHeight * 0.5);
     cr.scale(scaleX, scaleY);
 
-    setColorFromHex(cr, options.sceleraColor);
+    setColor(cr, options.sceleraColor);
     cr.setLineWidth(options.lineWidth);
 
     cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
@@ -207,7 +207,7 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
     cr.translate(irisX * Math.sin(eyeAngle), 0);
     cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
 
-    setColorFromHex(cr, options.irisColor);
+    setColor(cr, options.irisColor);
     cr.setLineWidth(options.lineWidth / irisRadius);
 
     cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
@@ -221,7 +221,7 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
     cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
 
     if (!options.lineMode)
-        setColorFromHex(cr, options.pupilColor);
+        setColor(cr, options.pupilColor);
 
     cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
     cr.fill();
@@ -236,7 +236,7 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
 
         cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
 
-        setColorFromHex(cr, options.eyelidColor);
+        setColor(cr, options.eyelidColor);
 
         cr.rectangle(0, 0, areaWidth, areaHeight * options.eyelidLevel);
         cr.fill();
@@ -248,23 +248,18 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
 
 //#region Helper functions
 /**
- * Sets the color of the Cairo context using a hexadecimal color code.
+ * Sets the color of the Cairo context using an RGB color value.
  *
  * @param {cairo.Context} cr - The Cairo graphics context where the color will be applied.
- * @param {string} hex - The hexadecimal color code.
+ * @param {string} color - The RGB color value.
  */
-function setColorFromHex(cr, hex) { // TODO stop using hex code for colors
+function setColor(cr, color) {
     const [
         r,
         g,
         b,
-    ] = [
-        hex.slice(1, 3),
-        hex.slice(3, 5),
-        hex.slice(5, 7),
-    ].map(
-        (value) => parseInt(value, 16) / 255.0
-    );
+    ] = color.replace(/[^\d,]/g, '').split(',').map((value) => value / 255.0);
+
     cr.setSourceRGB(r, g, b);
 }
 //#endregion

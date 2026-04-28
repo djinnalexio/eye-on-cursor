@@ -25,6 +25,27 @@ export default class EyeOnCursorExtension extends Extension {
     enable() {
         this.settings = this.getSettings();
 
+        // 28-apr-26: transition from hex code to rgb values for color settings
+        // convert user custom colors so that they fit the new expected format
+        [
+            'eye-color-iris',
+            'eye-color-eyelid',
+            'tracker-color-main',
+            'tracker-color-left',
+            'tracker-color-middle',
+            'tracker-color-right',
+        ].forEach((key) => {
+            const color = this.settings.get_string(key);
+            if (color.startsWith('#')) {
+                const rgbValue = `rgb(${[
+                    color.slice(1, 3),
+                    color.slice(3, 5),
+                    color.slice(5, 7),
+                ].map((value) => parseInt(value, 16)).join()})`;
+                this.settings.set_string(key, rgbValue);
+            }
+        });
+
         // Create the tracker
         this.mouseTracker = new TrackerManager(this);
 

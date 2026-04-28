@@ -92,7 +92,7 @@
     </key>
 
     <key name='eye-color-iris' type='s'>
-      <default>'#00ffff'</default>
+      <default>'rgb(0, 255, 255)'</default>
       <summary>Color of the iris</summary>
       <description>Sets the color of iris.</description>
     </key>
@@ -106,7 +106,7 @@
     <!-- Eye Blink Settings -->
 
     <key name='eye-color-eyelid' type='s'>
-      <default>'#000000'</default>
+      <default>'rgb(0, 0, 0)'</default>
       <summary>Color of the eyelid</summary>
       <description>Sets the color of the eyelid.</description>
     </key>
@@ -156,25 +156,25 @@
     </key>
 
     <key name='tracker-color-main' type='s'>
-      <default>'#ffff00'</default>
+      <default>'rgb(255, 255, 0)'</default>
       <summary>Default color of the tracker</summary>
       <description>Sets the default color of the tracker.</description>
     </key>
 
     <key name='tracker-color-left' type='s'>
-      <default>'#ff0000'</default>
+      <default>'rgb(255, 0, 0)'</default>
       <summary>Color of the tracker on left click</summary>
       <description>Sets the color of the tracker when a left-click event is detected.</description>
     </key>
 
     <key name='tracker-color-middle' type='s'>
-      <default>'#00ff00'</default>
+      <default>'rgb(0, 255, 0)'</default>
       <summary>Color of the tracker on middle click</summary>
       <description>Sets the color of the tracker when a middle-click event is detected.</description>
     </key>
 
     <key name='tracker-color-right' type='s'>
-      <default>'#0000ff'</default>
+      <default>'rgb(0, 0, 255)'</default>
       <summary>Color of the tracker on right click</summary>
       <description>Sets the color of the tracker when a right-click event is detected.</description>
     </key>

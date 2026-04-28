@@ -17,18 +17,17 @@ import * as Timeout from './timeoutUtils.js';
 //#endregion
 
 //#region Constants
-// See https://gitlab.gnome.org/GNOME/libadwaita/-/blob/main/src/adw-accent-color.c?ref_type=heads#L15
-// And https://gitlab.gnome.org/GNOME/gsettings-desktop-schemas/-/blob/master/schemas/org.gnome.desktop.interface.gschema.xml.in?ref_type=heads#L314
+// See https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.3/css-variables.html#accent-colors
 const ACCENT_COLORS = {
-    blue: '#3584e4',
-    teal: '#2190a4',
-    green: '#3a944a',
-    yellow: '#c88800',
-    orange: '#ed5b00',
-    red: '#e62d42',
-    pink: '#d56199',
-    purple: '#9141ac',
-    slate: '#6f8396',
+    blue: 'rgb(53,132,228)', // '#3584e4'
+    teal: 'rgb(33,144,164)', // '#2190a4'
+    green: 'rgb(58,148,74)', // '#3a944a'
+    yellow: 'rgb(200,136,0)', // '#c88800'
+    orange: 'rgb(237,91,0)', // '#ed5b00'
+    red: 'rgb(230,45,66)', // '#e62d42'
+    pink: 'rgb(213,97,153)', // '#d56199'
+    purple: 'rgb(145,65,172)', // '#9141ac'
+    slate: 'rgb(111,131,150)', // '#6f8396'
 };
 const ACCENT_COLORS_KEY = 'accent-color';
 const EYE_SETTINGS = [
@@ -42,7 +41,7 @@ const EYE_SETTINGS = [
     'eye-refresh-rate',
     'eye-color-eyelid',
 ];
-const PUPIL_COLOR = '#000000';
+const PUPIL_COLOR = 'rgb(0,0,0)';
 //#endregion
 
 /**
@@ -182,12 +181,12 @@ class Eye extends PanelMenu.Button {
 
         // Use foreground color from the theme for the white of the eye
         const themeNode = this.area.get_theme_node();
-        const sceleraColor = `#${[
+        const sceleraColor = `rgb(${[
             'red',
             'green',
             'blue',
         ].map((color) =>
-            themeNode.get_foreground_color()[color].toString(16).padStart(2, '0')).join('')}`;
+            themeNode.get_foreground_color()[color]).join()})`;
 
         // Get iris color
         let irisColor;

@@ -6,4 +6,3 @@
 - [ ] Blink when toggling tracker
 - [ ] add a timeout to tracker to only make it visible while cursor is moving
 - [ ] to fix the issue when tracker prevents dragging windows in overview mode, maybe remove the tracker during click
-- [ ] Figure out who goes in the copyright header

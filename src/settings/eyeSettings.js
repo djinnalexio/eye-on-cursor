@@ -260,6 +260,7 @@ class EyePage extends Adw.PreferencesPage {
         colorRow.add_suffix(colorBox);
         drawingGroup.add(colorRow);
         //#endregion
+        // TODO Make scelera and pupil color into settings
 
         //#region Eye refresh rate
         const refreshRow = new Adw.SpinRow({
