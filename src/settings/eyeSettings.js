@@ -46,7 +46,7 @@ class EyePage extends Adw.PreferencesPage {
         );
 
         this.updateFunctions.push(
-            () => activeRow.set_active(this.settings.get_boolean('eye-active'))
+            () => activeRow.set_active(this.settings.get_default_value('eye-active').deep_unpack())
         );
         placementGroup.add(activeRow);
         //#endregion
@@ -67,7 +67,10 @@ class EyePage extends Adw.PreferencesPage {
         );
         countRow.set_tooltip_text(_('Displaying more eyes may reduce performance.'));
 
-        this.updateFunctions.push(() => countRow.set_value(this.settings.get_int('eye-count')));
+        this.updateFunctions.push(
+            () => countRow.set_value(this.settings.get_default_value('eye-count').deep_unpack())
+
+        );
         placementGroup.add(countRow);
         //#endregion
 
@@ -90,7 +93,15 @@ class EyePage extends Adw.PreferencesPage {
         );
 
         this.updateFunctions.push(
-            () => positionRow.set_selected(this.settings.get_enum('eye-position'))
+            () => {
+                const defValue = this.settings.get_default_value('eye-position').deep_unpack();
+                const values = [
+                    'left',
+                    'center',
+                    'right',
+                ];
+                positionRow.set_selected(values.indexOf(defValue));
+            }
         );
         placementGroup.add(positionRow);
         //#endregion
@@ -110,7 +121,9 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_int('eye-index', widget.value)
         );
 
-        this.updateFunctions.push(() => indexRow.set_value(this.settings.get_int('eye-index')));
+        this.updateFunctions.push(
+            () => indexRow.set_value(this.settings.get_default_value('eye-index').deep_unpack())
+        );
         placementGroup.add(indexRow);
         //#endregion
 
@@ -129,7 +142,9 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_int('eye-width', widget.value)
         );
 
-        this.updateFunctions.push(() => widthRow.set_value(this.settings.get_int('eye-width')));
+        this.updateFunctions.push(
+            () => widthRow.set_value(this.settings.get_default_value('eye-width').deep_unpack())
+        );
         placementGroup.add(widthRow);
         //#endregion
 
@@ -144,7 +159,9 @@ class EyePage extends Adw.PreferencesPage {
         );
 
         this.updateFunctions.push(
-            () => reactiveRow.set_active(this.settings.get_boolean('eye-reactive'))
+            () => reactiveRow.set_active(
+                this.settings.get_default_value('eye-reactive').deep_unpack()
+            )
         );
         placementGroup.add(reactiveRow);
         //#endregion
@@ -174,7 +191,17 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_enum('eye-shape', widget.selected)
         );
 
-        this.updateFunctions.push(() => shapeRow.set_selected(this.settings.get_enum('eye-shape')));
+        this.updateFunctions.push(
+            () => {
+                const defValue = this.settings.get_default_value('eye-shape').deep_unpack();
+                const values = [
+                    'natural',
+                    'round',
+                    'comic',
+                ];
+                shapeRow.set_selected(values.indexOf(defValue));
+            }
+        );
         drawingGroup.add(shapeRow);
         //#endregion
 
@@ -189,7 +216,9 @@ class EyePage extends Adw.PreferencesPage {
         );
 
         this.updateFunctions.push(
-            () => lineModeRow.set_active(this.settings.get_boolean('eye-line-mode'))
+            () => lineModeRow.set_active(
+                this.settings.get_default_value('eye-line-mode').deep_unpack()
+            )
         );
         drawingGroup.add(lineModeRow);
         //#endregion
@@ -210,7 +239,9 @@ class EyePage extends Adw.PreferencesPage {
         );
 
         this.updateFunctions.push(
-            () => lineWidthRow.set_value(this.settings.get_int('eye-line-width'))
+            () => lineWidthRow.set_value(
+                this.settings.get_default_value('eye-line-width').deep_unpack()
+            )
         );
         drawingGroup.add(lineWidthRow);
         //#endregion
@@ -225,7 +256,7 @@ class EyePage extends Adw.PreferencesPage {
 
         this.updateFunctions.push(() => {
             const currentColor = irisColorPicker.get_rgba();
-            currentColor.parse(this.settings.get_string('eye-color-iris'));
+            currentColor.parse(this.settings.get_default_value('eye-color-iris').deep_unpack());
             irisColorPicker.set_rgba(currentColor);
         });
 
@@ -250,7 +281,9 @@ class EyePage extends Adw.PreferencesPage {
 
             this.updateFunctions.push(
                 () =>
-                    irisColorToggle.set_active(this.settings.get_boolean('eye-color-iris-enabled'))
+                    irisColorToggle.set_active(
+                        this.settings.get_default_value('eye-color-iris-enabled').deep_unpack()
+                    )
             );
             colorBox.append(irisColorToggle);
         }
@@ -279,7 +312,9 @@ class EyePage extends Adw.PreferencesPage {
         refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
 
         this.updateFunctions.push(
-            () => refreshRow.set_value(this.settings.get_int('eye-refresh-rate'))
+            () => refreshRow.set_value(
+                this.settings.get_default_value('eye-refresh-rate').deep_unpack()
+            )
         );
 
         drawingGroup.add(refreshRow);
@@ -299,7 +334,7 @@ class EyePage extends Adw.PreferencesPage {
 
         this.updateFunctions.push(() => {
             const currentColor = eyelidColorPicker.get_rgba();
-            currentColor.parse(this.settings.get_string('eye-color-eyelid'));
+            currentColor.parse(this.settings.get_default_value('eye-color-eyelid').deep_unpack());
             eyelidColorPicker.set_rgba(currentColor);
         });
 
@@ -329,7 +364,15 @@ class EyePage extends Adw.PreferencesPage {
         );
 
         this.updateFunctions.push(
-            () => blinkModeRow.set_selected(this.settings.get_enum('eye-blink-mode'))
+            () => {
+                const defValue = this.settings.get_default_value('eye-blink-mode').deep_unpack();
+                const values = [
+                    'manual',
+                    'synced',
+                    'unsynced',
+                ];
+                blinkModeRow.set_selected(values.indexOf(defValue));
+            }
         );
         blinkGroup.add(blinkModeRow);
         //#endregion
@@ -363,7 +406,9 @@ class EyePage extends Adw.PreferencesPage {
         );
 
         this.updateFunctions.push(
-            () => blinkIntervalRow.set_value(this.settings.get_double('eye-blink-interval'))
+            () => blinkIntervalRow.set_value(
+                this.settings.get_default_value('eye-blink-interval').deep_unpack()
+            )
         );
         blinkGroup.add(blinkIntervalRow);
         //#endregion
@@ -434,7 +479,8 @@ class EyePage extends Adw.PreferencesPage {
             });
 
         this.updateFunctions.push(() => {
-            const [min, max] = this.settings.get_value('eye-blink-interval-range').deep_unpack();
+            const [min, max] =
+                this.settings.get_default_value('eye-blink-interval-range').deep_unpack();
             minIntervalButton.adjustment.set_upper(max - MIN_GAP);
             maxIntervalButton.adjustment.set_lower(min + MIN_GAP);
             minIntervalButton.set_value(min);

@@ -254,18 +254,11 @@ class ResetRow extends Adw.ActionRow { //
         resetAlert.set_response_appearance('reset', Adw.ResponseAppearance.DESTRUCTIVE);
 
         resetAlert.connect('response::reset', () => {
-            settings.list_keys().forEach((key) => {
-                if (key.startsWith(keyPrefix))
-                    settings.reset(key);
-            });
             updateFunctions.forEach((func) => func());
             settings.list_keys().forEach((key) => {
                 if (key.startsWith(keyPrefix))
                     settings.reset(key);
             });
-            // HACK this resets the keys, sets the widgets to the now current default values,
-            // then resets the keys again.
-            // TODO use unpack https://gjs.guide/guides/glib/gvariant.html#unpacking-variants
         });
 
         this.connect('activated', () => resetAlert.present(this));

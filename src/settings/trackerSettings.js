@@ -133,7 +133,7 @@ class TrackerPage extends Adw.PreferencesPage {
         shapeRow.connect('activated', () => shapeWindow.present(this));
 
         this.updateFunctions.push(() => {
-            shapeRowLabel.set_label(this.settings.get_string('tracker-shape'));
+            shapeRowLabel.set_label(this.settings.get_default_value('tracker-shape').deep_unpack());
         });
 
         drawingGroup.add(shapeRow);
@@ -154,7 +154,9 @@ class TrackerPage extends Adw.PreferencesPage {
             this.settings.set_int('tracker-size', widget.value)
         );
 
-        this.updateFunctions.push(() => sizeRow.set_value(this.settings.get_int('tracker-size')));
+        this.updateFunctions.push(
+            () => sizeRow.set_value(this.settings.get_default_value('tracker-size').deep_unpack())
+        );
         drawingGroup.add(sizeRow);
         //#endregion
 
@@ -168,7 +170,7 @@ class TrackerPage extends Adw.PreferencesPage {
 
         this.updateFunctions.push(() => {
             const currentColor = colorMainPicker.get_rgba();
-            currentColor.parse(this.settings.get_string('tracker-color-main'));
+            currentColor.parse(this.settings.get_default_value('tracker-color-main').deep_unpack());
             colorMainPicker.set_rgba(currentColor);
         });
 
@@ -194,7 +196,7 @@ class TrackerPage extends Adw.PreferencesPage {
             this.updateFunctions.push(
                 () =>
                     trackerColorToggle.set_active(
-                        this.settings.get_boolean('tracker-color-main-enabled')
+                        this.settings.get_default_value('tracker-color-main-enabled').deep_unpack()
                     )
             );
             colorMainBox.append(trackerColorToggle);
@@ -217,10 +219,6 @@ class TrackerPage extends Adw.PreferencesPage {
             colorClickRow.set_tooltip_text(
                 _('Click highlighting does not work in windows.')
             );
-        } else {
-            colorClickRow.set_tooltip_text(
-                _('Middle-click highlighting does not work.')
-            );
         }
 
         const colorClickBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
@@ -233,7 +231,7 @@ class TrackerPage extends Adw.PreferencesPage {
 
             this.updateFunctions.push(() => {
                 const currentColor = colorPicker.get_rgba();
-                currentColor.parse(this.settings.get_string(key));
+                currentColor.parse(this.settings.get_default_value(key).deep_unpack());
                 colorPicker.set_rgba(currentColor);
             });
 
@@ -260,7 +258,9 @@ class TrackerPage extends Adw.PreferencesPage {
         );
 
         this.updateFunctions.push(
-            () => opacityRow.set_value(this.settings.get_int('tracker-opacity'))
+            () => opacityRow.set_value(
+                this.settings.get_default_value('tracker-opacity').deep_unpack()
+            )
         );
         drawingGroup.add(opacityRow);
         //#endregion
@@ -282,7 +282,9 @@ class TrackerPage extends Adw.PreferencesPage {
         refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
 
         this.updateFunctions.push(
-            () => refreshRow.set_value(this.settings.get_int('tracker-refresh-rate'))
+            () => refreshRow.set_value(
+                this.settings.get_default_value('tracker-refresh-rate').deep_unpack()
+            )
         );
         drawingGroup.add(refreshRow);
         //#endregion
