@@ -25,7 +25,7 @@ export default class EyeOnCursorExtension extends Extension {
     enable() {
         this.settings = this.getSettings();
 
-        // 28-apr-26: transition from hex code to rgb values for color settings
+        // 28-apr-26: transition from hex code (v2.3.1 and earlier) to rgb values for color settings
         // convert user custom colors so that they fit the new expected format
         [
             'eye-color-iris',

@@ -152,9 +152,6 @@ export class TrackerManager {
                     this.colorAccent =
                         ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
                     await this.updateCacheTrackers(this.shape, [this.colorAccent]);
-                    this.colorMainEnabled
-                        ? this.updateTrackerIcon(this.shape, this.colorMain)
-                        : this.updateTrackerIcon(this.shape, this.colorAccent);
                 }
             ));
         }
@@ -234,24 +231,22 @@ export class TrackerManager {
 
     //#region Position updater
     updateTrackerPosition() {
-        if (this.tracker) {
-            // Get mouse coordinates
-            const [mouseX, mouseY] = global.get_pointer();
+        // Get mouse coordinates
+        const [mouseX, mouseY] = global.get_pointer();
 
-            // Offset so that the tracker is aligned with the point of the cursor
-            const newPositionX = mouseX - (this.size / 2);
-            const newPositionY = mouseY - (this.size / 2);
+        // Offset so that the tracker is aligned with the point of the cursor
+        const newPositionX = mouseX - (this.size / 2);
+        const newPositionY = mouseY - (this.size / 2);
 
-            // Only update icon position if tracker is on screen AND mouse has moved
-            if (
-                this.tracker.get_parent() &&
+        // Only update icon position if tracker is on screen AND mouse has moved
+        if (
+            this.tracker.get_parent() &&
                 (this.lastPositionX !== newPositionX || this.lastPositionY !== newPositionY)
-            ) {
-                this.tracker.set_position(newPositionX, newPositionY);
-                // Keep tracker on top of other UI elements
-                Main.uiGroup.set_child_above_sibling(this.tracker, null);
-                [this.lastPositionX, this.lastPositionY] = [newPositionX, newPositionY];
-            }
+        ) {
+            this.tracker.set_position(newPositionX, newPositionY);
+            // Keep tracker on top of other UI elements
+            Main.uiGroup.set_child_above_sibling(this.tracker, null);
+            [this.lastPositionX, this.lastPositionY] = [newPositionX, newPositionY];
         }
     }
     //#endregion
