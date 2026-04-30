@@ -12,8 +12,6 @@ import Shell from 'gi://Shell';
 import St from 'gi://St';
 
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-
-import * as Timeout from './timeoutUtils.js';
 //#endregion
 
 //#region Constants
@@ -82,10 +80,10 @@ export class TrackerManager {
         this.mouseListener = null;
         this.activeClick = null;
         this.clickResetPending = false;
-        this.clickMaxTimeout = new Timeout.Timeout();
-        this.clickReleaseTimeout = new Timeout.Timeout();
-        this.trackerPositionUpdater = new Timeout.Timeout();
-        this.trackerRaiseTimeout = new Timeout.Timeout();
+        this.clickMaxTimeout = null;
+        this.clickReleaseTimeout = null;
+        this.trackerPositionUpdater = null;
+        this.trackerRaiseTimeout = null;
 
         // Initialize settings values
         this.shape = this.settings.get_string('tracker-shape');
@@ -260,7 +258,7 @@ export class TrackerManager {
         this.enabled = true;
 
         // Start Updater
-        this.trackerPositionUpdater = Timeout.setInterval(
+        this.trackerPositionUpdater = setInterval(
             this.updateTrackerPosition.bind(this),
             1000 / this.refreshRate
         );
@@ -292,7 +290,7 @@ export class TrackerManager {
             this.clickMaxTimeout,
             this.clickReleaseTimeout,
             this.trackerRaiseTimeout,
-        ].forEach((timeout) => Timeout.clearTimeout(timeout));
+        ].forEach((timeout) => clearTimeout(timeout));
 
         // Disconnect mouse click events
         if (this.capturedEvent) {
@@ -311,7 +309,7 @@ export class TrackerManager {
         this.tracker.gicon = null;
 
         // Stop updating the tracker position
-        Timeout.clearInterval(this.trackerPositionUpdater);
+        clearInterval(this.trackerPositionUpdater);
     }
     //#endregion
 
@@ -368,15 +366,15 @@ export class TrackerManager {
         this.updateTrackerIcon(this.shape, color);
 
         // Move the tracker on top of any new UI element that appears after click
-        Timeout.clearTimeout(this.trackerRaiseTimeout);
-        this.trackerRaiseTimeout = Timeout.setTimeout(
+        clearTimeout(this.trackerRaiseTimeout);
+        this.trackerRaiseTimeout = setTimeout(
             () => Main.uiGroup.set_child_above_sibling(this.tracker, null),
             TRACKER_RAISE_DELAY
         );
 
         // Set a maximum timeout to revert the color
-        Timeout.clearTimeout(this.clickMaxTimeout);
-        this.clickMaxTimeout = Timeout.setTimeout(this.resetColor.bind(this), CLICK_MAX_DEBOUNCE);
+        clearTimeout(this.clickMaxTimeout);
+        this.clickMaxTimeout = setTimeout(this.resetColor.bind(this), CLICK_MAX_DEBOUNCE);
 
         // Create an animated icon
         const colorTag = color.replace(/[^\d,]/g, '');
@@ -416,8 +414,8 @@ export class TrackerManager {
 
     handleClickRelease(button) {
         // Debounce the release event
-        Timeout.clearTimeout(this.clickReleaseTimeout);
-        this.clickReleaseTimeout = Timeout.setTimeout(
+        clearTimeout(this.clickReleaseTimeout);
+        this.clickReleaseTimeout = setTimeout(
             () => {
                 // Only reset if no new click event has occurred in the meantime
                 if (this.activeClick === button && this.clickResetPending)
@@ -437,7 +435,7 @@ export class TrackerManager {
         this.clickResetPending = false;
 
         // Clear timeout
-        Timeout.clearTimeout(this.clickMaxTimeout);
+        clearTimeout(this.clickMaxTimeout);
     }
     //#endregion
     //#endregion
@@ -501,8 +499,8 @@ export class TrackerManager {
         // If the position updater is currently running, stop it and start a new one with
         // the updated refresh rate
         if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdater._id) {
-            Timeout.clearInterval(this.trackerPositionUpdater);
-            this.trackerPositionUpdater = Timeout.setInterval(
+            clearInterval(this.trackerPositionUpdater);
+            this.trackerPositionUpdater = setInterval(
                 this.updateTrackerPosition.bind(this),
                 1000 / newRefreshRate
             );

@@ -12,8 +12,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 
-import * as EyeRenderer from './eyeRenderer.js';
-import * as Timeout from './timeoutUtils.js';
+import {drawEye} from './eyeRenderer.js';
 //#endregion
 
 //#region Constants
@@ -71,9 +70,9 @@ class Eye extends PanelMenu.Button {
         this.mousePositionY = 0;
         this.eyelidLevel = 0;
         this.blinking = false;
-        this.blinkTimeout = new Timeout.Timeout();
-        this.randomBlinkTimeout = new Timeout.Timeout();
-        this.eyeRedrawInterval = new Timeout.Timeout();
+        this.eyelidLevelInterval = null;
+        this.randomBlinkTimeout = null;
+        this.eyeRedrawInterval = null;
 
         // Initialize settings values
         this.reactive = this.settings.get_boolean('eye-reactive');
@@ -130,7 +129,7 @@ class Eye extends PanelMenu.Button {
         this.repaintHandler = this.area.connect('repaint', this.onRepaint.bind(this));
 
         // Start periodic redraw
-        this.eyeRedrawInterval = Timeout.setInterval(
+        this.eyeRedrawInterval = setInterval(
             this.updateEyeFrame.bind(this),
             1000 / this.refreshRate
         );
@@ -209,7 +208,7 @@ class Eye extends PanelMenu.Button {
             sceleraColor,
             shape: this.shape,
         };
-        EyeRenderer.drawEye(area, options);
+        drawEye(area, options);
     }
     //#endregion
 
@@ -263,8 +262,8 @@ class Eye extends PanelMenu.Button {
 
         // Update refresh rate
         if (this.refreshRate !== newRefreshRate) {
-            Timeout.clearInterval(this.eyeRedrawInterval);
-            this.eyeRedrawInterval = Timeout.setInterval(
+            clearInterval(this.eyeRedrawInterval);
+            this.eyeRedrawInterval = setInterval(
                 this.updateEyeFrame.bind(this),
                 1000 / newRefreshRate
             );
@@ -284,7 +283,7 @@ class Eye extends PanelMenu.Button {
         this.area.disconnect(this.repaintHandler);
 
         // Stop periodic redraw
-        Timeout.clearInterval(this.eyeRedrawInterval);
+        clearInterval(this.eyeRedrawInterval);
 
         // Destroy drawing
         this.area.destroy();

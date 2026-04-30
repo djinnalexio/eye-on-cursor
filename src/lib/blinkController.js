@@ -8,8 +8,6 @@ import Shell from 'gi://Shell';
 
 import {gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-
-import * as Timeout from './timeoutUtils.js';
 //#endregion
 
 const BLINK_DURATION = 250; // TODO turn blink duration into a setting 0.2-2s
@@ -30,9 +28,9 @@ export class BlinkController {
         this.eyeArray = eyeArray;
 
         // Initialize state variables
-        this.blinkAllTimeout = new Timeout.Timeout();
-        this.syncedRoutine = new Timeout.Timeout();
-        this.unsyncedDebounce = new Timeout.Timeout();
+        this.eyelidLevelIntervalAll = null;
+        this.syncedRoutine = null;
+        this.unsyncedDebounce = null;
 
         // Initialize settings values
         this.blinkMode = this.settings.get_string('eye-blink-mode');
@@ -74,7 +72,7 @@ export class BlinkController {
                 this.settings.connect(`changed::${key}`, () => {
                     if (this.blinkMode === 'unsynced') {
                         // Debounce reset so that the eye array gets updated first
-                        this.unsyncedDebounce = Timeout.setTimeout(
+                        this.unsyncedDebounce = setTimeout(
                             () => {
                                 this.stopUnsyncedBlink();
                                 this.startUnsyncedBlink();
@@ -108,12 +106,12 @@ export class BlinkController {
         const blinkInterval = 1000 / refreshRate;
         const totalFrames = Math.ceil(refreshRate * (BLINK_DURATION / 1000));
         const halfFrames = totalFrames / 2;
-        Timeout.clearInterval(this.blinkAllTimeout);
+        clearInterval(this.eyelidLevelIntervalAll);
 
         this.eyeArray.forEach((eye) => (eye.blinking = true));
 
         let currentFrame = 0;
-        this.blinkAllTimeout = Timeout.setInterval(() => {
+        this.eyelidLevelIntervalAll = setInterval(() => {
             // Increment frame
             currentFrame++;
 
@@ -131,7 +129,7 @@ export class BlinkController {
                     eye.eyelidLevel = 0;
                     eye.blinking = false;
                 });
-                Timeout.clearInterval(this.blinkAllTimeout);
+                clearInterval(this.eyelidLevelIntervalAll);
             }
         }, blinkInterval);
     }
@@ -142,12 +140,12 @@ export class BlinkController {
         const totalFrames = Math.ceil(refreshRate * (BLINK_DURATION / 1000));
         const halfFrames = totalFrames / 2;
 
-        Timeout.clearInterval(eye.blinkTimeout);
+        clearInterval(eye.eyelidLevelInterval); // Interrupt current blink
 
         eye.blinking = true;
 
         let currentFrame = 0;
-        eye.blinkTimeout = Timeout.setInterval(() => {
+        eye.eyelidLevelInterval = setInterval(() => {
             // Increment frame
             currentFrame++;
 
@@ -163,7 +161,7 @@ export class BlinkController {
             if (currentFrame > totalFrames) {
                 eye.eyelidLevel = 0;
                 eye.blinking = false;
-                Timeout.clearInterval(eye.blinkTimeout);
+                clearInterval(eye.eyelidLevelInterval);
             }
         }, blinkInterval);
     }
@@ -174,7 +172,7 @@ export class BlinkController {
             this.blinkIntervalRange[0] +
             ((this.blinkIntervalRange[1] - this.blinkIntervalRange[0]) * Math.random());
 
-        eye.randomBlinkTimeout = Timeout.setTimeout(
+        eye.randomBlinkTimeout = setTimeout(
             () => {
                 this.blinkSingle(eye);
                 this.scheduleNextBlink(eye);
@@ -204,14 +202,14 @@ export class BlinkController {
 
     //#region Synced
     startSyncedBlink() {
-        this.syncedRoutine = Timeout.setInterval(
+        this.syncedRoutine = setInterval(
             this.blinkAll.bind(this),
             1000 * this.blinkInterval
         );
     }
 
     stopSyncedBlink() {
-        Timeout.clearInterval(this.syncedRoutine);
+        clearInterval(this.syncedRoutine);
     }
     //#endregion
 
@@ -221,7 +219,7 @@ export class BlinkController {
     }
 
     stopUnsyncedBlink() {
-        this.eyeArray.forEach((eye) => Timeout.clearTimeout(eye.randomBlinkTimeout));
+        this.eyeArray.forEach((eye) => clearTimeout(eye.randomBlinkTimeout));
     }
     //#endregion
     //#endregion
@@ -231,8 +229,8 @@ export class BlinkController {
         // Clear any remaining timeouts
         this.stopSyncedBlink();
         this.stopUnsyncedBlink();
-        Timeout.clearInterval(this.blinkAllTimeout);
-        Timeout.clearTimeout(this.unsyncedDebounce);
+        clearInterval(this.eyelidLevelIntervalAll);
+        clearTimeout(this.unsyncedDebounce);
 
         // Disconnect settings signal handlers
         this.settingsHandlers.forEach((connection) => this.settings.disconnect(connection));
