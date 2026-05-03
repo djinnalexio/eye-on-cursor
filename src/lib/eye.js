@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //#region Imports
+import Cogl from 'gi://Cogl';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
@@ -16,19 +17,6 @@ import {drawEye} from './eyeRenderer.js';
 //#endregion
 
 //#region Constants
-// See https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.3/css-variables.html#accent-colors
-const ACCENT_COLORS = {
-    blue: 'rgb(53,132,228)', // '#3584e4'
-    teal: 'rgb(33,144,164)', // '#2190a4'
-    green: 'rgb(58,148,74)', // '#3a944a'
-    yellow: 'rgb(200,136,0)', // '#c88800'
-    orange: 'rgb(237,91,0)', // '#ed5b00'
-    red: 'rgb(230,45,66)', // '#e62d42'
-    pink: 'rgb(213,97,153)', // '#d56199'
-    purple: 'rgb(145,65,172)', // '#9141ac'
-    slate: 'rgb(111,131,150)', // '#6f8396'
-};
-const ACCENT_COLORS_KEY = 'accent-color';
 const EYE_SETTINGS = [
     'eye-reactive',
     'eye-shape',
@@ -40,7 +28,7 @@ const EYE_SETTINGS = [
     'eye-refresh-rate',
     'eye-color-eyelid',
 ];
-const PUPIL_COLOR = 'rgb(0,0,0)';
+const [,PUPIL_COLOR] = Cogl.Color.from_string('rgb(0, 0, 0)');
 //#endregion
 
 /**
@@ -59,7 +47,7 @@ class Eye extends PanelMenu.Button {
 
         // Check if accent color variable exists (GNOME 47+)
         this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-        this.hasAccentColor = this.interfaceSettings.list_keys().includes(ACCENT_COLORS_KEY);
+        this.hasAccentColor = this.interfaceSettings.list_keys().includes('accent-color');
 
         // Attach mouse tracker
         this.mouseTracker = trackerManager;
@@ -82,9 +70,9 @@ class Eye extends PanelMenu.Button {
         this.width = this.settings.get_int('eye-width');
         this.irisColorEnabled =
             this.hasAccentColor ? this.settings.get_boolean('eye-color-iris-enabled') : true;
-        this.irisColor = this.settings.get_string('eye-color-iris');
+        [,this.irisColor] = Cogl.Color.from_string(this.settings.get_string('eye-color-iris'));
         this.refreshRate = this.settings.get_int('eye-refresh-rate');
-        this.eyelidColor = this.settings.get_string('eye-color-eyelid');
+        [,this.eyelidColor] = Cogl.Color.from_string(this.settings.get_string('eye-color-eyelid'));
         // TODO use foreground color as default eyelid to match it with contour
 
         // Connect change in settings to update method
@@ -94,12 +82,12 @@ class Eye extends PanelMenu.Button {
 
         // Use desktop accent color as default eye color (GNOME 47+)
         if (this.hasAccentColor) {
-            this.accentColor = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
-            this.settingsHandlers.push(this.interfaceSettings.connect(
-                `changed::${ACCENT_COLORS_KEY}`,
+            const context = St.ThemeContext.get_for_stage(global.stage);
+            [this.accentColor] = context.get_accent_color();
+            this.settingsHandlers.push(context.connectObject(
+                'changed',
                 () => {
-                    this.accentColor =
-                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                    [this.accentColor] = context.get_accent_color();
                     this.area.queue_repaint();
                 }
             ));
@@ -180,17 +168,12 @@ class Eye extends PanelMenu.Button {
 
         // Use foreground color from the theme for the white of the eye
         const themeNode = this.area.get_theme_node();
-        const sceleraColor = `rgb(${[
-            'red',
-            'green',
-            'blue',
-        ].map((color) =>
-            themeNode.get_foreground_color()[color]).join()})`;
+        const sceleraColor = themeNode.get_foreground_color();
 
         // Get iris color
         let irisColor;
         if (this.mouseTracker.enabled)
-            irisColor = this.trackerColor;
+            [,irisColor] = Cogl.Color.from_string(this.trackerColor);
         else if (this.irisColorEnabled)
             irisColor = this.irisColor;
         else
@@ -221,9 +204,11 @@ class Eye extends PanelMenu.Button {
         const newWidth = this.settings.get_int('eye-width');
         const newIrisColorEnabled =
             this.hasAccentColor ? this.settings.get_boolean('eye-color-iris-enabled') : true;
-        const newIrisColor = this.settings.get_string('eye-color-iris');
+        const [,newIrisColor] =
+            Cogl.Color.from_string(this.settings.get_string('eye-color-iris'));
         const newRefreshRate = this.settings.get_int('eye-refresh-rate');
-        const newEyelidColor = this.settings.get_string('eye-color-eyelid');
+        const [,newEyelidColor] =
+            Cogl.Color.from_string(this.settings.get_string('eye-color-eyelid'));
 
         // Update reactive property
         if (this.reactive !== newReactive)
@@ -254,7 +239,7 @@ class Eye extends PanelMenu.Button {
         }
 
         // Update iris color
-        if (this.irisColorEnabled !== newIrisColorEnabled || this.irisColor !== newIrisColor) {
+        if (this.irisColorEnabled !== newIrisColorEnabled || !this.irisColor.equal(newIrisColor)) {
             this.irisColorEnabled = newIrisColorEnabled;
             this.irisColor = newIrisColor;
             this.area.queue_repaint();
@@ -270,7 +255,7 @@ class Eye extends PanelMenu.Button {
             this.refreshRate = newRefreshRate;
         }
 
-        if (this.eyelidColor !== newEyelidColor) {
+        if (!this.eyelidColor.equal(newEyelidColor)) {
             this.eyelidColor = newEyelidColor;
             this.area.queue_repaint();
         }

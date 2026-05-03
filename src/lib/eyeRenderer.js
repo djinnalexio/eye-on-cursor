@@ -251,15 +251,10 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
  * Sets the color of the Cairo context using an RGB color value.
  *
  * @param {cairo.Context} cr - The Cairo graphics context where the color will be applied.
- * @param {string} color - The RGB color value.
+ * @param {string} color - The `Cogl.Color` object.
  */
 function setColor(cr, color) {
-    const [
-        r,
-        g,
-        b,
-    ] = color.replace(/[^\d,]/g, '').split(',').map((value) => value / 255.0);
-
-    cr.setSourceRGB(r, g, b);
+    // Cr.setSourceRGB(color['red'], color['green'], color['blue']);
+    cr.setSourceRGB(color.get_red(), color.get_green(), color.get_blue());
 }
 //#endregion

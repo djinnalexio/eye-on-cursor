@@ -15,19 +15,6 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 //#endregion
 
 //#region Constants
-// See https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.3/css-variables.html#accent-colors
-const ACCENT_COLORS = {
-    blue: 'rgb(53,132,228)', // '#3584e4'
-    teal: 'rgb(33,144,164)', // '#2190a4'
-    green: 'rgb(58,148,74)', // '#3a944a'
-    yellow: 'rgb(200,136,0)', // '#c88800'
-    orange: 'rgb(237,91,0)', // '#ed5b00'
-    red: 'rgb(230,45,66)', // '#e62d42'
-    pink: 'rgb(213,97,153)', // '#d56199'
-    purple: 'rgb(145,65,172)', // '#9141ac'
-    slate: 'rgb(111,131,150)', // '#6f8396'
-};
-const ACCENT_COLORS_KEY = 'accent-color';
 const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
 const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
 const CLICK_MAX_DEBOUNCE = 5000; // Max highlighting duration after receiving BUTTON PRESSED signal
@@ -69,7 +56,7 @@ export class TrackerManager {
 
         // Check if accent color variable exists (GNOME 47+)
         this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-        this.hasAccentColor = this.interfaceSettings.list_keys().includes(ACCENT_COLORS_KEY);
+        this.hasAccentColor = this.interfaceSettings.list_keys().includes('accent-color');
 
         // Initialize state variables
         this.enabled = false;
@@ -137,19 +124,24 @@ export class TrackerManager {
 
         // Use desktop accent color as default tracker color (GNOME 47+)
         if (this.hasAccentColor) {
-            this.colorAccent = ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+            const context = St.ThemeContext.get_for_stage(global.stage);
+            const [color] = context.get_accent_color(); // Cogl.Color object
+            this.colorAccent = `rgb(${color['red']}, ${color['green']}, ${color['blue']})`;
             this.updateCacheTrackers(this.shape, [this.colorAccent])
             .catch((e) => {
                 throw new Error(`Failed to create cache tracker for accent color: ${e.message}`);
             });
 
             // Connect change in accent color to tracker redraw
-            this.settingsHandlers.push(this.interfaceSettings.connect(
-                `changed::${ACCENT_COLORS_KEY}`,
+            this.settingsHandlers.push(context.connectObject(
+                'changed',
                 async () => {
-                    this.colorAccent =
-                        ACCENT_COLORS[this.interfaceSettings.get_string(ACCENT_COLORS_KEY)];
+                    const [color] = context.get_accent_color();
+                    this.colorAccent = `rgb(${color['red']}, ${color['green']}, ${color['blue']})`;
                     await this.updateCacheTrackers(this.shape, [this.colorAccent]);
+                    this.colorMainEnabled
+                        ? this.updateTrackerIcon(this.shape, this.colorMain)
+                        : this.updateTrackerIcon(this.shape, this.colorAccent);
                 }
             ));
         }
