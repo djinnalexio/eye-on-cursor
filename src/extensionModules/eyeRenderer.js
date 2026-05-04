@@ -251,10 +251,9 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
  * Sets the color of the Cairo context using an RGB color value.
  *
  * @param {cairo.Context} cr - The Cairo graphics context where the color will be applied.
- * @param {string} color - The `Cogl.Color` object.
+ * @param {string} color - The `Gdk.RGBA` object.
  */
 function setColor(cr, color) {
-    // Cr.setSourceRGB(color['red'], color['green'], color['blue']);
-    cr.setSourceRGB(color.get_red(), color.get_green(), color.get_blue());
+    cr.setSourceRGB(color['red'], color['green'], color['blue']);
 }
 //#endregion

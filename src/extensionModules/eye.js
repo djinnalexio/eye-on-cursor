@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //#region Imports
-import Cogl from 'gi://Cogl';
+import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
@@ -28,7 +28,8 @@ const EYE_SETTINGS = [
     'eye-refresh-rate',
     'eye-color-eyelid',
 ];
-const [,PUPIL_COLOR] = Cogl.Color.from_string('rgb(0, 0, 0)');
+const PUPIL_COLOR = new Gdk.RGBA();
+PUPIL_COLOR.parse('rgb(0, 0, 0)');
 //#endregion
 
 /**
@@ -70,9 +71,11 @@ class Eye extends PanelMenu.Button {
         this.width = this.settings.get_int('eye-width');
         this.irisColorEnabled =
             this.hasAccentColor ? this.settings.get_boolean('eye-color-iris-enabled') : true;
-        [,this.irisColor] = Cogl.Color.from_string(this.settings.get_string('eye-color-iris'));
+        this.irisColor = new Gdk.RGBA();
+        this.irisColor.parse(this.settings.get_string('eye-color-iris'));
         this.refreshRate = this.settings.get_int('eye-refresh-rate');
-        [,this.eyelidColor] = Cogl.Color.from_string(this.settings.get_string('eye-color-eyelid'));
+        this.eyelidColor = new Gdk.RGBA();
+        this.eyelidColor.parse(this.settings.get_string('eye-color-eyelid'));
         // TODO use foreground color as default eyelid to match it with contour
 
         // Connect change in settings to update method
@@ -83,11 +86,21 @@ class Eye extends PanelMenu.Button {
         // Use desktop accent color as default eye color (GNOME 47+)
         if (this.hasAccentColor) {
             const context = St.ThemeContext.get_for_stage(global.stage);
-            [this.accentColor] = context.get_accent_color();
+            const [accentColorObject] = context.get_accent_color();
+            this.accentColor = new Gdk.RGBA({ // From Cogl.Color object to Gdk.RGBA object
+                red: accentColorObject.get_red(),
+                green: accentColorObject.get_green(),
+                blue: accentColorObject.get_blue(),
+            });
             this.settingsHandlers.push(context.connectObject(
                 'changed',
                 () => {
-                    [this.accentColor] = context.get_accent_color();
+                    const [accentColorObject] = context.get_accent_color();
+                    this.accentColor = new Gdk.RGBA({ // From Cogl.Color object to Gdk.RGBA object
+                        red: accentColorObject.get_red(),
+                        green: accentColorObject.get_green(),
+                        blue: accentColorObject.get_blue(),
+                    });
                     this.area.queue_repaint();
                 }
             ));
@@ -172,12 +185,14 @@ class Eye extends PanelMenu.Button {
 
         // Get iris color
         let irisColor;
-        if (this.mouseTracker.enabled)
-            [,irisColor] = Cogl.Color.from_string(this.trackerColor);
-        else if (this.irisColorEnabled)
+        if (this.mouseTracker.enabled) {
+            irisColor = new Gdk.RGBA();
+            irisColor.parse(this.trackerColor);
+        } else if (this.irisColorEnabled) {
             irisColor = this.irisColor;
-        else
+        } else {
             irisColor = this.accentColor;
+        }
 
         const options = {
             originX,
@@ -204,11 +219,11 @@ class Eye extends PanelMenu.Button {
         const newWidth = this.settings.get_int('eye-width');
         const newIrisColorEnabled =
             this.hasAccentColor ? this.settings.get_boolean('eye-color-iris-enabled') : true;
-        const [,newIrisColor] =
-            Cogl.Color.from_string(this.settings.get_string('eye-color-iris'));
+        const newIrisColor = new Gdk.RGBA();
+        newIrisColor.parse(this.settings.get_string('eye-color-iris'));
         const newRefreshRate = this.settings.get_int('eye-refresh-rate');
-        const [,newEyelidColor] =
-            Cogl.Color.from_string(this.settings.get_string('eye-color-eyelid'));
+        const newEyelidColor = new Gdk.RGBA();
+        newEyelidColor.parse(this.settings.get_string('eye-color-eyelid'));
 
         // Update reactive property
         if (this.reactive !== newReactive)
