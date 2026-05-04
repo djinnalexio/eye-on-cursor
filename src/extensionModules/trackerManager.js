@@ -47,10 +47,10 @@ export class TrackerManager {
     constructor(extension) {
         // Get extension object properties
         this.gettextDomain = extension.metadata['gettext-domain'];
-        this.glyphsDir = GLib.build_filenamev([
+        this.trackersDir = GLib.build_filenamev([
             extension.path,
-            'media',
-            'glyphs',
+            'assets',
+            'trackers',
         ]);
         this.settings = extension.getSettings();
 
@@ -178,7 +178,7 @@ export class TrackerManager {
             const cacheIcon = Gio.File.new_for_path(cacheIconPath);
             try {
                 // Get template shape
-                const templatePath = GLib.build_filenamev([this.glyphsDir, `${shape}.svg`]);
+                const templatePath = GLib.build_filenamev([this.trackersDir, `${shape}.svg`]);
                 const template = Gio.File.new_for_path(templatePath);
 
                 // Load contents of the template

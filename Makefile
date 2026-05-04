@@ -10,8 +10,8 @@ VERSION = 2.3.1.dev
 
 pack:
 	# Packing extension into ./$(PACK_NAME)...
-	gnome-extensions pack ./src -f --extra-source="lib" \
-		--extra-source="media" --extra-source="settings"
+	gnome-extensions pack ./src -f --extra-source="extensionModules" \
+		--extra-source="assets" --extra-source="prefsModules"
 
 install: pack
 	# Installing extension...

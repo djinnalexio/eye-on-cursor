@@ -14,7 +14,7 @@
   </a>
 </p>
 <p align="center">
-  <img alt="logo" height="100" src="./src/media/eye-on-cursor-logo.svg">
+  <img alt="logo" height="100" src="./src/assets/eye-on-cursor-logo.svg">
 </p>
 <h3 align="center">Let your desktop "keep an eye" on your mouse!</h3>
 
@@ -26,18 +26,18 @@ clicks, makes it easier than ever to monitor your mouse movements, ensuring your
 the attention it needs.
 
 <p align="center">
-<img alt="" height="300" src="assets/tracking.gif">
+<img alt="" height="300" src="images/tracking.gif">
 </p>
 <p align="center">
-<img alt="" height="300" src="assets/biblicallyAccurate.png">
+<img alt="" height="300" src="images/biblicallyAccurate.png">
 </p>
 <p align="center">
-<img alt="" height="200" src="assets/tracker.png">
-<img alt="" height="200" src="assets/comic.png">
+<img alt="" height="200" src="images/tracker.png">
+<img alt="" height="200" src="images/comic.png">
 </p>
 <p align="center">
-<img alt="" height="200" src="assets/blueEyes.png">
-<img alt="" height="200" src="assets/round.png">
+<img alt="" height="200" src="images/blueEyes.png">
+<img alt="" height="200" src="images/round.png">
 </p>
 
 ## Features
@@ -51,7 +51,7 @@ the attention it needs.
 
 ### From the GNOME Extensions Website (recommended)
 
-[<img alt="EGO page" height="100" src="assets/get-it-on-ego.svg">](https://extensions.gnome.org/extension/7036/eye-on-cursor/)
+[<img alt="EGO page" height="100" src="images/get-it-on-ego.svg">](https://extensions.gnome.org/extension/7036/eye-on-cursor/)
 
 ### From GitHub
 
