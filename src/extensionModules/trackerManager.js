@@ -189,7 +189,7 @@ export class TrackerManager {
                 let decodedContents = decoder.decode(contents);
 
                 // Replace color in SVG contents
-                decodedContents = decodedContents.replace('#000000', color);
+                decodedContents = decodedContents.replace('#000', color);
 
                 // Encode SVG contents back into bytes
                 const encoder = new TextEncoder();

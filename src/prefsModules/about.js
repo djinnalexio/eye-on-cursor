@@ -37,8 +37,10 @@ const releaseNotes =
     </ul>\
     <p>Fixes &amp; Improvements:</p>\
     <ul>\
-        <li>fixed tracker briefly appearing at out-of-date location when being re-enabled</li>\
-        <li>increased max blink interval to one hour</li>\
+    <li>fixed tracker briefly appearing at out-of-date location when being re-enabled</li>\
+    <li>increased max blink interval to one hour</li>\
+    <li>changed color setting format</li>\
+    <li>optimized tracker icons</li>\
     </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
