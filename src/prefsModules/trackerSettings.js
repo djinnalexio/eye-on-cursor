@@ -266,9 +266,9 @@ class TrackerPage extends Adw.PreferencesPage {
         //#endregion
 
         //#region Tracker refresh rate
-        const refreshRow = new Adw.SpinRow({
-            title: _('Refresh Rate'),
-            subtitle: _('Hz'),
+        const refreshRow = new Adw.SpinRow({// TODO doesn't seem to actually affect refresh rate
+            title: _('Refresh Rate (Hz)'),
+            subtitle: _('Higher refresh rates may impact performance.'),
             adjustment: new Gtk.Adjustment({
                 lower: 1,
                 upper: 144,
@@ -279,7 +279,6 @@ class TrackerPage extends Adw.PreferencesPage {
         refreshRow.adjustment.connect('value-changed', (widget) =>
             this.settings.set_int('tracker-refresh-rate', widget.value)
         );
-        refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
 
         this.updateFunctions.push(
             () => refreshRow.set_value(

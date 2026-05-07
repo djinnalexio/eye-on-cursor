@@ -41,6 +41,7 @@ const releaseNotes =
     <li>increased max blink interval to one hour</li>\
     <li>changed color setting format</li>\
     <li>optimized tracker icons</li>\
+    <li>reduced default eye refresh rate to 24 fps</li>\
     </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';

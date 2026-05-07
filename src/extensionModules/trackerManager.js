@@ -490,7 +490,7 @@ export class TrackerManager {
 
         // If the position updater is currently running, stop it and start a new one with
         // the updated refresh rate
-        if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdater._id) {
+        if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdater) {
             clearInterval(this.trackerPositionUpdater);
             this.trackerPositionUpdater = setInterval(
                 this.updateTrackerPosition.bind(this),

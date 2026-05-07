@@ -98,7 +98,7 @@
     </key>
 
     <key name='eye-refresh-rate' type='i'>
-      <default>60</default>
+      <default>24</default>
       <summary>Refresh rate of the eyes</summary>
       <description>Sets the refresh rate of the eyes.</description>
     </key>

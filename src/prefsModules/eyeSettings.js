@@ -297,8 +297,8 @@ class EyePage extends Adw.PreferencesPage {
 
         //#region Eye refresh rate
         const refreshRow = new Adw.SpinRow({
-            title: _('Refresh Rate'),
-            subtitle: _('Hz'),
+            title: _('Refresh Rate (Hz)'),
+            subtitle: _('Higher refresh rates may impact performance.'),
             adjustment: new Gtk.Adjustment({
                 lower: 1,
                 upper: 144,
@@ -309,7 +309,6 @@ class EyePage extends Adw.PreferencesPage {
         refreshRow.adjustment.connect('value-changed', (widget) =>
             this.settings.set_int('eye-refresh-rate', widget.value)
         );
-        refreshRow.set_tooltip_text(_('Higher refresh rates may impact performance.'));
 
         this.updateFunctions.push(
             () => refreshRow.set_value(
