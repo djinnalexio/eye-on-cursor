@@ -301,6 +301,9 @@ class Eye extends PanelMenu.Button {
         this.settings = null;
         this.interfaceSettings = null;
 
+        // Drop tracker
+        this.mouseTracker = null;
+
         // Destroy the button
         super.destroy();
     }
