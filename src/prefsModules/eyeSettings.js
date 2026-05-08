@@ -263,8 +263,9 @@ class EyePage extends Adw.PreferencesPage {
         const colorBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
 
         // Iris Color Toggle (GNOME 47+)
-        this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-        this.hasAccentColor = this.interfaceSettings.list_keys().includes('accent-color');
+        this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
+            .list_keys()
+            .includes('accent-color');
         if (this.hasAccentColor) {
             const irisColorToggle = new Gtk.CheckButton({
                 active: this.settings.get_boolean('eye-color-iris-enabled'),

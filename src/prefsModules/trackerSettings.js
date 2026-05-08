@@ -177,8 +177,9 @@ class TrackerPage extends Adw.PreferencesPage {
         const colorMainBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
 
         // Tracker Main Color Toggle (GNOME 47+)
-        this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
-        this.hasAccentColor = this.interfaceSettings.list_keys().includes('accent-color');
+        this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
+            .list_keys()
+            .includes('accent-color');
         if (this.hasAccentColor) {
             const trackerColorToggle = new Gtk.CheckButton({
                 active: this.settings.get_boolean('tracker-color-main-enabled'),
