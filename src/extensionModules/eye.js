@@ -49,6 +49,7 @@ class Eye extends PanelMenu.Button {
         // Check if accent color variable exists (GNOME 47+)
         this.interfaceSettings = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'});
         this.hasAccentColor = this.interfaceSettings.list_keys().includes('accent-color');
+        this.themeContext = null;
 
         // Attach mouse tracker
         this.mouseTracker = trackerManager;
@@ -85,25 +86,25 @@ class Eye extends PanelMenu.Button {
 
         // Use desktop accent color as default eye color (GNOME 47+)
         if (this.hasAccentColor) {
-            const context = St.ThemeContext.get_for_stage(global.stage);
-            const [accentColorObject] = context.get_accent_color();
+            this.themeContext = St.ThemeContext.get_for_stage(global.stage);
+            const [accent] = this.themeContext.get_accent_color();
             this.accentColor = new Gdk.RGBA({ // From Cogl.Color object to Gdk.RGBA object
-                red: accentColorObject.get_red(),
-                green: accentColorObject.get_green(),
-                blue: accentColorObject.get_blue(),
+                red: accent.get_red(),
+                green: accent.get_green(),
+                blue: accent.get_blue(),
             });
-            this.settingsHandlers.push(context.connectObject(
+            this.themeContext.connectObject(
                 'changed',
                 () => {
-                    const [accentColorObject] = context.get_accent_color();
+                    const [accent] = this.themeContext.get_accent_color();
                     this.accentColor = new Gdk.RGBA({ // From Cogl.Color object to Gdk.RGBA object
-                        red: accentColorObject.get_red(),
-                        green: accentColorObject.get_green(),
-                        blue: accentColorObject.get_blue(),
+                        red: accent.get_red(),
+                        green: accent.get_green(),
+                        blue: accent.get_blue(),
                     });
                     this.area.queue_repaint();
                 }
-            ));
+            );
         }
 
         // Add popups
@@ -292,10 +293,14 @@ class Eye extends PanelMenu.Button {
         // Disconnect settings signal handlers
         this.settingsHandlers.forEach((connection) => this.settings.disconnect(connection));
         this.settingsHandlers = null;
+        if (this.hasAccentColor) {
+            this.themeContext.disconnectObject(this);
+            this.themeContext = null;
+        }
 
         // Destroy popups
         this.menuItems.forEach((menuItem) => menuItem.destroy());
-        this.menuItems = [];
+        this.menuItems.length = 0;
 
         // Drop settings objects
         this.settings = null;
@@ -344,6 +349,6 @@ export function spawnEyes(extension, eyeArray, trackerManager) {
  */
 export function destroyEyes(eyeArray) {
     eyeArray?.forEach((eye) => eye.destroy());
-    eyeArray.length = 0; // Or eyeArray = [];
+    eyeArray.length = 0;
 }
 //#endregion
