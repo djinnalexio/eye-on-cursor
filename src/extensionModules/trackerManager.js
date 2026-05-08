@@ -76,7 +76,7 @@ export class TrackerManager {
         // Initialize settings values
         this.shape = this.settings.get_string('tracker-shape');
         this.size = this.settings.get_int('tracker-size');
-        this.colorMainEnabled = this.hasAccentColor
+        this.colorCustomEnabled = this.hasAccentColor
             ? this.settings.get_boolean('tracker-color-main-enabled')
             : true;
         this.colorMain = this.settings.get_string('tracker-color-main');
@@ -140,14 +140,14 @@ export class TrackerManager {
                     const [color] = context.get_accent_color();
                     this.colorAccent = `rgb(${color['red']}, ${color['green']}, ${color['blue']})`;
                     await this.updateCacheTrackers(this.shape, [this.colorAccent]);
-                    this.colorMainEnabled
+                    this.colorCustomEnabled
                         ? this.updateTrackerIcon(this.shape, this.colorMain)
                         : this.updateTrackerIcon(this.shape, this.colorAccent);
                 }
             ));
         }
 
-        this.colorMainEnabled
+        this.colorCustomEnabled
             ? this.currentColor = this.colorMain
             : this.currentColor = this.colorAccent;
 
@@ -259,7 +259,7 @@ export class TrackerManager {
         // Add tracker to desktop
         Main.uiGroup.add_child(this.tracker);
         this.updateTrackerPosition(); // Needs tracker to be part of uiGroup
-        this.colorMainEnabled
+        this.colorCustomEnabled
             ? this.updateTrackerIcon(this.shape, this.colorMain)
             : this.updateTrackerIcon(this.shape, this.colorAccent);
 
@@ -421,7 +421,7 @@ export class TrackerManager {
 
     resetColor() {
         // Reset the tracker icon to the main color
-        this.colorMainEnabled
+        this.colorCustomEnabled
             ? this.updateTrackerIcon(this.shape, this.colorMain)
             : this.updateTrackerIcon(this.shape, this.colorAccent);
         this.activeClick = null;
@@ -438,7 +438,7 @@ export class TrackerManager {
         // Get new settings
         const newShape = this.settings.get_string('tracker-shape');
         const newSize = this.settings.get_int('tracker-size');
-        const newColorMainEnabled = this.hasAccentColor
+        const newColorCustomEnabled = this.hasAccentColor
             ? this.settings.get_boolean('tracker-color-main-enabled')
             : true;
         const newColorMain = this.settings.get_string('tracker-color-main');
@@ -451,7 +451,7 @@ export class TrackerManager {
         // Update tracker if shape or any color has changed
         if (
             this.shape !== newShape ||
-            this.colorMainEnabled !== newColorMainEnabled ||
+            this.colorCustomEnabled !== newColorCustomEnabled ||
             this.colorMain !== newColorMain ||
             this.colorLeft !== newColorLeft ||
             this.colorMiddle !== newColorMiddle ||
@@ -465,12 +465,12 @@ export class TrackerManager {
                 newColorRight,
             ]);
 
-            newColorMainEnabled
+            newColorCustomEnabled
                 ? this.updateTrackerIcon(newShape, newColorMain)
                 : this.updateTrackerIcon(newShape, this.colorAccent);
 
             this.shape = newShape;
-            this.colorMainEnabled = newColorMainEnabled;
+            this.colorCustomEnabled = newColorCustomEnabled;
             this.colorMain = newColorMain;
             this.colorLeft = newColorLeft;
             this.colorMiddle = newColorMiddle;

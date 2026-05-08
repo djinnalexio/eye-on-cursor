@@ -72,7 +72,7 @@ class Eye extends PanelMenu.Button {
         this.lineMode = this.settings.get_boolean('eye-line-mode');
         this.lineWidth = this.settings.get_int('eye-line-width') / 10;
         this.width = this.settings.get_int('eye-width');
-        this.irisColorEnabled =
+        this.irisCustomColorEnabled =
             this.hasAccentColor ? this.settings.get_boolean('eye-color-iris-enabled') : true;
         this.irisColor = new Gdk.RGBA();
         this.irisColor.parse(this.settings.get_string('eye-color-iris'));
@@ -191,7 +191,7 @@ class Eye extends PanelMenu.Button {
         if (this.mouseTracker.enabled) {
             irisColor = new Gdk.RGBA();
             irisColor.parse(this.trackerColor);
-        } else if (this.irisColorEnabled) {
+        } else if (this.irisCustomColorEnabled) {
             irisColor = this.irisColor;
         } else {
             irisColor = this.accentColor;
@@ -220,7 +220,7 @@ class Eye extends PanelMenu.Button {
         const newLineMode = this.settings.get_boolean('eye-line-mode');
         const newLineWidth = this.settings.get_int('eye-line-width');
         const newWidth = this.settings.get_int('eye-width');
-        const newIrisColorEnabled =
+        const newIrisCustomColorEnabled =
             this.hasAccentColor ? this.settings.get_boolean('eye-color-iris-enabled') : true;
         const newIrisColor = new Gdk.RGBA();
         newIrisColor.parse(this.settings.get_string('eye-color-iris'));
@@ -257,8 +257,11 @@ class Eye extends PanelMenu.Button {
         }
 
         // Update iris color
-        if (this.irisColorEnabled !== newIrisColorEnabled || !this.irisColor.equal(newIrisColor)) {
-            this.irisColorEnabled = newIrisColorEnabled;
+        if (
+            this.irisCustomColorEnabled !== newIrisCustomColorEnabled ||
+            !this.irisColor.equal(newIrisColor)
+        ) {
+            this.irisCustomColorEnabled = newIrisCustomColorEnabled;
             this.irisColor = newIrisColor;
             this.area.queue_repaint();
         }
