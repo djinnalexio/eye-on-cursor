@@ -168,19 +168,9 @@ class Eye extends PanelMenu.Button {
     // Draw method
     onRepaint(area) {
         // Get the coordinates of the eye
-        let [originX, originY] = [0, 0];
-        let obj = area;
-        while (obj) { // Loop through the hierarchy of elements to calculate absolute
-            let [tx, ty] = [0, 0];
-            try {
-                [tx, ty] = obj.get_position();
-            } catch { /* Loop safely breaks when failed */ }
-            // Accumulate the coordinates
-            originX += tx;
-            originY += ty;
-            // Switch to the parent of the current element
-            obj = obj.get_parent();
-        }
+        const [originX, originY] = area.get_transformed_position();
+        if (isNaN(originX) || isNaN(originY))
+            return; // Don't draw if the surface isn't placed yet
 
         // Use foreground color from the theme for the white of the eye
         const themeNode = this.area.get_theme_node();
