@@ -328,16 +328,18 @@ export function spawnEyes(extension, eyeArray, trackerManager) {
     // Remove current eyes
     destroyEyes(eyeArray);
 
-    if (extension.settings.get_boolean('eye-active')) {
-        for (let count = 0; count < extension.settings.get_int('eye-count'); count++) {
-            eyeArray.push(new Eye(extension, trackerManager));
-            Main.panel.addToStatusArea(
-                `${extension.metadata['gettext-domain']}-${count}`,
-                eyeArray[count],
-                extension.settings.get_int('eye-index'),
-                extension.settings.get_string('eye-position')
-            );
-        }
+    if (!extension.settings.get_boolean('eye-active'))
+        return; // Stop here if eyes are disabled
+
+    const count = extension.settings.get_int('eye-count');
+    const index = extension.settings.get_int('eye-index');
+    const position = extension.settings.get_string('eye-position');
+    const domain = extension.metadata['gettext-domain'];
+
+    for (let i = 0; i < count; i++) {
+        const eye = new Eye(extension, trackerManager);
+        Main.panel.addToStatusArea(`${domain}-${i}`, eye, index, position);
+        eyeArray.push(eye);
     }
 }
 //#endregion
