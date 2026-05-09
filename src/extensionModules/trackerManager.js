@@ -286,11 +286,9 @@ export class TrackerManager {
         this.enabled = false;
 
         // Clear timeouts
-        [
-            this.clickMaxTimeout,
-            this.clickReleaseTimeout,
-            this.trackerRaiseTimeout,
-        ].forEach((timeout) => clearTimeout(timeout));
+        this.clickMaxTimeout = clearTimeout(this.clickMaxTimeout);
+        this.clickReleaseTimeout = clearTimeout(this.clickReleaseTimeout);
+        this.trackerRaiseTimeout = clearTimeout(this.trackerRaiseTimeout);
 
         // Disconnect mouse click events
         if (this.capturedEvent) {
@@ -309,7 +307,7 @@ export class TrackerManager {
         this.tracker.gicon = null;
 
         // Stop updating the tracker position
-        clearInterval(this.trackerPositionUpdater);
+        this.trackerPositionUpdater = clearInterval(this.trackerPositionUpdater);
     }
     //#endregion
 
@@ -366,14 +364,14 @@ export class TrackerManager {
         this.updateTrackerIcon(this.shape, color);
 
         // Move the tracker on top of any new UI element that appears after click
-        clearTimeout(this.trackerRaiseTimeout);
+        this.trackerRaiseTimeout = clearTimeout(this.trackerRaiseTimeout);
         this.trackerRaiseTimeout = setTimeout(
             () => Main.uiGroup.set_child_above_sibling(this.tracker, null),
             TRACKER_RAISE_DELAY
         );
 
         // Set a maximum timeout to revert the color
-        clearTimeout(this.clickMaxTimeout);
+        this.clickMaxTimeout = clearTimeout(this.clickMaxTimeout);
         this.clickMaxTimeout = setTimeout(this.resetColor.bind(this), CLICK_MAX_DEBOUNCE);
 
         // Create an animated icon
@@ -414,7 +412,7 @@ export class TrackerManager {
 
     handleClickRelease(button) {
         // Debounce the release event
-        clearTimeout(this.clickReleaseTimeout);
+        this.clickReleaseTimeout = clearTimeout(this.clickReleaseTimeout);
         this.clickReleaseTimeout = setTimeout(
             () => {
                 // Only reset if no new click event has occurred in the meantime
@@ -435,7 +433,7 @@ export class TrackerManager {
         this.clickResetPending = false;
 
         // Clear timeout
-        clearTimeout(this.clickMaxTimeout);
+        this.clickMaxTimeout = clearTimeout(this.clickMaxTimeout);
     }
     //#endregion
     //#endregion
@@ -500,7 +498,7 @@ export class TrackerManager {
         // If the position updater is currently running, stop it and start a new one with
         // the updated refresh rate
         if (this.refreshRate !== newRefreshRate && this.trackerPositionUpdater) {
-            clearInterval(this.trackerPositionUpdater);
+            this.trackerPositionUpdater = clearInterval(this.trackerPositionUpdater);
             this.trackerPositionUpdater = setInterval(
                 this.updateTrackerPosition.bind(this),
                 1000 / newRefreshRate

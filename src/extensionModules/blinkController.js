@@ -45,7 +45,7 @@ export class BlinkController {
         this.settingsHandlers = EYE_ARRAY_SETTINGS.map((key) =>
             this.settings.connect(`changed::${key}`, () => {
             // Delay reset so that the eye array gets updated before blink routine
-                clearTimeout(this.blinkChangeDelay);
+                this.blinkChangeDelay = clearTimeout(this.blinkChangeDelay);
                 this.blinkChangeDelay = setTimeout(
                     this.startBlinkMode.bind(this),
                     BLINK_CHANGE_DELAY
@@ -146,8 +146,7 @@ export class BlinkController {
     }
 
     stopSyncedBlink() {
-        clearInterval(this.syncedRoutine);
-        this.syncedRoutine = null;
+        this.syncedRoutine = clearInterval(this.syncedRoutine);
     }
     //#endregion
 
@@ -157,7 +156,9 @@ export class BlinkController {
     }
 
     stopUnsyncedBlink() {
-        this.eyeArray.forEach((eye) => clearTimeout(eye.randomBlinkTimeout));
+        this.eyeArray.forEach((eye) => {
+            eye.randomBlinkTimeout = clearTimeout(eye.randomBlinkTimeout);
+        });
     }
     //#endregion
 
@@ -189,7 +190,7 @@ export class BlinkController {
         this.stopCurrentMode();
 
         // Clear any remaining timeouts
-        clearTimeout(this.blinkChangeDelay);
+        this.blinkChangeDelay = clearTimeout(this.blinkChangeDelay);
 
         // Disconnect settings signal handlers
         this.settingsHandlers.forEach((connection) => this.settings.disconnect(connection));

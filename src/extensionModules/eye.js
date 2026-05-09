@@ -260,7 +260,7 @@ class Eye extends PanelMenu.Button {
 
         // Update refresh rate
         if (this.refreshRate !== newRefreshRate) {
-            clearInterval(this.eyeRedrawInterval);
+            this.eyeRedrawInterval = clearInterval(this.eyeRedrawInterval);
             this.eyeRedrawInterval = setInterval(
                 this.updateEyeFrame.bind(this),
                 1000 / newRefreshRate
@@ -281,7 +281,7 @@ class Eye extends PanelMenu.Button {
         const totalFrames = Math.ceil(this.refreshRate * (BLINK_DURATION / 1000));
         const halfFrames = totalFrames / 2;
 
-        clearInterval(this.eyelidLevelInterval);
+        this.eyelidLevelInterval = clearInterval(this.eyelidLevelInterval);
         this.blinking = true;
 
         let currentFrame = 0;
@@ -298,7 +298,7 @@ class Eye extends PanelMenu.Button {
                 this.eyelidLevel = 0;
                 this.blinking = false;
                 this.area.queue_repaint(); // Ensure that blinking animation ends with eyelid completely opened
-                clearInterval(this.eyelidLevelInterval);
+                this.eyelidLevelInterval = clearInterval(this.eyelidLevelInterval);
             }
         }, blinkInterval);
     }
@@ -310,11 +310,11 @@ class Eye extends PanelMenu.Button {
         this.area.disconnect(this.repaintHandler);
 
         // Stop blinking
-        clearTimeout(this.randomBlinkTimeout);
-        clearInterval(this.eyelidLevelInterval);
+        this.randomBlinkTimeout = clearTimeout(this.randomBlinkTimeout);
+        this.eyelidLevelInterval = clearInterval(this.eyelidLevelInterval);
 
         // Stop periodic redraw
-        clearInterval(this.eyeRedrawInterval);
+        this.eyeRedrawInterval = clearInterval(this.eyeRedrawInterval);
 
         // Destroy drawing
         this.area.destroy();
