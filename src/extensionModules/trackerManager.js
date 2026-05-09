@@ -377,6 +377,8 @@ export class TrackerManager {
 
         // Create an animated icon
         const colorTag = color.replace(/[^\d,]/g, '');
+        const trackerIconPath =
+            GLib.build_filenamev([this.cacheDir, `${this.shape}_${colorTag}.svg`]);
         let animatedIcon = new St.Icon({
             x: this.tracker.x,
             y: this.tracker.y,
@@ -385,7 +387,7 @@ export class TrackerManager {
             track_hover: false,
             icon_size: this.tracker.icon_size,
             opacity: this.tracker.opacity,
-            gicon: Gio.icon_new_for_string(`${this.cacheDir}/${this.shape}_${colorTag}.svg`),
+            gicon: Gio.icon_new_for_string(trackerIconPath),
         });
 
         // Add animated icon to the UI group
