@@ -137,7 +137,9 @@ class TrackerPage extends Adw.PreferencesPage {
         shapeRow.connect('activated', () => shapeWindow.present(this));
 
         this.updateFunctions.push(() => {
-            shapeRowLabel.set_label(this.settings.get_default_value('tracker-shape').deep_unpack());
+            shapeRowLabel.set_label(
+                this.settings.get_default_value('tracker-shape').deep_unpack().replaceAll('_', ' ')
+            );
         });
 
         drawingGroup.add(shapeRow);
