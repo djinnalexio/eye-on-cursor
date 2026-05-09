@@ -76,80 +76,82 @@ function drawNaturalEye(area, options) {
 
     const cr = area.get_context();
 
-    function drawEyelidShape() {
-        cr.moveTo(-eyeRadius, 0);
-        cr.curveTo(
-            offsetX - irisRadius,
-            offsetY + (eyeRadius * TOP_LID_SCALE),
-            offsetX + irisRadius,
-            offsetY + (eyeRadius * TOP_LID_SCALE),
-            eyeRadius,
-            0
-        );
+    try {
+        function drawEyelidShape() {
+            cr.moveTo(-eyeRadius, 0);
+            cr.curveTo(
+                offsetX - irisRadius,
+                offsetY + (eyeRadius * TOP_LID_SCALE),
+                offsetX + irisRadius,
+                offsetY + (eyeRadius * TOP_LID_SCALE),
+                eyeRadius,
+                0
+            );
 
-        cr.curveTo(
-            offsetX + irisRadius,
-            offsetY - (eyeRadius * BOTTOM_LID_SCALE),
-            offsetX - irisRadius,
-            offsetY - (eyeRadius * BOTTOM_LID_SCALE),
-            -eyeRadius,
-            0
-        );
-    }
+            cr.curveTo(
+                offsetX + irisRadius,
+                offsetY - (eyeRadius * BOTTOM_LID_SCALE),
+                offsetX - irisRadius,
+                offsetY - (eyeRadius * BOTTOM_LID_SCALE),
+                -eyeRadius,
+                0
+            );
+        }
 
-    // Drawing the base of the eye
-    cr.translate(areaWidth * 0.5, areaHeight * 0.5);
-
-    setColor(cr, options.sceleraColor);
-    cr.setLineWidth(options.lineWidth);
-
-    drawEyelidShape();
-    options.lineMode ? cr.stroke() : cr.fill();
-
-    drawEyelidShape();
-    cr.clip();
-
-    // Drawing the iris
-    cr.rotate(mouseAngle);
-    cr.translate(irisX * Math.sin(eyeAngle), 0);
-    cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
-
-    setColor(cr, options.irisColor);
-    cr.setLineWidth(options.lineWidth / irisRadius);
-
-    cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
-    options.lineMode ? cr.stroke() : cr.fill();
-
-    cr.scale(1 / (irisRadius * Math.cos(eyeAngle)), 1 / irisRadius);
-    cr.translate(-irisX * Math.sin(eyeAngle), 0);
-
-    // Drawing the pupil
-    cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
-    cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
-
-    if (!options.lineMode)
-        setColor(cr, options.pupilColor);
-
-    cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
-    cr.fill();
-
-    // Drawing the eyelid
-    if (options.eyelidLevel > 0) {
-        cr.identityMatrix();
+        // Drawing the base of the eye
         cr.translate(areaWidth * 0.5, areaHeight * 0.5);
+
+        setColor(cr, options.sceleraColor);
+        cr.setLineWidth(options.lineWidth);
+
+        drawEyelidShape();
+        options.lineMode ? cr.stroke() : cr.fill();
 
         drawEyelidShape();
         cr.clip();
 
-        cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
+        // Drawing the iris
+        cr.rotate(mouseAngle);
+        cr.translate(irisX * Math.sin(eyeAngle), 0);
+        cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
 
-        setColor(cr, options.eyelidColor);
+        setColor(cr, options.irisColor);
+        cr.setLineWidth(options.lineWidth / irisRadius);
 
-        cr.rectangle(0, areaHeight * 0.2, areaWidth, eyelidHeight * options.eyelidLevel);
+        cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
+        options.lineMode ? cr.stroke() : cr.fill();
+
+        cr.scale(1 / (irisRadius * Math.cos(eyeAngle)), 1 / irisRadius);
+        cr.translate(-irisX * Math.sin(eyeAngle), 0);
+
+        // Drawing the pupil
+        cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
+        cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
+
+        if (!options.lineMode)
+            setColor(cr, options.pupilColor);
+
+        cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
         cr.fill();
-    }
 
-    cr.$dispose();
+        // Drawing the eyelid
+        if (options.eyelidLevel > 0) {
+            cr.identityMatrix();
+            cr.translate(areaWidth * 0.5, areaHeight * 0.5);
+
+            drawEyelidShape();
+            cr.clip();
+
+            cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
+
+            setColor(cr, options.eyelidColor);
+
+            cr.rectangle(0, areaHeight * 0.2, areaWidth, eyelidHeight * options.eyelidLevel);
+            cr.fill();
+        }
+    } finally {
+        cr.$dispose();
+    }
 }
 //#endregion
 
@@ -191,60 +193,62 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
 
     const cr = area.get_context();
 
+    try {
     // Drawing the base of the eye
-    cr.translate(areaWidth * 0.5, areaHeight * 0.5);
-    cr.scale(scaleX, scaleY);
-
-    setColor(cr, options.sceleraColor);
-    cr.setLineWidth(options.lineWidth);
-
-    cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
-    options.lineMode ? cr.stroke() : cr.fill();
-
-    cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
-    cr.clip();
-
-    // Drawing the iris
-    cr.rotate(mouseAngle);
-    cr.translate(irisX * Math.sin(eyeAngle), 0);
-    cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
-
-    setColor(cr, options.irisColor);
-    cr.setLineWidth(options.lineWidth / irisRadius);
-
-    cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
-    options.lineMode ? cr.stroke() : cr.fill();
-
-    cr.scale(1 / (irisRadius * Math.cos(eyeAngle)), 1 / irisRadius);
-    cr.translate(-irisX * Math.sin(eyeAngle), 0);
-
-    // Drawing the pupil
-    cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
-    cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
-
-    if (!options.lineMode)
-        setColor(cr, options.pupilColor);
-
-    cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
-    cr.fill();
-
-    // Drawing the eyelid
-    if (options.eyelidLevel > 0) {
-        cr.identityMatrix();
         cr.translate(areaWidth * 0.5, areaHeight * 0.5);
+        cr.scale(scaleX, scaleY);
+
+        setColor(cr, options.sceleraColor);
+        cr.setLineWidth(options.lineWidth);
+
+        cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
+        options.lineMode ? cr.stroke() : cr.fill();
 
         cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
         cr.clip();
 
-        cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
+        // Drawing the iris
+        cr.rotate(mouseAngle);
+        cr.translate(irisX * Math.sin(eyeAngle), 0);
+        cr.scale(irisRadius * Math.cos(eyeAngle), irisRadius);
 
-        setColor(cr, options.eyelidColor);
+        setColor(cr, options.irisColor);
+        cr.setLineWidth(options.lineWidth / irisRadius);
 
-        cr.rectangle(0, 0, areaWidth, areaHeight * options.eyelidLevel);
+        cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
+        options.lineMode ? cr.stroke() : cr.fill();
+
+        cr.scale(1 / (irisRadius * Math.cos(eyeAngle)), 1 / irisRadius);
+        cr.translate(-irisX * Math.sin(eyeAngle), 0);
+
+        // Drawing the pupil
+        cr.translate(eyeRadius * Math.sin(eyeAngle), 0);
+        cr.scale(pupilRadius * Math.cos(eyeAngle), pupilRadius);
+
+        if (!options.lineMode)
+            setColor(cr, options.pupilColor);
+
+        cr.arc(0, 0, 1.0, 0, 2 * Math.PI);
         cr.fill();
-    }
 
-    cr.$dispose();
+        // Drawing the eyelid
+        if (options.eyelidLevel > 0) {
+            cr.identityMatrix();
+            cr.translate(areaWidth * 0.5, areaHeight * 0.5);
+
+            cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
+            cr.clip();
+
+            cr.translate(-areaWidth * 0.5, -areaHeight * 0.5);
+
+            setColor(cr, options.eyelidColor);
+
+            cr.rectangle(0, 0, areaWidth, areaHeight * options.eyelidLevel);
+            cr.fill();
+        }
+    } finally {
+        cr.$dispose();
+    }
 }
 //#endregion
 
