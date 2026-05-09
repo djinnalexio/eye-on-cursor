@@ -29,6 +29,9 @@ class TrackerPage extends Adw.PreferencesPage {
         });
 
         this.settings = extension.getSettings();
+        this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
+            .list_keys()
+            .includes('accent-color');
         this.updateFunctions = [];
 
         //#region Tracker drawing group
@@ -183,9 +186,6 @@ class TrackerPage extends Adw.PreferencesPage {
         const colorMainBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
 
         // Tracker Main Color Toggle (GNOME 47+)
-        this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
-            .list_keys()
-            .includes('accent-color');
         if (this.hasAccentColor) {
             const trackerColorToggle = new Gtk.CheckButton({
                 active: this.settings.get_boolean('tracker-color-main-enabled'),

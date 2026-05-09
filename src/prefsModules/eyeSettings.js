@@ -27,6 +27,9 @@ class EyePage extends Adw.PreferencesPage {
         });
 
         this.settings = extension.getSettings();
+        this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
+            .list_keys()
+            .includes('accent-color');
         this.updateFunctions = [];
 
         //#region Eye placement group
