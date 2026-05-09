@@ -18,8 +18,8 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 const CACHE_DIR_PERMISSIONS = 0o755; // 'rwx' permissions for user, 'r_x' for group and others
 const CLICK_MIN_DEBOUNCE = 100; // Min highlighting duration after receiving BUTTON RELEASED signal
 const CLICK_MAX_DEBOUNCE = 5000; // Max highlighting duration after receiving BUTTON PRESSED signal
-const CLICK_RIPPLE_SCALE = 2;
-const TRACKER_RAISE_DELAY = 20;
+const CLICK_RIPPLE_SCALE = 2; // Ripple animation expands to this multiple of the tracker size
+const TRACKER_RAISE_DELAY = 20; // Delay before raising tracker above UI elements triggered by the click
 const TRACKER_SETTINGS = [
     'tracker-shape',
     'tracker-size',
