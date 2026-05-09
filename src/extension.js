@@ -57,13 +57,12 @@ export default class EyeOnCursorExtension extends Extension {
         this.blinkController = new BlinkController(this, this.eyeArray);
 
         // Connect eye placement settings
-        this.placementSettings = [
+        this.placementSettingHandlers = [
             'eye-active',
             'eye-position',
             'eye-index',
             'eye-count',
-        ];
-        this.placementSettingHandlers = this.placementSettings.map((key) =>
+        ].map((key) =>
             this.settings.connect(
                 `changed::${key}`,
                 spawnEyes.bind(this, this, this.eyeArray, this.mouseTracker)
@@ -80,14 +79,14 @@ export default class EyeOnCursorExtension extends Extension {
         this.placementSettingHandlers.forEach((connection) => this.settings.disconnect(connection));
         this.placementSettingHandlers = null;
 
+        this.blinkController.destroy();
+        this.blinkController = null;
+
         destroyEyes(this.eyeArray);
         this.eyeArray = null;
 
         this.mouseTracker.destroy();
         this.mouseTracker = null;
-
-        this.blinkController.destroy();
-        this.blinkController = null;
 
         this.settings = null;
     }
