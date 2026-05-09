@@ -61,12 +61,8 @@ export class TrackerManager {
 
         // Initialize state variables
         this.enabled = false;
-        this.currentColor = null;
-        this.mousePositionX = null;
-        this.mousePositionY = null;
-        this.themeContext = null;
-        this.capturedEvent = null;
-        this.mouseListener = null;
+        this.mousePositionX = 0;
+        this.mousePositionY = 0;
         this.activeClick = null;
         this.clickResetPending = false;
         this.clickMaxTimeout = null;

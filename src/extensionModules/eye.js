@@ -58,8 +58,6 @@ class Eye extends PanelMenu.Button {
         // Initialize state variables
         this.mousePositionX = 0;
         this.mousePositionY = 0;
-        this.themeContext = null;
-        this.eyeRedrawInterval = null;
         this.blinking = false;
         this.eyelidLevel = 0;
         this.eyelidLevelInterval = null;
