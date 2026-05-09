@@ -431,11 +431,6 @@ class EyePage extends Adw.PreferencesPage {
                 step_increment: 0.1,
             }),
             digits: 1,
-            hexpand: false,
-            margin_end: 8,
-            margin_top: 8,
-            valign: Gtk.Align.CENTER,
-            vexpand: false,
             value: blinkIntervalRange[0],
         });
         const maxIntervalButton = new Gtk.SpinButton({
@@ -445,11 +440,6 @@ class EyePage extends Adw.PreferencesPage {
                 step_increment: 0.1,
             }),
             digits: 1,
-            hexpand: false,
-            margin_end: 8,
-            margin_bottom: 8,
-            valign: Gtk.Align.CENTER,
-            vexpand: false,
             value: blinkIntervalRange[1],
         });
 
@@ -487,12 +477,14 @@ class EyePage extends Adw.PreferencesPage {
             maxIntervalButton.set_value(max);
         });
 
-        const box = new Gtk.Box({orientation: Gtk.Orientation.VERTICAL});
+        const box = new Gtk.Box({
+            orientation: Gtk.Orientation.VERTICAL,
+            spacing: 4,
+            margin_top: 4,
+            margin_bottom: 4,
+        });
         box.append(minIntervalButton);
-        box.append(new Gtk.Label({
-            label: _('to'),
-            margin_end: 8,
-        }));
+        box.append(new Gtk.Label({label: _('to')}));
         box.append(maxIntervalButton);
 
         blinkIntervalRangeRow.add_suffix(box);
