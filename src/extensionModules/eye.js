@@ -189,6 +189,8 @@ class Eye extends PanelMenu.Button {
         }
 
         const options = {
+            mouseX: this.mousePositionX,
+            mouseY: this.mousePositionY,
             originX,
             originY,
             eyelidColor: this.eyelidColor,

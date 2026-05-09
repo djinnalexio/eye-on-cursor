@@ -42,7 +42,7 @@ export function drawEye(area, options) {
  * @param {object} options - The drawing options.
  */
 function drawNaturalEye(area, options) {
-    let [mouseX, mouseY] = global.get_pointer();
+    let [mouseX, mouseY] = [options.mouseX, options.mouseY];
     const [areaWidth, areaHeight] = area.get_surface_size();
     const [areaCenterX, areaCenterY] =
         [options.originX + (areaWidth / 2), options.originY + (areaHeight / 2)];
@@ -161,7 +161,7 @@ function drawNaturalEye(area, options) {
  * @param {number} scaleY [scaleY=0.95] - The scaling factor for the vertical axis.
  */
 function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
-    let [mouseX, mouseY] = global.get_pointer();
+    let [mouseX, mouseY] = [options.mouseX, options.mouseY];
     const [areaWidth, areaHeight] = area.get_surface_size();
     const [areaCenterX, areaCenterY] =
         [options.originX + (areaWidth / 2), options.originY + (areaHeight / 2)];
