@@ -50,10 +50,14 @@ class TrackerPage extends Adw.PreferencesPage {
             null
         );
         let fileInfo;
-        while ((fileInfo = enumFiles.next_file(null)) !== null) {
-            const fileName = fileInfo.get_name();
-            if (fileName.toLowerCase().endsWith('.svg'))
-                shapeList.push(fileName.replace('.svg', ''));
+        try {
+            while ((fileInfo = enumFiles.next_file(null)) !== null) {
+                const fileName = fileInfo.get_name();
+                if (fileName.toLowerCase().endsWith('.svg'))
+                    shapeList.push(fileName.replace('.svg', ''));
+            }
+        } finally {
+            enumFiles.close(null);
         }
         shapeList.sort();
 
