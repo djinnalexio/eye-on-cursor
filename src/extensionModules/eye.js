@@ -298,6 +298,7 @@ class Eye extends PanelMenu.Button {
             if (currentFrame > totalFrames) {
                 this.eyelidLevel = 0;
                 this.blinking = false;
+                this.area.queue_repaint(); // Ensure that blinking animation ends with eyelid completely opened
                 clearInterval(this.eyelidLevelInterval);
             }
         }, blinkInterval);
