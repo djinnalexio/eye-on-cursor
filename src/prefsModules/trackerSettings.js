@@ -49,8 +49,8 @@ class TrackerPage extends Adw.PreferencesPage {
             Gio.FileQueryInfoFlags.NONE,
             null
         );
-        let fileInfo;
         try {
+            let fileInfo;
             while ((fileInfo = enumFiles.next_file(null)) !== null) {
                 const fileName = fileInfo.get_name();
                 if (fileName.toLowerCase().endsWith('.svg'))
