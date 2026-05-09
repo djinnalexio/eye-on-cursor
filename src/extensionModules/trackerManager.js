@@ -527,10 +527,6 @@ export class TrackerManager {
         // Disconnect keybinding
         Main.wm.removeKeybinding('tracker-keybinding');
 
-        // Disconnect Atspi
-        if (!this.isWayland)
-            Atspi.exit();
-
         // Destroy tracker
         this.tracker.destroy();
         this.tracker = null;
