@@ -2,10 +2,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //#region Imports
-import GObject from 'gi://GObject';
 import Adw from 'gi://Adw';
 import Gdk from 'gi://Gdk';
 import GLib from 'gi://GLib';
+import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 
 import {
@@ -33,7 +33,6 @@ const releaseNotes =
     '<p>New:</p>\
     <ul>\
         <li>added reset settings buttons</li>\
-        <li></li>\
     </ul>\
     <p>Fixes &amp; Improvements:</p>\
     <ul>\
