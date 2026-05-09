@@ -4,9 +4,9 @@
 //#region Imports
 import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
 
-import {BlinkController} from './extensionModules/blinkController.js';
-import {spawnEyes, destroyEyes} from './extensionModules/eye.js';
-import {TrackerManager} from './extensionModules/trackerManager.js';
+import {BlinkController} from './lib/blinkController.js';
+import {spawnEyes, destroyEyes} from './lib/eye.js';
+import {TrackerManager} from './lib/trackerManager.js';
 //#endregion
 
 /**

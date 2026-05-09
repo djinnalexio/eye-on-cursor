@@ -4,8 +4,8 @@
 //#region Imports
 import {ExtensionPreferences} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {EyePage} from './prefsModules/eyeSettings.js';
-import {TrackerPage} from './prefsModules/trackerSettings.js';
+import {EyePage} from './settings/eyeSettings.js';
+import {TrackerPage} from './settings/trackerSettings.js';
 //#endregion
 
 /**

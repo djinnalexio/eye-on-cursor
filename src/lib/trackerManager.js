@@ -49,8 +49,8 @@ export class TrackerManager {
         this.gettextDomain = extension.metadata['gettext-domain'];
         this.trackersDir = GLib.build_filenamev([
             extension.path,
-            'assets',
-            'trackers',
+            'media',
+            'glyphs',
         ]);
         this.settings = extension.getSettings();
 
