@@ -105,7 +105,8 @@ class Eye extends PanelMenu.Button {
                         blue: accent.get_blue(),
                     });
                     this.area.queue_repaint();
-                }
+                },
+                this
             );
         }
 

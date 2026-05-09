@@ -150,7 +150,8 @@ export class TrackerManager {
                     this.colorCustomEnabled
                         ? this.updateTrackerIcon(this.shape, this.colorMain)
                         : this.updateTrackerIcon(this.shape, this.colorAccent);
-                }
+                },
+                this
             );
         }
 
