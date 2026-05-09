@@ -15,7 +15,7 @@ import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions
  * Returns a `Gtk.ColorDialogButton` connected to a provided color key.
  *
  * @param {Gio.Settings} settings - The settings object for this extension.
- * @param {string} key - The schema key in the settings object for this keybinding.
+ * @param {string} key - The schema key in the settings object for this color setting.
  * @returns {Gtk.ColorDialogButton} The color picker button connected to the provided color setting.
  */
 export function newColorPicker(settings, key) {
@@ -29,7 +29,7 @@ export function newColorPicker(settings, key) {
         valign: Gtk.Align.CENTER,
         vexpand: false,
     });
-    const currentColor = colorPicker.get_rgba();// New Gdk.RGBA();
+    const currentColor = colorPicker.get_rgba();// Or new Gdk.RGBA();
     currentColor.parse(settings.get_string(key));
     colorPicker.set_rgba(currentColor);
 
@@ -114,7 +114,6 @@ class KeybindingRow extends Adw.ActionRow {
 
         this.captureWindow = new Adw.Window({
             modal: true,
-            hide_on_close: true,
             transient_for: this.get_root(),
             width_request: 480,
             height_request: 320,
@@ -134,7 +133,7 @@ class KeybindingRow extends Adw.ActionRow {
 
         // If Esc is pressed without modifiers, close capture window
         if (!mask && keyval === Gdk.KEY_Escape) {
-            this.captureWindow.close();
+            this.captureWindow.destroy();
             return Gdk.EVENT_STOP;
         }
 
@@ -158,34 +157,27 @@ class KeybindingRow extends Adw.ActionRow {
     //#region Keybinding validation
     // See https://gitlab.gnome.org/GNOME/gnome-control-center/-/blob/main/panels/keyboard/keyboard-shortcuts.c
     isValidBinding(mask, keycode, keyval) {
-        if (mask === 0)
-            return false;
-
-        if (mask === Gdk.ModifierType.SHIFT_MASK && keycode !== 0) {
+        if ((mask === 0 || mask === Gdk.ModifierType.SHIFT_MASK) && keycode !== 0) {
             if (
+                this.isKeyInRange(keyval, Gdk.KEY_a, Gdk.KEY_z) ||
                 this.isKeyInRange(keyval, Gdk.KEY_A, Gdk.KEY_Z) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_0, Gdk.KEY_9) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_a, Gdk.KEY_z) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_kana_fullstop, Gdk.KEY_semivoicedsound) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_Arabic_comma, Gdk.KEY_Arabic_sukun) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_Serbian_dje, Gdk.KEY_Cyrillic_HARDSIGN) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_Greek_ALPHAaccent, Gdk.KEY_Greek_omega) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_hebrew_doublelowline, Gdk.KEY_hebrew_taf) ||
-                    this.isKeyInRange(keyval, Gdk.KEY_Thai_kokai, Gdk.KEY_Thai_lekkao) ||
-                    this.isKeyInRange(
-                        keyval,
-                        Gdk.KEY_Hangul_Kiyeog,
-                        Gdk.KEY_Hangul_J_YeorinHieuh
-                    ) ||
-                    (keyval === Gdk.KEY_space && mask === 0) ||
-                    this.keyvalIsForbidden(keyval)
+                this.isKeyInRange(keyval, Gdk.KEY_0, Gdk.KEY_9) ||
+                this.isKeyInRange(keyval, Gdk.KEY_kana_fullstop, Gdk.KEY_semivoicedsound) ||
+                this.isKeyInRange(keyval, Gdk.KEY_Arabic_comma, Gdk.KEY_Arabic_sukun) ||
+                this.isKeyInRange(keyval, Gdk.KEY_Serbian_dje, Gdk.KEY_Cyrillic_HARDSIGN) ||
+                this.isKeyInRange(keyval, Gdk.KEY_Greek_ALPHAaccent, Gdk.KEY_Greek_omega) ||
+                this.isKeyInRange(keyval, Gdk.KEY_hebrew_doublelowline, Gdk.KEY_hebrew_taf) ||
+                this.isKeyInRange(keyval, Gdk.KEY_Thai_kokai, Gdk.KEY_Thai_lekkao) ||
+                this.isKeyInRange(keyval, Gdk.KEY_Hangul_Kiyeog, Gdk.KEY_Hangul_J_YeorinHieuh) ||
+                (keyval === Gdk.KEY_space && mask === 0) ||
+                this.isKeyvalForbidden(keyval)
             )
                 return false;
         }
         return true;
     }
 
-    keyvalIsForbidden(keyval) {
+    isKeyvalForbidden(keyval) {
         return [
             // Navigation keys
             Gdk.KEY_Home,
@@ -230,7 +222,7 @@ class KeybindingRow extends Adw.ActionRow {
  * @param {string} heading - The heading of the alert dialog.
  */
 export const ResetRow = GObject.registerClass(
-class ResetRow extends Adw.ActionRow { //
+class ResetRow extends Adw.ActionRow {
     constructor(settings, updateFunctions, keyPrefix, title, heading) {
         super({
             title,
