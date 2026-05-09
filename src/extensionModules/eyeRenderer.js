@@ -19,17 +19,19 @@ const COMIC_EYE_SCALE_Y = 1;
  *
  * @param {St.DrawingArea} area - The drawing area where the eye will be rendered.
  * @param {object} options - The drawing options.
- * @returns {Function} The function that draws the eye based on the provided options.
  */
 export function drawEye(area, options) {
     switch (options.shape) {
         case 'natural':
-            return new drawNaturalEye(area, options);
+            drawNaturalEye(area, options);
+            break;
         case 'round':
-            return new drawRoundEye(area, options);
+            drawRoundEye(area, options);
+            break;
         case 'comic':
         default:
-            return new drawRoundEye(area, options, COMIC_EYE_SCALE_X, COMIC_EYE_SCALE_Y);
+            drawRoundEye(area, options, COMIC_EYE_SCALE_X, COMIC_EYE_SCALE_Y);
+            break;
     }
 }
 //#endregion
