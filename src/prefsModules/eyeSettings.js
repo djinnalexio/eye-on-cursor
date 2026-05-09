@@ -95,7 +95,7 @@ class EyePage extends Adw.PreferencesPage {
         this.updateFunctions.push(
             () => {
                 const defValue = this.settings.get_default_value('eye-position').deep_unpack();
-                const values = [
+                const values = [ // Values from eye-position enum in schema
                     'left',
                     'center',
                     'right',
@@ -127,7 +127,7 @@ class EyePage extends Adw.PreferencesPage {
         placementGroup.add(indexRow);
         //#endregion
 
-        //#region Eye margin
+        //#region Eye width
         const widthRow = new Adw.SpinRow({
             title: _('Width'),
             subtitle: _('Drawing space and padding'),
@@ -194,7 +194,7 @@ class EyePage extends Adw.PreferencesPage {
         this.updateFunctions.push(
             () => {
                 const defValue = this.settings.get_default_value('eye-shape').deep_unpack();
-                const values = [
+                const values = [ // Values from eye-shape enum in schema
                     'natural',
                     'round',
                     'comic',
@@ -366,7 +366,7 @@ class EyePage extends Adw.PreferencesPage {
         this.updateFunctions.push(
             () => {
                 const defValue = this.settings.get_default_value('eye-blink-mode').deep_unpack();
-                const values = [
+                const values = [ // Values from eye-blink-mode enum in schema
                     'manual',
                     'synced',
                     'unsynced',
