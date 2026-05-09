@@ -36,12 +36,14 @@ const releaseNotes =
     </ul>\
     <p>Fixes &amp; Improvements:</p>\
     <ul>\
+    <li>fixed session crashing when disabling the extension on Xorg</li>\
     <li>fixed tracker briefly appearing at out-of-date location when being re-enabled</li>\
-    <li>increased max blink interval to one hour</li>\
+    <li>fixed blinking animation not ending with eyelids completely opened</li>\
     <li>changed color setting format</li>\
     <li>optimized tracker icons</li>\
+    <li>made optimizations to eye drawing cycle</li>\
     <li>reduced default eye refresh rate to 24 fps</li>\
-    <li>ensured that blinking animation ends with eyelid completely opened</li>\
+    <li>increased max blink interval to one hour</li>\
     </ul>\
     ';
 const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
