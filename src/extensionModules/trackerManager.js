@@ -89,7 +89,12 @@ export class TrackerManager {
 
         // Connect change in settings to update method
         this.settingsHandlers = TRACKER_SETTINGS.map((key) =>
-            this.settings.connect(`changed::${key}`, this.updateTrackerProperties.bind(this)));
+            this.settings.connect(`changed::${key}`, () =>
+                this.updateTrackerProperties().catch((e) => {
+                    throw new Error(`Failed to update tracker properties: ${e.message}`);
+                }
+                )
+            ));
 
         // Create the tracker object
         this.tracker = new St.Icon({
