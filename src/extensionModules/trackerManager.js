@@ -64,6 +64,7 @@ export class TrackerManager {
         this.currentColor = null;
         this.mousePositionX = null;
         this.mousePositionY = null;
+        this.themeContext = null;
         this.capturedEvent = null;
         this.mouseListener = null;
         this.activeClick = null;
@@ -125,26 +126,27 @@ export class TrackerManager {
 
         // Use desktop accent color as default tracker color (GNOME 47+)
         if (this.hasAccentColor) {
-            const context = St.ThemeContext.get_for_stage(global.stage);
-            const [color] = context.get_accent_color(); // Cogl.Color object
-            this.colorAccent = `rgb(${color['red']}, ${color['green']}, ${color['blue']})`;
+            this.themeContext = St.ThemeContext.get_for_stage(global.stage);
+            const [accent] = this.themeContext.get_accent_color(); // Cogl.Color object
+            this.colorAccent = `rgb(${accent['red']}, ${accent['green']}, ${accent['blue']})`;
             this.updateCacheTrackers(this.shape, [this.colorAccent])
             .catch((e) => {
                 throw new Error(`Failed to create cache tracker for accent color: ${e.message}`);
             });
 
             // Connect change in accent color to tracker redraw
-            this.settingsHandlers.push(context.connectObject(
+            this.themeContext.connectObject(
                 'changed',
                 async () => {
-                    const [color] = context.get_accent_color();
-                    this.colorAccent = `rgb(${color['red']}, ${color['green']}, ${color['blue']})`;
+                    const [accent] = this.themeContext.get_accent_color();
+                    this.colorAccent =
+                        `rgb(${accent['red']}, ${accent['green']}, ${accent['blue']})`;
                     await this.updateCacheTrackers(this.shape, [this.colorAccent]);
                     this.colorCustomEnabled
                         ? this.updateTrackerIcon(this.shape, this.colorMain)
                         : this.updateTrackerIcon(this.shape, this.colorAccent);
                 }
-            ));
+            );
         }
 
         this.colorCustomEnabled
@@ -510,6 +512,10 @@ export class TrackerManager {
         // Disconnect settings signal handlers
         this.settingsHandlers.forEach((connection) => this.settings.disconnect(connection));
         this.settingsHandlers = null;
+        if (this.hasAccentColor) {
+            this.themeContext.disconnectObject(this);
+            this.themeContext = null;
+        }
 
         // Disconnect keybinding
         Main.wm.removeKeybinding('tracker-keybinding');
