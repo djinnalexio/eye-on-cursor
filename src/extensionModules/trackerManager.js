@@ -465,12 +465,13 @@ export class TrackerManager {
             this.colorRight !== newColorRight
         ) {
             await this.updateCacheTrackers(newShape, [
-                this.colorAccent,
                 newColorMain,
                 newColorLeft,
                 newColorMiddle,
                 newColorRight,
             ]);
+            if (this.hasAccentColor)
+                await this.updateCacheTrackers(newShape, [this.colorAccent]);
 
             newColorCustomEnabled
                 ? this.updateTrackerIcon(newShape, newColorMain)
