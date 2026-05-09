@@ -52,20 +52,19 @@ class Eye extends PanelMenu.Button {
             .list_keys()
             .includes('accent-color');
 
-        this.themeContext = null;
-
         // Attach mouse tracker
         this.mouseTracker = trackerManager;
         this.trackerColor = null;
 
-        // Variables for initial state
+        // Initialize state variables
         this.mousePositionX = 0;
         this.mousePositionY = 0;
-        this.eyelidLevel = 0;
+        this.themeContext = null;
+        this.eyeRedrawInterval = null;
         this.blinking = false;
+        this.eyelidLevel = 0;
         this.eyelidLevelInterval = null;
         this.randomBlinkTimeout = null;
-        this.eyeRedrawInterval = null;
 
         // Initialize settings values
         this.reactive = this.settings.get_boolean('eye-reactive');

@@ -62,8 +62,8 @@ export class TrackerManager {
         // Initialize state variables
         this.enabled = false;
         this.currentColor = null;
-        this.lastPositionX = null;
-        this.lastPositionY = null;
+        this.mousePositionX = null;
+        this.mousePositionY = null;
         this.capturedEvent = null;
         this.mouseListener = null;
         this.activeClick = null;
@@ -223,21 +223,21 @@ export class TrackerManager {
     //#region Position updater
     updateTrackerPosition() {
         // Get mouse coordinates
-        const [mouseX, mouseY] = global.get_pointer();
+        let [mouseX, mouseY] = global.get_pointer();
 
         // Offset so that the tracker is aligned with the point of the cursor
-        const newPositionX = mouseX - (this.size / 2);
-        const newPositionY = mouseY - (this.size / 2);
+        mouseX -= this.size / 2;
+        mouseY -= this.size / 2;
 
         // Only update icon position if tracker is on screen AND mouse has moved
         if (
             this.tracker.get_parent() &&
-                (this.lastPositionX !== newPositionX || this.lastPositionY !== newPositionY)
+                (this.mousePositionX !== mouseX || this.mousePositionY !== mouseY)
         ) {
-            this.tracker.set_position(newPositionX, newPositionY);
+            this.tracker.set_position(mouseX, mouseY);
             // Keep tracker on top of other UI elements
             Main.uiGroup.set_child_above_sibling(this.tracker, null);
-            [this.lastPositionX, this.lastPositionY] = [newPositionX, newPositionY];
+            [this.mousePositionX, this.mousePositionY] = [mouseX, mouseY];
         }
     }
     //#endregion
