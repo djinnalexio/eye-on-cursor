@@ -54,7 +54,6 @@ class Eye extends PanelMenu.Button {
 
         // Attach mouse tracker
         this.mouseTracker = trackerManager;
-        this.trackerColor = null;
 
         // Initialize state variables
         this.mousePositionX = 0;
@@ -79,6 +78,7 @@ class Eye extends PanelMenu.Button {
         this.refreshRate = this.settings.get_int('eye-refresh-rate');
         this.eyelidColor = new Gdk.RGBA();
         this.eyelidColor.parse(this.settings.get_string('eye-color-eyelid'));
+        this.trackerColor = this.mouseTracker.currentColor;
         // TODO use foreground color as default eyelid to match it with contour
 
         // Connect change in settings to update method
