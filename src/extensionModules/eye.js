@@ -30,7 +30,7 @@ const EYE_SETTINGS = [
     'eye-color-eyelid',
 ];
 const PUPIL_COLOR = new Gdk.RGBA();
-PUPIL_COLOR.parse('rgb(0, 0, 0)');
+PUPIL_COLOR.parse('rgb(0,0,0)');
 //#endregion
 
 /**

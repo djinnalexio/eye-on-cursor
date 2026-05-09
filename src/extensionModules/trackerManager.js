@@ -133,7 +133,7 @@ export class TrackerManager {
         if (this.hasAccentColor) {
             this.themeContext = St.ThemeContext.get_for_stage(global.stage);
             const [accent] = this.themeContext.get_accent_color(); // Cogl.Color object
-            this.colorAccent = `rgb(${accent['red']}, ${accent['green']}, ${accent['blue']})`;
+            this.colorAccent = `rgb(${accent['red']},${accent['green']},${accent['blue']})`;
             this.updateCacheTrackers(this.shape, [this.colorAccent])
             .catch((e) => {
                 throw new Error(`Failed to create cache tracker for accent color: ${e.message}`);
@@ -145,7 +145,7 @@ export class TrackerManager {
                 async () => {
                     const [accent] = this.themeContext.get_accent_color();
                     this.colorAccent =
-                        `rgb(${accent['red']}, ${accent['green']}, ${accent['blue']})`;
+                        `rgb(${accent['red']},${accent['green']},${accent['blue']})`;
                     await this.updateCacheTrackers(this.shape, [this.colorAccent]);
                     this.colorCustomEnabled
                         ? this.updateTrackerIcon(this.shape, this.colorMain)
