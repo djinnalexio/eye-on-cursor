@@ -136,7 +136,7 @@ function drawNaturalEye(area, options) {
 
         // Drawing the eyelid
         if (options.eyelidLevel > 0) {
-            cr.identityMatrix();
+            cr.identityMatrix(); // Reset transformations
             cr.translate(areaWidth * 0.5, areaHeight * 0.5);
 
             drawEyelidShape();
@@ -161,8 +161,8 @@ function drawNaturalEye(area, options) {
  *
  * @param {St.DrawingArea} area - The drawing area where the eye will be rendered.
  * @param {object} options - The drawing options.
- * @param {number} scaleX [scaleX=0.95] - The scaling factor for the horizontal axis.
- * @param {number} scaleY [scaleY=0.95] - The scaling factor for the vertical axis.
+ * @param {number} scaleX [scaleX=1] - The scaling factor for the horizontal axis.
+ * @param {number} scaleY [scaleY=1] - The scaling factor for the vertical axis.
  */
 function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
     let [mouseX, mouseY] = [options.mouseX, options.mouseY];
@@ -233,7 +233,7 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
 
         // Drawing the eyelid
         if (options.eyelidLevel > 0) {
-            cr.identityMatrix();
+            cr.identityMatrix(); // Reset transformations
             cr.translate(areaWidth * 0.5, areaHeight * 0.5);
 
             cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);
