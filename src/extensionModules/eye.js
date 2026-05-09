@@ -17,6 +17,7 @@ import {drawEye} from './eyeRenderer.js';
 //#endregion
 
 //#region Constants
+const BLINK_DURATION = 250; // TODO turn blink duration into a setting 0.2-2s
 const EYE_SETTINGS = [
     'eye-reactive',
     'eye-shape',
@@ -273,10 +274,42 @@ class Eye extends PanelMenu.Button {
     }
     //#endregion
 
+    //#region Blink method
+    blink() { // TODO blink when toggling tracker
+        const blinkInterval = 1000 / this.refreshRate;
+        const totalFrames = Math.ceil(this.refreshRate * (BLINK_DURATION / 1000));
+        const halfFrames = totalFrames / 2;
+
+        clearInterval(this.eyelidLevelInterval);
+        this.blinking = true;
+
+        let currentFrame = 0;
+        this.eyelidLevelInterval = setInterval(() => {
+            currentFrame++;
+            const eyelidLevel = currentFrame <= halfFrames
+                ? currentFrame / halfFrames // Closing
+                : 1 - ((currentFrame - halfFrames) / halfFrames); // Opening
+
+            this.eyelidLevel = eyelidLevel;
+
+            // Finishing
+            if (currentFrame > totalFrames) {
+                this.eyelidLevel = 0;
+                this.blinking = false;
+                clearInterval(this.eyelidLevelInterval);
+            }
+        }, blinkInterval);
+    }
+    //#endregion
+
     //#region Destroy method
     destroy() {
         // Disconnect repaint signal
         this.area.disconnect(this.repaintHandler);
+
+        // Stop blinking
+        clearTimeout(this.randomBlinkTimeout);
+        clearInterval(this.eyelidLevelInterval);
 
         // Stop periodic redraw
         clearInterval(this.eyeRedrawInterval);
