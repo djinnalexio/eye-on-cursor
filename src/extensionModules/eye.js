@@ -4,6 +4,7 @@
 
 //#region Imports
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
 
@@ -105,10 +106,13 @@ class Eye extends PanelMenu.Button {
         }
 
         // Add popups
+        const trackerIconPath =
+            GLib.build_filenamev([extension.path, 'assets', 'mouse-click-symbolic.svg']);
+
         this.menuItems = [
             this.createPopupMenuItem( // TODO replace with PopupSwitchMenuItem
                 _('Toggle Tracker'),
-                'input-mouse-symbolic',
+                Gio.icon_new_for_string(trackerIconPath),
                 this.mouseTracker.toggleTracker.bind(this.mouseTracker)
             ),
             this.createPopupMenuItem(

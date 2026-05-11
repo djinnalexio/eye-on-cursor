@@ -3,8 +3,6 @@
 
 //#region Imports
 import Adw from 'gi://Adw';
-import Gdk from 'gi://Gdk';
-import GLib from 'gi://GLib';
 import GObject from 'gi://GObject';
 import Gtk from 'gi://Gtk';
 
@@ -58,7 +56,7 @@ const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/cat
  */
 export const AboutRow = GObject.registerClass(
 class AboutRow extends Adw.ActionRow {
-    constructor(metadata, path) {
+    constructor(metadata) {
         super({
             title: _('About Eye on Cursor'),
             activatable: true,
@@ -67,12 +65,6 @@ class AboutRow extends Adw.ActionRow {
         // Add row icons
         this.add_prefix(new Gtk.Image({icon_name: 'help-about-symbolic'}));
         this.add_suffix(new Gtk.Image({icon_name: 'go-next-symbolic'}));
-
-        // Add path for custom icons
-        this.iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
-        this.iconThemePath = GLib.build_filenamev([path, 'assets']);
-        if (!this.iconTheme.get_search_path().includes(this.iconThemePath))
-            this.iconTheme.add_search_path(this.iconThemePath);
 
         //#region About dialog
         this.aboutWindow = new Adw.AboutDialog({

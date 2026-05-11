@@ -25,7 +25,7 @@ class TrackerPage extends Adw.PreferencesPage {
     constructor(extension) {
         super({
             title: _('Mouse Tracker'),
-            icon_name: 'input-mouse-symbolic',
+            icon_name: 'mouse-click-symbolic',
         });
 
         this.settings = extension.getSettings();
@@ -322,7 +322,7 @@ class TrackerPage extends Adw.PreferencesPage {
         const aboutGroup = new Adw.PreferencesGroup({title: _('Information')});
         this.add(aboutGroup);
 
-        const aboutRow = new AboutRow(extension.metadata, extension.path);
+        const aboutRow = new AboutRow(extension.metadata);
         aboutGroup.add(aboutRow);
         //#endregion
     }
