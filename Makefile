@@ -8,7 +8,7 @@ ISSUES_URL = https://github.com/djinnalexio/eye-on-cursor/issues
 PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
 
 .PHONY: pack install reset uninstall enable disable prefs test \
-        test-prefs-settings test-prefs-window update-pot upload
+		test-prefs-settings test-prefs-window shexli update-pot upload
 
 pack:
 	# Packing extension into ./$(PACK_NAME)...
@@ -61,6 +61,10 @@ test-prefs-settings: install prefs
 test-prefs-window: install prefs
 	# Monitoring Preferences window:
 	journalctl -f -o cat /usr/bin/gjs
+
+shexli: pack
+	# submitting extension to Shexli reviewer:
+	shexli $(PACK_NAME)
 
 update-pot:
 	# Updating POT file...
