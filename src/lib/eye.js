@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 //#region Imports
-import Gdk from 'gi://Gdk';
 import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import St from 'gi://St';
@@ -29,8 +28,7 @@ const EYE_SETTINGS = [
     'eye-refresh-rate',
     'eye-color-eyelid',
 ];
-const PUPIL_COLOR = new Gdk.RGBA();
-PUPIL_COLOR.parse('rgb(0,0,0)');
+const PUPIL_COLOR = parseRGB('rgb(0,0,0)');
 //#endregion
 
 /**
@@ -71,11 +69,9 @@ class Eye extends PanelMenu.Button {
         this.width = this.settings.get_int('eye-width');
         this.irisCustomColorEnabled =
             this.hasAccentColor ? this.settings.get_boolean('eye-color-iris-enabled') : true;
-        this.irisColor = new Gdk.RGBA();
-        this.irisColor.parse(this.settings.get_string('eye-color-iris'));
+        this.irisColor = parseRGB(this.settings.get_string('eye-color-iris'));
         this.refreshRate = this.settings.get_int('eye-refresh-rate');
-        this.eyelidColor = new Gdk.RGBA();
-        this.eyelidColor.parse(this.settings.get_string('eye-color-eyelid'));
+        this.eyelidColor = parseRGB(this.settings.get_string('eye-color-eyelid'));
         this.trackerColor = this.mouseTracker.currentColor;
         // TODO use foreground color as default eyelid to match it with contour
 
@@ -88,20 +84,20 @@ class Eye extends PanelMenu.Button {
         if (this.hasAccentColor) {
             this.themeContext = St.ThemeContext.get_for_stage(global.stage);
             const [accent] = this.themeContext.get_accent_color();
-            this.accentColor = new Gdk.RGBA({ // From Cogl.Color object to Gdk.RGBA object
+            this.accentColor = {
                 red: accent.get_red(),
                 green: accent.get_green(),
                 blue: accent.get_blue(),
-            });
+            };
             this.themeContext.connectObject(
                 'changed',
                 () => {
                     const [accent] = this.themeContext.get_accent_color();
-                    this.accentColor = new Gdk.RGBA({ // From Cogl.Color object to Gdk.RGBA object
+                    this.accentColor = {
                         red: accent.get_red(),
                         green: accent.get_green(),
                         blue: accent.get_blue(),
-                    });
+                    };
                     this.area.queue_repaint();
                 },
                 this
@@ -177,14 +173,12 @@ class Eye extends PanelMenu.Button {
 
         // Get iris color
         let irisColor;
-        if (this.mouseTracker.enabled) {
-            irisColor = new Gdk.RGBA();
-            irisColor.parse(this.trackerColor);
-        } else if (this.irisCustomColorEnabled) {
+        if (this.mouseTracker.enabled)
+            irisColor = parseRGB(this.trackerColor);
+        else if (this.irisCustomColorEnabled)
             irisColor = this.irisColor;
-        } else {
+        else
             irisColor = this.accentColor;
-        }
 
         const options = {
             mouseX: this.mousePositionX,
@@ -213,11 +207,9 @@ class Eye extends PanelMenu.Button {
         const newWidth = this.settings.get_int('eye-width');
         const newIrisCustomColorEnabled =
             this.hasAccentColor ? this.settings.get_boolean('eye-color-iris-enabled') : true;
-        const newIrisColor = new Gdk.RGBA();
-        newIrisColor.parse(this.settings.get_string('eye-color-iris'));
+        const newIrisColor = parseRGB(this.settings.get_string('eye-color-iris'));
         const newRefreshRate = this.settings.get_int('eye-refresh-rate');
-        const newEyelidColor = new Gdk.RGBA();
-        newEyelidColor.parse(this.settings.get_string('eye-color-eyelid'));
+        const newEyelidColor = parseRGB(this.settings.get_string('eye-color-eyelid'));
 
         // Update reactive property
         if (this.reactive !== newReactive)
@@ -250,7 +242,7 @@ class Eye extends PanelMenu.Button {
         // Update iris color
         if (
             this.irisCustomColorEnabled !== newIrisCustomColorEnabled ||
-            !this.irisColor.equal(newIrisColor)
+            JSON.stringify(this.irisColor) !== JSON.stringify(newIrisColor)
         ) {
             this.irisCustomColorEnabled = newIrisCustomColorEnabled;
             this.irisColor = newIrisColor;
@@ -267,7 +259,7 @@ class Eye extends PanelMenu.Button {
             this.refreshRate = newRefreshRate;
         }
 
-        if (!this.eyelidColor.equal(newEyelidColor)) {
+        if (!JSON.stringify(this.eyelidColor) !== JSON.stringify(newEyelidColor)) {
             this.eyelidColor = newEyelidColor;
             this.area.queue_repaint();
         }
@@ -380,5 +372,22 @@ export function spawnEyes(extension, eyeArray, trackerManager) {
 export function destroyEyes(eyeArray) {
     eyeArray?.forEach((eye) => eye.destroy());
     eyeArray.length = 0;
+}
+//#endregion
+
+//#region Helper functions
+/**
+ * Parses an `rgb(r, g, b)` color string and returns an object with 'red', 'green', and 'blue' properties.
+ *
+ * @param {string} rgbString - The color string (color value 0-255).
+ * @returns {object} The object with 'red', 'green', and 'blue' properties.
+ */
+function parseRGB(rgbString) {
+    const [red, green, blue] = rgbString.match(/[\d.]+/g).map((value) => value / 255);
+    return {
+        red,
+        green,
+        blue,
+    };
 }
 //#endregion
