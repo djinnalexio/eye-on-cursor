@@ -54,8 +54,8 @@ class Eye extends PanelMenu.Button {
         this.mouseTracker = trackerManager;
 
         // Initialize state variables
-        this.mousePositionX = 0;
-        this.mousePositionY = 0;
+        this.mouseX = 0;
+        this.mouseY = 0;
         this.blinking = false;
         this.eyelidLevel = 0;
         this.eyelidLevelInterval = null;
@@ -149,12 +149,12 @@ class Eye extends PanelMenu.Button {
 
         // If mouse has moved, tracker color has changed, or eye is blinking, redraw eye
         if (
-            this.mousePositionX !== mouseX ||
-                this.mousePositionY !== mouseY ||
+            this.mouseX !== mouseX ||
+                this.mouseY !== mouseY ||
                 this.trackerColor !== this.mouseTracker.currentColor ||
                 this.blinking
         ) {
-            [this.mousePositionX, this.mousePositionY] = [mouseX, mouseY];
+            [this.mouseX, this.mouseY] = [mouseX, mouseY];
             this.trackerColor = this.mouseTracker.currentColor;
             this.area.queue_repaint();
         }
@@ -181,18 +181,18 @@ class Eye extends PanelMenu.Button {
             irisColor = this.accentColor;
 
         const options = {
-            mouseX: this.mousePositionX,
-            mouseY: this.mousePositionY,
+            shape: this.shape,
+            mouseX: this.mouseX,
+            mouseY: this.mouseY,
             originX,
             originY,
-            eyelidColor: this.eyelidColor,
-            eyelidLevel: this.eyelidLevel,
-            irisColor,
-            lineMode: this.lineMode,
             lineWidth: this.lineWidth,
-            pupilColor: PUPIL_COLOR,
+            lineMode: this.lineMode,
             scleraColor,
-            shape: this.shape,
+            irisColor,
+            pupilColor: PUPIL_COLOR,
+            eyelidLevel: this.eyelidLevel,
+            eyelidColor: this.eyelidColor,
         };
         drawEye(area, options);
     }

@@ -18,311 +18,311 @@ msgstr ""
 "X-Crowdin-File-ID: 40\n"
 "X-Generator: Poedit 3.9\n"
 
-#: src/lib/eye.js:44
+#: src/extensionModules/eye.js:44
 msgid "Animated eye that follows the mouse"
 msgstr "マウスを追うアニメーションの目"
 
-#: src/lib/eye.js:110 src/settings/trackerSettings.js:298
+#: src/extensionModules/eye.js:110 src/prefsModules/trackerSettings.js:298
 msgid "Toggle Tracker"
 msgstr "トラッカーの切り替え"
 
-#: src/lib/eye.js:115
+#: src/extensionModules/eye.js:115
 msgid "Settings"
 msgstr "設定"
 
-#: src/settings/eyeSettings.js:25
+#: src/prefsModules/eyeSettings.js:25
 msgid "Eyes"
 msgstr "目"
 
-#: src/settings/eyeSettings.js:37
+#: src/prefsModules/eyeSettings.js:37
 msgid "Layout"
 msgstr "レイアウト"
 
-#: src/settings/eyeSettings.js:43
+#: src/prefsModules/eyeSettings.js:43
 msgid "Active"
 msgstr "有効"
 
-#: src/settings/eyeSettings.js:44
+#: src/prefsModules/eyeSettings.js:44
 msgid "Enable the eyes"
 msgstr "目を有効にする"
 
-#: src/settings/eyeSettings.js:59
+#: src/prefsModules/eyeSettings.js:59
 msgid "Count"
 msgstr "数"
 
-#: src/settings/eyeSettings.js:60
+#: src/prefsModules/eyeSettings.js:60
 msgid "Number of eyes"
 msgstr "目の数"
 
-#: src/settings/eyeSettings.js:71
+#: src/prefsModules/eyeSettings.js:71
 msgid "Displaying more eyes may reduce performance."
 msgstr "目の数が多いとパフォーマンスが低下する場合があります。"
 
-#: src/settings/eyeSettings.js:82
+#: src/prefsModules/eyeSettings.js:82
 msgid "Left"
 msgstr "左"
 
-#: src/settings/eyeSettings.js:82
+#: src/prefsModules/eyeSettings.js:82
 msgid "Center"
 msgstr "中央"
 
-#: src/settings/eyeSettings.js:82
+#: src/prefsModules/eyeSettings.js:82
 msgid "Right"
 msgstr "右"
 
-#: src/settings/eyeSettings.js:86
+#: src/prefsModules/eyeSettings.js:86
 msgid "Position"
 msgstr "位置"
 
-#: src/settings/eyeSettings.js:87
+#: src/prefsModules/eyeSettings.js:87
 msgid "Position of the eyes on the panel"
 msgstr "パネル上の目の位置"
 
-#: src/settings/eyeSettings.js:107
+#: src/prefsModules/eyeSettings.js:107
 msgid "Index"
 msgstr "インデックス"
 
-#: src/settings/eyeSettings.js:108
+#: src/prefsModules/eyeSettings.js:108
 msgid "Index of the eyes on the panel segment"
 msgstr "パネルセグメント上の目のインデックス"
 
-#: src/settings/eyeSettings.js:128
+#: src/prefsModules/eyeSettings.js:128
 msgid "Width"
 msgstr "幅"
 
-#: src/settings/eyeSettings.js:129
+#: src/prefsModules/eyeSettings.js:129
 msgid "Drawing space and padding"
 msgstr "描画スペースと余白"
 
-#: src/settings/eyeSettings.js:149
+#: src/prefsModules/eyeSettings.js:149
 msgid "Menu"
 msgstr "メニュー"
 
-#: src/settings/eyeSettings.js:150
+#: src/prefsModules/eyeSettings.js:150
 msgid "Enable the eye menu"
 msgstr "目のメニューを有効にする"
 
-#: src/settings/eyeSettings.js:168 src/settings/trackerSettings.js:38
+#: src/prefsModules/eyeSettings.js:168 src/prefsModules/trackerSettings.js:38
 msgid "Appearance"
 msgstr "外観"
 
-#: src/settings/eyeSettings.js:174
+#: src/prefsModules/eyeSettings.js:174
 msgid "Natural"
 msgstr "ナチュラル"
 
-#: src/settings/eyeSettings.js:174
+#: src/prefsModules/eyeSettings.js:174
 msgid "Round"
 msgstr "丸"
 
-#: src/settings/eyeSettings.js:174
+#: src/prefsModules/eyeSettings.js:174
 msgid "Comic"
 msgstr "コミック"
 
-#: src/settings/eyeSettings.js:177 src/settings/trackerSettings.js:64
+#: src/prefsModules/eyeSettings.js:177 src/prefsModules/trackerSettings.js:64
 msgid "Shape"
 msgstr "形状"
 
-#: src/settings/eyeSettings.js:178
+#: src/prefsModules/eyeSettings.js:178
 msgid "Shape of the eyes"
 msgstr "目の形状"
 
-#: src/settings/eyeSettings.js:198
+#: src/prefsModules/eyeSettings.js:198
 msgid "Sketch Mode"
 msgstr "スケッチモード"
 
-#: src/settings/eyeSettings.js:199
+#: src/prefsModules/eyeSettings.js:199
 msgid "Only draw the outline"
 msgstr "輪郭のみを描画する"
 
-#: src/settings/eyeSettings.js:216
+#: src/prefsModules/eyeSettings.js:216
 msgid "Line Thickness"
 msgstr "線の太さ"
 
-#: src/settings/eyeSettings.js:217
+#: src/prefsModules/eyeSettings.js:217
 msgid "Thickness of the strokes in outline mode"
 msgstr "輪郭モードのストロークの太さ"
 
-#: src/settings/eyeSettings.js:239
+#: src/prefsModules/eyeSettings.js:239
 msgid "Iris Color"
 msgstr "虹彩の色"
 
-#: src/settings/eyeSettings.js:240
+#: src/prefsModules/eyeSettings.js:240
 msgid "Custom color for the iris"
 msgstr "虹彩のカスタムカラー"
 
-#: src/settings/eyeSettings.js:289 src/settings/trackerSettings.js:269
+#: src/prefsModules/eyeSettings.js:289 src/prefsModules/trackerSettings.js:269
 msgid "Refresh Rate (Hz)"
 msgstr "リフレッシュレート (Hz)"
 
-#: src/settings/eyeSettings.js:290 src/settings/trackerSettings.js:270
+#: src/prefsModules/eyeSettings.js:290 src/prefsModules/trackerSettings.js:270
 msgid "Higher refresh rates may impact performance."
 msgstr "リフレッシュレートが高いとパフォーマンスに影響する場合があります。"
 
-#: src/settings/eyeSettings.js:314
+#: src/prefsModules/eyeSettings.js:314
 msgid "Blinking"
 msgstr "まばたき"
 
-#: src/settings/eyeSettings.js:319
+#: src/prefsModules/eyeSettings.js:319
 msgid "Eyelid Color"
 msgstr "まぶたの色"
 
-#: src/settings/eyeSettings.js:338
+#: src/prefsModules/eyeSettings.js:338
 msgid "Manual"
 msgstr "手動"
 
-#: src/settings/eyeSettings.js:338
+#: src/prefsModules/eyeSettings.js:338
 msgid "Fixed"
 msgstr "固定"
 
-#: src/settings/eyeSettings.js:338
+#: src/prefsModules/eyeSettings.js:338
 msgid "Random"
 msgstr "ランダム"
 
-#: src/settings/eyeSettings.js:341
+#: src/prefsModules/eyeSettings.js:341
 msgid "Blink Mode"
 msgstr "まばたきモード"
 
-#: src/settings/eyeSettings.js:342
+#: src/prefsModules/eyeSettings.js:342
 msgid "Choose how eyes blink"
 msgstr "まばたきの方法を選択する"
 
-#: src/settings/eyeSettings.js:364
+#: src/prefsModules/eyeSettings.js:364
 msgid "Manual Blink"
 msgstr "手動まばたき"
 
-#: src/settings/eyeSettings.js:374
+#: src/prefsModules/eyeSettings.js:374
 msgid "Fixed Blink Interval"
 msgstr "固定まばたき間隔"
 
-#: src/settings/eyeSettings.js:375
+#: src/prefsModules/eyeSettings.js:375
 msgid "Duration in seconds between blinks"
 msgstr "まばたきの間隔（秒）"
 
-#: src/settings/eyeSettings.js:398
+#: src/prefsModules/eyeSettings.js:398
 msgid "Random Blink Interval"
 msgstr "ランダムまばたき間隔"
 
-#: src/settings/eyeSettings.js:399
+#: src/prefsModules/eyeSettings.js:399
 msgid "Range of durations in seconds between random blinks"
 msgstr "ランダムまばたきの間隔の範囲（秒）"
 
-#: src/settings/eyeSettings.js:467
+#: src/prefsModules/eyeSettings.js:467
 msgid "to"
 msgstr "〜"
 
-#: src/settings/eyeSettings.js:482
+#: src/prefsModules/eyeSettings.js:482
 msgid "Reset all eye settings?"
 msgstr "目のすべての設定をリセットしますか？"
 
-#: src/settings/about.js:63
+#: src/prefsModules/about.js:63
 msgid "About Eye on Cursor"
 msgstr "Eye on Cursor について"
 
-#: src/settings/about.js:93
+#: src/prefsModules/about.js:93
 msgctxt "(USER)NAME EMAIL/URL"
 msgid "translator_credits"
 msgstr "djinnalexio https://github.com/djinnalexio/"
 
-#: src/settings/about.js:99
+#: src/prefsModules/about.js:99
 msgid "Extension Page"
 msgstr "拡張機能のページ"
 
-#: src/settings/about.js:102
+#: src/prefsModules/about.js:102
 msgid "Donate"
 msgstr "寄付"
 
-#: src/settings/about.js:104
+#: src/prefsModules/about.js:104
 msgid "Forked from"
 msgstr "フォーク元"
 
-#: src/settings/about.js:108
+#: src/prefsModules/about.js:108
 msgid "Cinnamon Fork"
 msgstr "Cinnamon フォーク"
 
-#: src/settings/trackerSettings.js:27
+#: src/prefsModules/trackerSettings.js:27
 msgid "Mouse Tracker"
 msgstr "マウストラッカー"
 
-#: src/settings/trackerSettings.js:65
+#: src/prefsModules/trackerSettings.js:65
 msgid "Shape of the tracker"
 msgstr "トラッカーの形状"
 
-#: src/settings/trackerSettings.js:77
+#: src/prefsModules/trackerSettings.js:77
 msgid "Select a Tracker"
 msgstr "トラッカーを選択"
 
-#: src/settings/trackerSettings.js:149
+#: src/prefsModules/trackerSettings.js:149
 msgid "Size"
 msgstr "サイズ"
 
-#: src/settings/trackerSettings.js:150
+#: src/prefsModules/trackerSettings.js:150
 msgid "Size of the tracker"
 msgstr "トラッカーのサイズ"
 
-#: src/settings/trackerSettings.js:170
+#: src/prefsModules/trackerSettings.js:170
 msgid "Color"
 msgstr "色"
 
-#: src/settings/trackerSettings.js:171
+#: src/prefsModules/trackerSettings.js:171
 msgid "Custom color for the tracker"
 msgstr "トラッカーのカスタムカラー"
 
-#: src/settings/trackerSettings.js:216
+#: src/prefsModules/trackerSettings.js:216
 msgid "Colors on Click"
 msgstr "クリック時の色"
 
-#: src/settings/trackerSettings.js:217
+#: src/prefsModules/trackerSettings.js:217
 msgid "Colors when left, middle, and right-clicking"
 msgstr "左・中・右クリック時の色"
 
-#: src/settings/trackerSettings.js:223
+#: src/prefsModules/trackerSettings.js:223
 msgid "Click highlighting does not work in windows."
 msgstr "クリックのハイライトはウィンドウ内では機能しません。"
 
-#: src/settings/trackerSettings.js:246
+#: src/prefsModules/trackerSettings.js:246
 msgid "Opacity"
 msgstr "不透明度"
 
-#: src/settings/trackerSettings.js:247
+#: src/prefsModules/trackerSettings.js:247
 msgid "Opacity of the tracker"
 msgstr "トラッカーの不透明度"
 
-#: src/settings/trackerSettings.js:292
+#: src/prefsModules/trackerSettings.js:292
 msgid "Keybinding"
 msgstr "キーバインド"
 
-#: src/settings/trackerSettings.js:313
+#: src/prefsModules/trackerSettings.js:313
 msgid "Reset all tracker settings?"
 msgstr "トラッカーのすべての設定をリセットしますか？"
 
-#: src/settings/trackerSettings.js:320
+#: src/prefsModules/trackerSettings.js:320
 msgid "Information"
 msgstr "情報"
 
-#: src/settings/prefsWidgets.js:59 src/settings/prefsWidgets.js:110
+#: src/prefsModules/prefsWidgets.js:59 src/prefsModules/prefsWidgets.js:110
 msgid "Set a shortcut"
 msgstr "ショートカットを設定"
 
-#: src/settings/prefsWidgets.js:65
+#: src/prefsModules/prefsWidgets.js:65
 msgid "New shortcut…"
 msgstr "新しいショートカット…"
 
-#: src/settings/prefsWidgets.js:111
+#: src/prefsModules/prefsWidgets.js:111
 msgid "Press Esc to cancel or Backspace to disable the shortcut"
 msgstr "Escでキャンセル、Backspaceでショートカットを無効にする"
 
-#: src/settings/prefsWidgets.js:227
+#: src/prefsModules/prefsWidgets.js:227
 msgid "Reset Settings"
 msgstr "設定をリセット"
 
-#: src/settings/prefsWidgets.js:238
+#: src/prefsModules/prefsWidgets.js:238
 msgid "Any related customizations will be lost."
 msgstr "関連するすべてのカスタマイズが失われます。"
 
-#: src/settings/prefsWidgets.js:241
+#: src/prefsModules/prefsWidgets.js:241
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: src/settings/prefsWidgets.js:242
+#: src/prefsModules/prefsWidgets.js:242
 msgid "Reset"
 msgstr "リセット"

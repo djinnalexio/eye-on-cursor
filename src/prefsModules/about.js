@@ -70,7 +70,7 @@ class AboutRow extends Adw.ActionRow {
 
         // Add path for custom icons
         this.iconTheme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default());
-        this.iconThemePath = GLib.build_filenamev([path, 'media']);
+        this.iconThemePath = GLib.build_filenamev([path, 'assets']);
         if (!this.iconTheme.get_search_path().includes(this.iconThemePath))
             this.iconTheme.add_search_path(this.iconThemePath);
 

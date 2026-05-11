@@ -47,7 +47,7 @@ export class TrackerManager {
     constructor(extension) {
         // Get extension object properties
         this.gettextDomain = extension.metadata['gettext-domain'];
-        this.trackersDir = GLib.build_filenamev([extension.path, 'media', 'glyphs']);
+        this.trackersDir = GLib.build_filenamev([extension.path, 'assets', 'trackers']);
         this.settings = extension.getSettings();
 
         // Check if accent color variable exists (GNOME 47+)
@@ -57,8 +57,8 @@ export class TrackerManager {
 
         // Initialize state variables
         this.enabled = false;
-        this.mousePositionX = 0;
-        this.mousePositionY = 0;
+        this.mouseX = 0;
+        this.mouseY = 0;
         this.activeClick = null;
         this.clickResetPending = false;
         this.clickMaxTimeout = null;
@@ -220,21 +220,21 @@ export class TrackerManager {
     //#region Position updater
     updateTrackerPosition() {
         // Get mouse coordinates
-        let [mouseX, mouseY] = global.get_pointer();
+        let [newMouseX, newMouseY] = global.get_pointer();
 
         // Offset so that the tracker is aligned with the point of the cursor
-        mouseX -= this.size / 2;
-        mouseY -= this.size / 2;
+        newMouseX -= this.size / 2;
+        newMouseY -= this.size / 2;
 
         // Only update icon position if tracker is on screen AND mouse has moved
         if (
             this.tracker.get_parent() &&
-                (this.mousePositionX !== mouseX || this.mousePositionY !== mouseY)
+                (this.mouseX !== newMouseX || this.mouseY !== newMouseY)
         ) {
-            this.tracker.set_position(mouseX, mouseY);
+            this.tracker.set_position(newMouseX, newMouseY);
             // Keep tracker on top of other UI elements
             Main.uiGroup.set_child_above_sibling(this.tracker, null);
-            [this.mousePositionX, this.mousePositionY] = [mouseX, mouseY];
+            [this.mouseX, this.mouseY] = [newMouseX, newMouseY];
         }
     }
     //#endregion

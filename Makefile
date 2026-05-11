@@ -12,8 +12,8 @@ PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
 
 pack:
 	# Packing extension into ./$(PACK_NAME)...
-	gnome-extensions pack ./src -f --extra-source="lib" \
-		--extra-source="media" --extra-source="settings"
+	gnome-extensions pack ./src -f --extra-source="extensionModules" \
+		--extra-source="assets" --extra-source="prefsModules"
 
 install: pack
 	# Installing extension...

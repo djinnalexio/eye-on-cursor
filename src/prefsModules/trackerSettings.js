@@ -41,7 +41,7 @@ class TrackerPage extends Adw.PreferencesPage {
         //#region Tracker shape
         // Get list of shapes
         const shapeList = [];
-        const shapeDirPath = GLib.build_filenamev([extension.path, 'media', 'glyphs']);
+        const shapeDirPath = GLib.build_filenamev([extension.path, 'assets', 'trackers']);
         const shapeDir = Gio.file_new_for_path(shapeDirPath);
         const enumFiles = shapeDir.enumerate_children(
             'standard::name',
