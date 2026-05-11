@@ -273,7 +273,7 @@ class TrackerPage extends Adw.PreferencesPage {
         //#endregion
 
         //#region Tracker refresh rate
-        const refreshRow = new Adw.SpinRow({// TODO doesn't seem to actually affect refresh rate
+        const refreshRow = new Adw.SpinRow({
             title: _('Refresh Rate (Hz)'),
             subtitle: _('Higher refresh rates may impact performance.'),
             adjustment: new Gtk.Adjustment({
