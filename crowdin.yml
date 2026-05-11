@@ -7,9 +7,3 @@ files:
   - source: /src/po/eye-on-cursor.pot
     translation: /src/po/%two_letters_code%.po
     type: gettext
-    languages_mapping:
-      two_letters_code:
-        en-GB: en_GB
-        pt-BR: pt_BR
-        zh-CN: zh_CN
-        zh-TW: zh_TW

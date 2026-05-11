@@ -43,7 +43,7 @@ export const Eye = GObject.registerClass(
 class Eye extends PanelMenu.Button {
     //#region Constructor
     constructor(extension, trackerManager) {
-        super(0, _('Animated eye that follows the mouse cursor'), false);
+        super(0, _('Animated eye that follows the mouse'), false);
 
         this.settings = extension.getSettings();
 

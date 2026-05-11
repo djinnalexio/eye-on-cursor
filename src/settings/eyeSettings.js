@@ -30,7 +30,7 @@ class EyePage extends Adw.PreferencesPage {
         this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
             .list_keys()
             .includes('accent-color');
-        this.updateFunctions = [];
+        this.resetFunctions = [];
 
         //#region Eye placement group
         const placementGroup = new Adw.PreferencesGroup({
@@ -48,7 +48,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_boolean('eye-active', widget.active)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => activeRow.set_active(this.settings.get_default_value('eye-active').deep_unpack())
         );
         placementGroup.add(activeRow);
@@ -70,7 +70,7 @@ class EyePage extends Adw.PreferencesPage {
         );
         countRow.set_tooltip_text(_('Displaying more eyes may reduce performance.'));
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => countRow.set_value(this.settings.get_default_value('eye-count').deep_unpack())
 
         );
@@ -95,7 +95,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_enum('eye-position', widget.selected)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => {
                 const defValue = this.settings.get_default_value('eye-position').deep_unpack();
                 const values = [ // Values from eye-position enum in schema
@@ -124,7 +124,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_int('eye-index', widget.value)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => indexRow.set_value(this.settings.get_default_value('eye-index').deep_unpack())
         );
         placementGroup.add(indexRow);
@@ -145,7 +145,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_int('eye-width', widget.value)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => widthRow.set_value(this.settings.get_default_value('eye-width').deep_unpack())
         );
         placementGroup.add(widthRow);
@@ -161,7 +161,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_boolean('eye-reactive', widget.active)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => reactiveRow.set_active(
                 this.settings.get_default_value('eye-reactive').deep_unpack()
             )
@@ -194,7 +194,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_enum('eye-shape', widget.selected)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => {
                 const defValue = this.settings.get_default_value('eye-shape').deep_unpack();
                 const values = [ // Values from eye-shape enum in schema
@@ -218,7 +218,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_boolean('eye-line-mode', widget.active)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => lineModeRow.set_active(
                 this.settings.get_default_value('eye-line-mode').deep_unpack()
             )
@@ -241,7 +241,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_int('eye-line-width', widget.value)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => lineWidthRow.set_value(
                 this.settings.get_default_value('eye-line-width').deep_unpack()
             )
@@ -257,7 +257,7 @@ class EyePage extends Adw.PreferencesPage {
 
         const irisColorPicker = newColorPicker(this.settings, 'eye-color-iris');
 
-        this.updateFunctions.push(() => {
+        this.resetFunctions.push(() => {
             const currentColor = irisColorPicker.get_rgba();
             currentColor.parse(this.settings.get_default_value('eye-color-iris').deep_unpack());
             irisColorPicker.set_rgba(currentColor);
@@ -283,7 +283,7 @@ class EyePage extends Adw.PreferencesPage {
             });
             irisColorPicker.set_sensitive(irisColorToggle.active);
 
-            this.updateFunctions.push(
+            this.resetFunctions.push(
                 () =>
                     irisColorToggle.set_active(
                         this.settings.get_default_value('eye-color-iris-enabled').deep_unpack()
@@ -314,7 +314,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_int('eye-refresh-rate', widget.value)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => refreshRow.set_value(
                 this.settings.get_default_value('eye-refresh-rate').deep_unpack()
             )
@@ -335,7 +335,7 @@ class EyePage extends Adw.PreferencesPage {
 
         const eyelidColorPicker = newColorPicker(this.settings, 'eye-color-eyelid');
 
-        this.updateFunctions.push(() => {
+        this.resetFunctions.push(() => {
             const currentColor = eyelidColorPicker.get_rgba();
             currentColor.parse(this.settings.get_default_value('eye-color-eyelid').deep_unpack());
             eyelidColorPicker.set_rgba(currentColor);
@@ -352,8 +352,8 @@ class EyePage extends Adw.PreferencesPage {
         const blinkModeList = new Gtk.StringList();
         [
             _('Manual'),
-            _('Synced'),
-            _('Unsynced'),
+            _('Fixed'),
+            _('Random'),
         ].forEach((mode) => blinkModeList.append(mode));
         // Each option enables the corresponding row
         const blinkModeRow = new Adw.ComboRow({
@@ -366,7 +366,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_enum('eye-blink-mode', widget.selected)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => {
                 const defValue = this.settings.get_default_value('eye-blink-mode').deep_unpack();
                 const values = [ // Values from eye-blink-mode enum in schema
@@ -388,13 +388,13 @@ class EyePage extends Adw.PreferencesPage {
         );
         blinkGroup.set_header_suffix(blinkKeybindingRow.resetButton);
 
-        this.updateFunctions.push(() => blinkKeybindingRow.resetKeybinding());
+        this.resetFunctions.push(() => blinkKeybindingRow.resetKeybinding());
         blinkGroup.add(blinkKeybindingRow);
         //#endregion
 
         //#region Blink interval
         const blinkIntervalRow = new Adw.SpinRow({
-            title: _('Regular Blink Interval'),
+            title: _('Fixed Blink Interval'),
             subtitle: _('Duration in seconds between blinks'),
             adjustment: new Gtk.Adjustment({
                 lower: 0.1,
@@ -408,7 +408,7 @@ class EyePage extends Adw.PreferencesPage {
             this.settings.set_double('eye-blink-interval', widget.value)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => blinkIntervalRow.set_value(
                 this.settings.get_default_value('eye-blink-interval').deep_unpack()
             )
@@ -471,7 +471,7 @@ class EyePage extends Adw.PreferencesPage {
                 );
             });
 
-        this.updateFunctions.push(() => {
+        this.resetFunctions.push(() => {
             const [min, max] =
                 this.settings.get_default_value('eye-blink-interval-range').deep_unpack();
             minIntervalButton.adjustment.set_upper(max - MIN_GAP);
@@ -500,11 +500,10 @@ class EyePage extends Adw.PreferencesPage {
         this.add(resetGroup);
 
         const resetRow = new ResetRow(
-            this.settings,
-            this.updateFunctions,
             'eye',
-            _('Reset Eye Settings'),
-            _('Reset all eye settings?')
+            this.settings,
+            _('Reset all eye settings?'),
+            this.resetFunctions
         );
         resetGroup.add(resetRow);
         //#endregion

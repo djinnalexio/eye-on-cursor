@@ -3,220 +3,220 @@ msgstr ""
 "Project-Id-Version: eye-on-cursor\n"
 "Report-Msgid-Bugs-To: https://github.com/djinnalexio/eye-on-cursor/issues\n"
 "POT-Creation-Date: 2026-05-10 21:32+0100\n"
-"PO-Revision-Date: 2026-05-10 22:19+0100\n"
+"PO-Revision-Date: 2026-05-11 01:11+0100\n"
 "Last-Translator: djinnalexio <djinnalexio@proton.me>\n"
-"Language-Team: French\n"
-"Language: fr_FR\n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Crowdin-Project: eye-on-cursor\n"
 "X-Crowdin-Project-ID: 734021\n"
-"X-Crowdin-Language: fr\n"
+"X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: /main/po/eye-on-cursor.pot\n"
 "X-Crowdin-File-ID: 40\n"
 "X-Generator: Poedit 3.9\n"
 
 #: src/lib/eye.js:46
 msgid "Animated eye that follows the mouse"
-msgstr "Un œil animé qui suit la souris"
+msgstr "跟随鼠标的动态眼睛"
 
 #: src/lib/eye.js:114 src/settings/trackerSettings.js:306
 msgid "Toggle Tracker"
-msgstr "Activer/Désactiver Le Traqueur"
+msgstr "切换追踪器"
 
 #: src/lib/eye.js:119
 msgid "Settings"
-msgstr "Paramètres"
+msgstr "设置"
 
 #: src/settings/eyeSettings.js:25
 msgid "Eyes"
-msgstr "Yeux"
+msgstr "眼睛"
 
 #: src/settings/eyeSettings.js:37
 msgid "Layout"
-msgstr "Disposition"
+msgstr "布局"
 
 #: src/settings/eyeSettings.js:43
 msgid "Active"
-msgstr "Actif"
+msgstr "启用"
 
 #: src/settings/eyeSettings.js:44
 msgid "Enable the eyes"
-msgstr "Activer les yeux"
+msgstr "启用眼睛"
 
 #: src/settings/eyeSettings.js:59
 msgid "Count"
-msgstr "Compte"
+msgstr "数量"
 
 #: src/settings/eyeSettings.js:60
 msgid "Number of eyes"
-msgstr "Nombre d'yeux"
+msgstr "眼睛数量"
 
 #: src/settings/eyeSettings.js:71
 msgid "Displaying more eyes may reduce performance."
-msgstr "Augmenter le nombre d'yeux peut réduire la performance."
+msgstr "显示更多眼睛可能会降低性能。"
 
 #: src/settings/eyeSettings.js:83
 msgid "Left"
-msgstr "Gauche"
+msgstr "左"
 
 #: src/settings/eyeSettings.js:84
 msgid "Center"
-msgstr "Centre"
+msgstr "中"
 
 #: src/settings/eyeSettings.js:85
 msgid "Right"
-msgstr "Droite"
+msgstr "右"
 
 #: src/settings/eyeSettings.js:89
 msgid "Position"
-msgstr "Position"
+msgstr "位置"
 
 #: src/settings/eyeSettings.js:90
 msgid "Position of the eyes on the panel"
-msgstr "Position des yeux sur le panneau"
+msgstr "眼睛在面板上的位置"
 
 #: src/settings/eyeSettings.js:114
 msgid "Index"
-msgstr "Ordre"
+msgstr "索引"
 
 #: src/settings/eyeSettings.js:115
 msgid "Index of the eyes on the panel segment"
-msgstr "Rang des yeux sur le segment du panneau"
+msgstr "眼睛在面板区段上的索引"
 
 #: src/settings/eyeSettings.js:135
 msgid "Width"
-msgstr "Largeur"
+msgstr "宽度"
 
 #: src/settings/eyeSettings.js:136
 msgid "Drawing space and padding"
-msgstr "Espace et marge"
+msgstr "绘制空间与内边距"
 
 #: src/settings/eyeSettings.js:156
 msgid "Menu"
-msgstr "Menu"
+msgstr "菜单"
 
 #: src/settings/eyeSettings.js:157
 msgid "Enable the eye menu"
-msgstr "Activer le menu de l'œil"
+msgstr "启用眼睛菜单"
 
 #: src/settings/eyeSettings.js:175 src/settings/trackerSettings.js:38
 msgid "Appearance"
-msgstr "Apparence"
+msgstr "外观"
 
 #: src/settings/eyeSettings.js:182
 msgid "Natural"
-msgstr "Naturel"
+msgstr "自然"
 
 #: src/settings/eyeSettings.js:183
 msgid "Round"
-msgstr "Rond"
+msgstr "圆形"
 
 #: src/settings/eyeSettings.js:184
 msgid "Comic"
-msgstr "Comic"
+msgstr "卡通"
 
 #: src/settings/eyeSettings.js:188 src/settings/trackerSettings.js:68
 msgid "Shape"
-msgstr "Forme"
+msgstr "形状"
 
 #: src/settings/eyeSettings.js:189
 msgid "Shape of the eyes"
-msgstr "Forme des yeux"
+msgstr "眼睛的形状"
 
 #: src/settings/eyeSettings.js:213
 msgid "Sketch Mode"
-msgstr "Mode Croquis"
+msgstr "素描模式"
 
 #: src/settings/eyeSettings.js:214
 msgid "Only draw the outline"
-msgstr "Ne dessiner que le croquis"
+msgstr "仅绘制轮廓"
 
 #: src/settings/eyeSettings.js:231
 msgid "Line Thickness"
-msgstr "Épaisseur des lignes"
+msgstr "线条粗细"
 
 #: src/settings/eyeSettings.js:232
 msgid "Thickness of the strokes in outline mode"
-msgstr "Épaisseur des traits en mode contour"
+msgstr "轮廓模式下笔画的粗细"
 
 #: src/settings/eyeSettings.js:254
 msgid "Iris Color"
-msgstr "Couleur de l'iris"
+msgstr "虹膜颜色"
 
 #: src/settings/eyeSettings.js:255
 msgid "Custom color for the iris"
-msgstr "Couleur personnalisée pour l'iris"
+msgstr "虹膜的自定义颜色"
 
 #: src/settings/eyeSettings.js:304 src/settings/trackerSettings.js:277
 msgid "Refresh Rate (Hz)"
-msgstr "Fréquence (Hz)"
+msgstr "刷新率 (Hz)"
 
 #: src/settings/eyeSettings.js:305 src/settings/trackerSettings.js:278
 msgid "Higher refresh rates may impact performance."
-msgstr "Une fréquence élevée peut réduire la performance."
+msgstr "较高的刷新率可能会影响性能。"
 
 #: src/settings/eyeSettings.js:329
 msgid "Blinking"
-msgstr "Clignement"
+msgstr "眨眼"
 
 #: src/settings/eyeSettings.js:334
 msgid "Eyelid Color"
-msgstr "Couleur de la paupière"
+msgstr "眼睑颜色"
 
 #: src/settings/eyeSettings.js:354
 msgid "Manual"
-msgstr "Manuel"
+msgstr "手动"
 
 #: src/settings/eyeSettings.js:355
 msgid "Fixed"
-msgstr "Fixe"
+msgstr "固定"
 
 #: src/settings/eyeSettings.js:356
 msgid "Random"
-msgstr "Irrégulier"
+msgstr "随机"
 
 #: src/settings/eyeSettings.js:360
 msgid "Blink Mode"
-msgstr "Mode de clignement"
+msgstr "眨眼模式"
 
 #: src/settings/eyeSettings.js:361
 msgid "Choose how eyes blink"
-msgstr "Comment les yeux clignent"
+msgstr "选择眼睛的眨眼方式"
 
 #: src/settings/eyeSettings.js:387
 msgid "Manual Blink"
-msgstr "Clignement manuel"
+msgstr "手动眨眼"
 
 #: src/settings/eyeSettings.js:397
 msgid "Fixed Blink Interval"
-msgstr "Intervalle de clignement fixe"
+msgstr "固定眨眼间隔"
 
 #: src/settings/eyeSettings.js:398
 msgid "Duration in seconds between blinks"
-msgstr "Durée en secondes entre les clignements"
+msgstr "眨眼之间的间隔（秒）"
 
 #: src/settings/eyeSettings.js:421
 msgid "Random Blink Interval"
-msgstr "Intervalles de clignement irrégulier"
+msgstr "随机眨眼间隔"
 
 #: src/settings/eyeSettings.js:422
 msgid "Range of durations in seconds between random blinks"
-msgstr "Plage de durées en secondes entre les clignements irréguliers"
+msgstr "随机眨眼之间的间隔范围（秒）"
 
 #: src/settings/eyeSettings.js:490
 msgid "to"
-msgstr "à"
+msgstr "至"
 
 #: src/settings/eyeSettings.js:505
 msgid "Reset all eye settings?"
-msgstr "Réinitialiser tous les paramètres d'yeux?"
+msgstr "重置所有眼睛设置？"
 
 #: src/settings/about.js:63
 msgid "About Eye on Cursor"
-msgstr "À propos de Eye on Cursor"
+msgstr "关于 Eye on Cursor"
 
 #: src/settings/about.js:93
 msgctxt "(USER)NAME EMAIL/URL"
@@ -225,144 +225,104 @@ msgstr "djinnalexio https://github.com/djinnalexio/"
 
 #: src/settings/about.js:99
 msgid "Extension Page"
-msgstr "Page de l'extension"
+msgstr "扩展页面"
 
 #: src/settings/about.js:102
 msgid "Donate"
-msgstr "Faire un Don"
+msgstr "捐赠"
 
 #: src/settings/about.js:104
 msgid "Forked from"
-msgstr "Dérivé de"
+msgstr "派生自"
 
 #: src/settings/about.js:108
 msgid "Cinnamon Fork"
-msgstr "Branche Cinnamon"
+msgstr "Cinnamon 分支"
 
 #: src/settings/trackerSettings.js:27
 msgid "Mouse Tracker"
-msgstr "Traqueur"
+msgstr "鼠标追踪器"
 
 #: src/settings/trackerSettings.js:69
 msgid "Shape of the tracker"
-msgstr "Forme du traqueur"
+msgstr "追踪器的形状"
 
 #: src/settings/trackerSettings.js:81
 msgid "Select a Tracker"
-msgstr "Sélectionner un Traqueur"
+msgstr "选择追踪器"
 
 #: src/settings/trackerSettings.js:153
 msgid "Size"
-msgstr "Taille"
+msgstr "大小"
 
 #: src/settings/trackerSettings.js:154
 msgid "Size of the tracker"
-msgstr "Taille du traqueur"
+msgstr "追踪器的大小"
 
 #: src/settings/trackerSettings.js:174
 msgid "Color"
-msgstr "Couleur"
+msgstr "颜色"
 
 #: src/settings/trackerSettings.js:175
 msgid "Custom color for the tracker"
-msgstr "Couleur personnalisée pour le traqueur"
+msgstr "追踪器的自定义颜色"
 
 #: src/settings/trackerSettings.js:220
 msgid "Colors on Click"
-msgstr "Couleurs du clic"
+msgstr "点击时的颜色"
 
 #: src/settings/trackerSettings.js:221
 msgid "Colors when left, middle, and right-clicking"
-msgstr "Couleurs de clics gauche, central, et droit"
+msgstr "左键、中键和右键点击时的颜色"
 
 #: src/settings/trackerSettings.js:227
 msgid "Click highlighting does not work in windows."
-msgstr "La mise en surbrillance des clics ne fonctionne pas dans les fenêtres."
+msgstr "点击高亮在窗口中不起作用。"
 
 #: src/settings/trackerSettings.js:254
 msgid "Opacity"
-msgstr "Opacité"
+msgstr "不透明度"
 
 #: src/settings/trackerSettings.js:255
 msgid "Opacity of the tracker"
-msgstr "Opacité du traqueur"
+msgstr "追踪器的不透明度"
 
 #: src/settings/trackerSettings.js:300
 msgid "Keybinding"
-msgstr "Raccourci"
+msgstr "快捷键"
 
 #: src/settings/trackerSettings.js:321
 msgid "Reset all tracker settings?"
-msgstr "Réinitialiser tous les paramètres du traqueur?"
+msgstr "重置所有追踪器设置？"
 
 #: src/settings/trackerSettings.js:328
 msgid "Information"
-msgstr "Information"
+msgstr "信息"
 
 #: src/settings/prefsWidgets.js:59 src/settings/prefsWidgets.js:110
 msgid "Set a shortcut"
-msgstr "Définir un raccourci"
+msgstr "设置快捷键"
 
 #: src/settings/prefsWidgets.js:65
 msgid "New shortcut…"
-msgstr "Nouveau raccourci…"
+msgstr "新快捷键…"
 
 #: src/settings/prefsWidgets.js:111
 msgid "Press Esc to cancel or Backspace to disable the shortcut"
-msgstr ""
-"Appuyez sur Échap pour annuler ou sur Retour arrière pour désactiver le "
-"raccourci"
+msgstr "按 Esc 取消，按 Backspace 禁用快捷键"
 
 #: src/settings/prefsWidgets.js:227
 msgid "Reset Settings"
-msgstr "Réinitialiser les Paramètres"
+msgstr "重置设置"
 
 #: src/settings/prefsWidgets.js:238
 msgid "Any related customizations will be lost."
-msgstr "Toutes les personnalisations associées seront perdues."
+msgstr "所有相关的自定义设置将会丢失。"
 
 #: src/settings/prefsWidgets.js:241
 msgid "Cancel"
-msgstr "Annuler"
+msgstr "取消"
 
 #: src/settings/prefsWidgets.js:242
 msgid "Reset"
-msgstr "Réinitialiser"
-
-#~ msgid "Synced"
-#~ msgstr "Synchronisé"
-
-#~ msgid "Unsynced"
-#~ msgstr "Aléatoire"
-
-#~ msgid "Regular Blink Interval"
-#~ msgstr "Intervalle de clignement fixe"
-
-#~ msgid "Outline Mode"
-#~ msgstr "Mode Contour"
-
-#~ msgid "Strokes"
-#~ msgstr "Traits"
-
-#~ msgid "Hz"
-#~ msgstr "Hz"
-
-#~ msgid "Seconds between synchronized blinks"
-#~ msgstr "Secondes entre les clignements synchronisés"
-
-#~ msgid "Unsynced Blinking Interval"
-#~ msgstr "Intervalle de clignement aléatoire"
-
-#~ msgid "About"
-#~ msgstr "À propos"
-
-#~ msgid "Development information and credits"
-#~ msgstr "Informations de développement et crédits"
-
-#~ msgid "Middle-click highlighting does not work on x11. See README."
-#~ msgstr ""
-#~ "La mise en surbrillance du clic central ne fonctionne pas sur x11. Voir "
-#~ "README."
-
-#~ msgid "Credits"
-#~ msgstr "Crédits"
+msgstr "重置"

@@ -214,18 +214,17 @@ class KeybindingRow extends Adw.ActionRow {
 /**
  * A row that allows users to reset all the settings on a page.
  *
- * @param {Gio.Settings} settings - The settings object for this extension.
- * @param {Function[]} updateFunctions - The array of functions that update widget values with
- * current key values.
  * @param {string} keyPrefix - The prefix of the keys to reset.
- * @param {string} title - The title of the row.
+ * @param {Gio.Settings} settings - The settings object for this extension.
  * @param {string} heading - The heading of the alert dialog.
+ * @param {Function[]} resetFunctions - The array of functions that update widget values with
+ * current key values.
  */
 export const ResetRow = GObject.registerClass(
 class ResetRow extends Adw.ActionRow {
-    constructor(settings, updateFunctions, keyPrefix, title, heading) {
+    constructor(keyPrefix, settings, heading, resetFunctions) {
         super({
-            title,
+            title: _('Reset Settings'),
             activatable: true,
             css_classes: ['error'],
         });
@@ -236,8 +235,7 @@ class ResetRow extends Adw.ActionRow {
 
         const resetAlert = new Adw.AlertDialog({
             heading,
-            body: _('This will set all related settings back to default. ' +
-                'Any customizations you have made will be lost.'),
+            body: _('Any related customizations will be lost.'),
         });
 
         resetAlert.add_response('close', _('Cancel'));
@@ -246,7 +244,7 @@ class ResetRow extends Adw.ActionRow {
         resetAlert.set_response_appearance('reset', Adw.ResponseAppearance.DESTRUCTIVE);
 
         resetAlert.connect('response::reset', () => {
-            updateFunctions.forEach((func) => func());
+            resetFunctions.forEach((func) => func());
             settings.list_keys().forEach((key) => {
                 if (key.startsWith(keyPrefix))
                     settings.reset(key);

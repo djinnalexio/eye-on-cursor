@@ -32,7 +32,7 @@ class TrackerPage extends Adw.PreferencesPage {
         this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
             .list_keys()
             .includes('accent-color');
-        this.updateFunctions = [];
+        this.resetFunctions = [];
 
         //#region Tracker drawing group
         const drawingGroup = new Adw.PreferencesGroup({title: _('Appearance')});
@@ -139,7 +139,7 @@ class TrackerPage extends Adw.PreferencesPage {
 
         shapeRow.connect('activated', () => shapeWindow.present(this));
 
-        this.updateFunctions.push(() => {
+        this.resetFunctions.push(() => {
             shapeRowLabel.set_label(
                 this.settings.get_default_value('tracker-shape').deep_unpack().replaceAll('_', ' ')
             );
@@ -163,7 +163,7 @@ class TrackerPage extends Adw.PreferencesPage {
             this.settings.set_int('tracker-size', widget.value)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => sizeRow.set_value(this.settings.get_default_value('tracker-size').deep_unpack())
         );
         drawingGroup.add(sizeRow);
@@ -177,7 +177,7 @@ class TrackerPage extends Adw.PreferencesPage {
 
         const colorMainPicker = newColorPicker(this.settings, 'tracker-color-main');
 
-        this.updateFunctions.push(() => {
+        this.resetFunctions.push(() => {
             const currentColor = colorMainPicker.get_rgba();
             currentColor.parse(this.settings.get_default_value('tracker-color-main').deep_unpack());
             colorMainPicker.set_rgba(currentColor);
@@ -200,7 +200,7 @@ class TrackerPage extends Adw.PreferencesPage {
             });
             colorMainPicker.set_sensitive(trackerColorToggle.active);
 
-            this.updateFunctions.push(
+            this.resetFunctions.push(
                 () =>
                     trackerColorToggle.set_active(
                         this.settings.get_default_value('tracker-color-main-enabled').deep_unpack()
@@ -236,7 +236,7 @@ class TrackerPage extends Adw.PreferencesPage {
         ].forEach((key) => {
             const colorPicker = newColorPicker(this.settings, key);
 
-            this.updateFunctions.push(() => {
+            this.resetFunctions.push(() => {
                 const currentColor = colorPicker.get_rgba();
                 currentColor.parse(this.settings.get_default_value(key).deep_unpack());
                 colorPicker.set_rgba(currentColor);
@@ -264,7 +264,7 @@ class TrackerPage extends Adw.PreferencesPage {
             this.settings.set_int('tracker-opacity', widget.value)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => opacityRow.set_value(
                 this.settings.get_default_value('tracker-opacity').deep_unpack()
             )
@@ -287,7 +287,7 @@ class TrackerPage extends Adw.PreferencesPage {
             this.settings.set_int('tracker-refresh-rate', widget.value)
         );
 
-        this.updateFunctions.push(
+        this.resetFunctions.push(
             () => refreshRow.set_value(
                 this.settings.get_default_value('tracker-refresh-rate').deep_unpack()
             )
@@ -307,7 +307,7 @@ class TrackerPage extends Adw.PreferencesPage {
         );
         keybindingGroup.set_header_suffix(keybindingRow.resetButton);
 
-        this.updateFunctions.push(() => keybindingRow.resetKeybinding());
+        this.resetFunctions.push(() => keybindingRow.resetKeybinding());
         keybindingGroup.add(keybindingRow);
         //#endregion
 
@@ -316,11 +316,10 @@ class TrackerPage extends Adw.PreferencesPage {
         this.add(resetGroup);
 
         const resetRow = new ResetRow(
-            this.settings,
-            this.updateFunctions,
             'tracker',
-            _('Reset Tracker Settings'),
-            _('Reset all tracker settings?')
+            this.settings,
+            _('Reset all tracker settings?'),
+            this.resetFunctions
         );
         resetGroup.add(resetRow);
         //#endregion
