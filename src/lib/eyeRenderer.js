@@ -101,7 +101,7 @@ function drawNaturalEye(area, options) {
         // Drawing the base of the eye
         cr.translate(areaWidth * 0.5, areaHeight * 0.5);
 
-        setColor(cr, options.sceleraColor);
+        setColor(cr, options.scleraColor);
         cr.setLineWidth(options.lineWidth);
 
         drawEyelidShape();
@@ -198,7 +198,7 @@ function drawRoundEye(area, options, scaleX = 1, scaleY = 1) {
         cr.translate(areaWidth * 0.5, areaHeight * 0.5);
         cr.scale(scaleX, scaleY);
 
-        setColor(cr, options.sceleraColor);
+        setColor(cr, options.scleraColor);
         cr.setLineWidth(options.lineWidth);
 
         cr.arc(0, 0, eyeRadius, 0, 2 * Math.PI);

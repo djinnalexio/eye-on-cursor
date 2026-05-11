@@ -169,7 +169,7 @@ class Eye extends PanelMenu.Button {
 
         // Use foreground color from the theme for the white of the eye
         const themeNode = this.area.get_theme_node();
-        const sceleraColor = themeNode.get_foreground_color();
+        const scleraColor = themeNode.get_foreground_color();
 
         // Get iris color
         let irisColor;
@@ -191,7 +191,7 @@ class Eye extends PanelMenu.Button {
             lineMode: this.lineMode,
             lineWidth: this.lineWidth,
             pupilColor: PUPIL_COLOR,
-            sceleraColor,
+            scleraColor,
             shape: this.shape,
         };
         drawEye(area, options);
