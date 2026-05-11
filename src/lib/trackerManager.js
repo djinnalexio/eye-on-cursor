@@ -47,11 +47,7 @@ export class TrackerManager {
     constructor(extension) {
         // Get extension object properties
         this.gettextDomain = extension.metadata['gettext-domain'];
-        this.trackersDir = GLib.build_filenamev([
-            extension.path,
-            'media',
-            'glyphs',
-        ]);
+        this.trackersDir = GLib.build_filenamev([extension.path, 'media', 'glyphs']);
         this.settings = extension.getSettings();
 
         // Check if accent color variable exists (GNOME 47+)
@@ -102,11 +98,8 @@ export class TrackerManager {
         this.tracker.opacity = Math.ceil(this.opacity * 2.55); // Convert from 0-100 to 0-255 range
 
         // Get the cache directory for colored trackers
-        this.cacheDir = GLib.build_filenamev([
-            GLib.get_user_cache_dir(),
-            this.gettextDomain,
-            'trackers',
-        ]);
+        this.cacheDir =
+            GLib.build_filenamev([GLib.get_user_cache_dir(), this.gettextDomain, 'trackers']);
         // Create the cache directory if it doesn't exist
         try {
             if (!GLib.file_test(this.cacheDir, GLib.FileTest.IS_DIR))

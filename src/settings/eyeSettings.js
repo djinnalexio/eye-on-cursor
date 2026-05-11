@@ -79,11 +79,8 @@ class EyePage extends Adw.PreferencesPage {
 
         //#region Eye position
         const positionLabelList = new Gtk.StringList();
-        [
-            _('Left'),
-            _('Center'),
-            _('Right'),
-        ].forEach((position) => positionLabelList.append(position));
+        [_('Left'), _('Center'), _('Right')]
+            .forEach((position) => positionLabelList.append(position));
 
         const positionRow = new Adw.ComboRow({
             title: _('Position'),
@@ -98,11 +95,7 @@ class EyePage extends Adw.PreferencesPage {
         this.resetFunctions.push(
             () => {
                 const defValue = this.settings.get_default_value('eye-position').deep_unpack();
-                const values = [ // Values from eye-position enum in schema
-                    'left',
-                    'center',
-                    'right',
-                ];
+                const values = ['left', 'center', 'right']; // Values from eye-position enum in schema
                 positionRow.set_selected(values.indexOf(defValue));
             }
         );
@@ -178,11 +171,7 @@ class EyePage extends Adw.PreferencesPage {
 
         //#region Eye shape
         const shapeLabelList = new Gtk.StringList();
-        [
-            _('Natural'),
-            _('Round'),
-            _('Comic'),
-        ].forEach((shape) => shapeLabelList.append(shape));
+        [_('Natural'), _('Round'), _('Comic')].forEach((shape) => shapeLabelList.append(shape));
 
         const shapeRow = new Adw.ComboRow({
             title: _('Shape'),
@@ -197,11 +186,7 @@ class EyePage extends Adw.PreferencesPage {
         this.resetFunctions.push(
             () => {
                 const defValue = this.settings.get_default_value('eye-shape').deep_unpack();
-                const values = [ // Values from eye-shape enum in schema
-                    'natural',
-                    'round',
-                    'comic',
-                ];
+                const values = ['natural', 'round', 'comic']; // Values from eye-shape enum in schema
                 shapeRow.set_selected(values.indexOf(defValue));
             }
         );
@@ -350,11 +335,7 @@ class EyePage extends Adw.PreferencesPage {
 
         //#region Blink mode
         const blinkModeList = new Gtk.StringList();
-        [
-            _('Manual'),
-            _('Fixed'),
-            _('Random'),
-        ].forEach((mode) => blinkModeList.append(mode));
+        [_('Manual'), _('Fixed'), _('Random')].forEach((mode) => blinkModeList.append(mode));
         // Each option enables the corresponding row
         const blinkModeRow = new Adw.ComboRow({
             title: _('Blink Mode'),
@@ -369,11 +350,7 @@ class EyePage extends Adw.PreferencesPage {
         this.resetFunctions.push(
             () => {
                 const defValue = this.settings.get_default_value('eye-blink-mode').deep_unpack();
-                const values = [ // Values from eye-blink-mode enum in schema
-                    'manual',
-                    'synced',
-                    'unsynced',
-                ];
+                const values = ['manual', 'synced', 'unsynced'];// Values from eye-blink-mode enum in schema
                 blinkModeRow.set_selected(values.indexOf(defValue));
             }
         );

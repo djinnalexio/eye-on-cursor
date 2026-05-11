@@ -92,11 +92,7 @@ export default defineConfig([
             //#region Suggestions
             // See https://eslint.org/docs/latest/rules/#suggestions
             'arrow-body-style': ['error', 'as-needed'],
-            'capitalized-comments': [
-                'warn',
-                'always',
-                {ignoreConsecutiveComments: true},
-            ],
+            'capitalized-comments': ['warn', 'always', {ignoreConsecutiveComments: true}],
             'complexity': 'warn',
             'default-param-last': 'error',
             'no-console': 'warn',
@@ -118,7 +114,7 @@ export default defineConfig([
                 'warn',
                 {
                     multiline: true,
-                    minItems: 3,
+                    minItems: 4,
                 },
             ],
             '@stylistic/arrow-parens': 'warn',
@@ -156,11 +152,8 @@ export default defineConfig([
             '@stylistic/key-spacing': 'warn',
             '@stylistic/keyword-spacing': 'warn',
             '@stylistic/linebreak-style': 'warn',
-            '@stylistic/lines-between-class-members': [
-                'warn',
-                'always',
-                {exceptAfterSingleLine: true},
-            ],
+            '@stylistic/lines-between-class-members':
+                ['warn', 'always', {exceptAfterSingleLine: true}],
             '@stylistic/max-len': [
                 'warn',
                 {
@@ -202,11 +195,7 @@ export default defineConfig([
             '@stylistic/operator-linebreak': 'error',
             '@stylistic/padded-blocks': ['error', 'never'],
             '@stylistic/quote-props': ['warn', 'consistent-as-needed'],
-            '@stylistic/quotes': [
-                'warn',
-                'single',
-                {avoidEscape: true},
-            ],
+            '@stylistic/quotes': ['warn', 'single', {avoidEscape: true}],
             '@stylistic/rest-spread-spacing': ['error'],
             '@stylistic/semi': 'warn',
             '@stylistic/semi-spacing': [
@@ -234,11 +223,7 @@ export default defineConfig([
                 'always',
                 {
                     line: {
-                        markers: [
-                            '/',
-                            '#region',
-                            '#endregion',
-                        ],
+                        markers: ['/', '#region', '#endregion'],
                         exceptions: ['-', '+'],
                     },
                     block: {

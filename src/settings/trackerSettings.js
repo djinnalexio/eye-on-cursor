@@ -41,11 +41,7 @@ class TrackerPage extends Adw.PreferencesPage {
         //#region Tracker shape
         // Get list of shapes
         const shapeList = [];
-        const shapeDirPath = GLib.build_filenamev([
-            extension.path,
-            'media',
-            'glyphs',
-        ]);
+        const shapeDirPath = GLib.build_filenamev([extension.path, 'media', 'glyphs']);
         const shapeDir = Gio.file_new_for_path(shapeDirPath);
         const enumFiles = shapeDir.enumerate_children(
             'standard::name',
@@ -229,11 +225,7 @@ class TrackerPage extends Adw.PreferencesPage {
         }
 
         const colorClickBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
-        [
-            'tracker-color-left',
-            'tracker-color-middle',
-            'tracker-color-right',
-        ].forEach((key) => {
+        ['tracker-color-left', 'tracker-color-middle', 'tracker-color-right'].forEach((key) => {
             const colorPicker = newColorPicker(this.settings, key);
 
             this.resetFunctions.push(() => {

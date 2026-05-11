@@ -37,11 +37,8 @@ export default class EyeOnCursorExtension extends Extension {
         ].forEach((key) => {
             const color = this.settings.get_string(key);
             if (color.startsWith('#')) {
-                const rgbValue = `rgb(${[
-                    color.slice(1, 3),
-                    color.slice(3, 5),
-                    color.slice(5, 7),
-                ].map((value) => parseInt(value, 16)).join()})`;
+                const rgbValue = `rgb(${[color.slice(1, 3), color.slice(3, 5), color.slice(5, 7)]
+                    .map((value) => parseInt(value, 16)).join()})`;
                 this.settings.set_string(key, rgbValue);
             }
         });
