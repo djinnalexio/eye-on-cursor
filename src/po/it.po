@@ -18,15 +18,15 @@ msgstr ""
 "X-Crowdin-File-ID: 40\n"
 "X-Generator: Poedit 3.9\n"
 
-#: src/lib/eye.js:46
+#: src/lib/eye.js:44
 msgid "Animated eye that follows the mouse"
 msgstr "Occhio animato che segue il mouse"
 
-#: src/lib/eye.js:114 src/settings/trackerSettings.js:306
+#: src/lib/eye.js:110 src/settings/trackerSettings.js:298
 msgid "Toggle Tracker"
 msgstr "Attiva/Disattiva Tracker"
 
-#: src/lib/eye.js:119
+#: src/lib/eye.js:115
 msgid "Settings"
 msgstr "Impostazioni"
 
@@ -58,159 +58,159 @@ msgstr "Numero di occhi"
 msgid "Displaying more eyes may reduce performance."
 msgstr "La visualizzazione di più occhi potrebbe ridurre le prestazioni."
 
-#: src/settings/eyeSettings.js:83
+#: src/settings/eyeSettings.js:82
 msgid "Left"
 msgstr "Sinistra"
 
-#: src/settings/eyeSettings.js:84
+#: src/settings/eyeSettings.js:82
 msgid "Center"
 msgstr "Centro"
 
-#: src/settings/eyeSettings.js:85
+#: src/settings/eyeSettings.js:82
 msgid "Right"
 msgstr "Destra"
 
-#: src/settings/eyeSettings.js:89
+#: src/settings/eyeSettings.js:86
 msgid "Position"
 msgstr "Posizione"
 
-#: src/settings/eyeSettings.js:90
+#: src/settings/eyeSettings.js:87
 msgid "Position of the eyes on the panel"
 msgstr "Posizione degli occhi sul pannello"
 
-#: src/settings/eyeSettings.js:114
+#: src/settings/eyeSettings.js:107
 msgid "Index"
 msgstr "Indice"
 
-#: src/settings/eyeSettings.js:115
+#: src/settings/eyeSettings.js:108
 msgid "Index of the eyes on the panel segment"
 msgstr "Indice degli occhi sul segmento del pannello"
 
-#: src/settings/eyeSettings.js:135
+#: src/settings/eyeSettings.js:128
 msgid "Width"
 msgstr "Larghezza"
 
-#: src/settings/eyeSettings.js:136
+#: src/settings/eyeSettings.js:129
 msgid "Drawing space and padding"
 msgstr "Disegno spazio e imbottitura"
 
-#: src/settings/eyeSettings.js:156
+#: src/settings/eyeSettings.js:149
 msgid "Menu"
 msgstr "Menu"
 
-#: src/settings/eyeSettings.js:157
+#: src/settings/eyeSettings.js:150
 msgid "Enable the eye menu"
 msgstr "Abilita il menu dell'occhio"
 
-#: src/settings/eyeSettings.js:175 src/settings/trackerSettings.js:38
+#: src/settings/eyeSettings.js:168 src/settings/trackerSettings.js:38
 msgid "Appearance"
 msgstr "Aspetto"
 
-#: src/settings/eyeSettings.js:182
+#: src/settings/eyeSettings.js:174
 msgid "Natural"
 msgstr "Naturale"
 
-#: src/settings/eyeSettings.js:183
+#: src/settings/eyeSettings.js:174
 msgid "Round"
 msgstr "Tondo"
 
-#: src/settings/eyeSettings.js:184
+#: src/settings/eyeSettings.js:174
 msgid "Comic"
 msgstr "Fumetto"
 
-#: src/settings/eyeSettings.js:188 src/settings/trackerSettings.js:68
+#: src/settings/eyeSettings.js:177 src/settings/trackerSettings.js:64
 msgid "Shape"
 msgstr "Forma"
 
-#: src/settings/eyeSettings.js:189
+#: src/settings/eyeSettings.js:178
 msgid "Shape of the eyes"
 msgstr "Forma degli occhi"
 
-#: src/settings/eyeSettings.js:213
+#: src/settings/eyeSettings.js:198
 msgid "Sketch Mode"
 msgstr "Modalità schizzo"
 
-#: src/settings/eyeSettings.js:214
+#: src/settings/eyeSettings.js:199
 msgid "Only draw the outline"
 msgstr "Disegna solo il contorno"
 
-#: src/settings/eyeSettings.js:231
+#: src/settings/eyeSettings.js:216
 msgid "Line Thickness"
 msgstr "Spessore del tratto"
 
-#: src/settings/eyeSettings.js:232
+#: src/settings/eyeSettings.js:217
 msgid "Thickness of the strokes in outline mode"
 msgstr "Spessore dei tratti in modalità contorno"
 
-#: src/settings/eyeSettings.js:254
+#: src/settings/eyeSettings.js:239
 msgid "Iris Color"
 msgstr "Colore Iris"
 
-#: src/settings/eyeSettings.js:255
+#: src/settings/eyeSettings.js:240
 msgid "Custom color for the iris"
 msgstr "Colore personalizzato per l'iride"
 
-#: src/settings/eyeSettings.js:304 src/settings/trackerSettings.js:277
+#: src/settings/eyeSettings.js:289 src/settings/trackerSettings.js:269
 msgid "Refresh Rate (Hz)"
 msgstr "Frequenza Di Aggiornamento (Hz)"
 
-#: src/settings/eyeSettings.js:305 src/settings/trackerSettings.js:278
+#: src/settings/eyeSettings.js:290 src/settings/trackerSettings.js:270
 msgid "Higher refresh rates may impact performance."
 msgstr "Valori di aggiornamento più elevati possono influire sulle prestazioni."
 
-#: src/settings/eyeSettings.js:329
+#: src/settings/eyeSettings.js:314
 msgid "Blinking"
 msgstr "Lampeggiante"
 
-#: src/settings/eyeSettings.js:334
+#: src/settings/eyeSettings.js:319
 msgid "Eyelid Color"
 msgstr "Colore Della Palpebra"
 
-#: src/settings/eyeSettings.js:354
+#: src/settings/eyeSettings.js:338
 msgid "Manual"
 msgstr "Manuale"
 
-#: src/settings/eyeSettings.js:355
+#: src/settings/eyeSettings.js:338
 msgid "Fixed"
 msgstr "Fisso"
 
-#: src/settings/eyeSettings.js:356
+#: src/settings/eyeSettings.js:338
 msgid "Random"
 msgstr "Casuale"
 
-#: src/settings/eyeSettings.js:360
+#: src/settings/eyeSettings.js:341
 msgid "Blink Mode"
 msgstr "Modalità Lampeggiante"
 
-#: src/settings/eyeSettings.js:361
+#: src/settings/eyeSettings.js:342
 msgid "Choose how eyes blink"
 msgstr "Scegli come gli occhi lampeggiano"
 
-#: src/settings/eyeSettings.js:387
+#: src/settings/eyeSettings.js:364
 msgid "Manual Blink"
 msgstr "Collegamento Manuale"
 
-#: src/settings/eyeSettings.js:397
+#: src/settings/eyeSettings.js:374
 msgid "Fixed Blink Interval"
 msgstr "Intervallo di Ammiccamento Fisso"
 
-#: src/settings/eyeSettings.js:398
+#: src/settings/eyeSettings.js:375
 msgid "Duration in seconds between blinks"
 msgstr "Durata in secondi tra gli ammiccamenti"
 
-#: src/settings/eyeSettings.js:421
+#: src/settings/eyeSettings.js:398
 msgid "Random Blink Interval"
 msgstr "Intervallo di Ammiccamento Casuale"
 
-#: src/settings/eyeSettings.js:422
+#: src/settings/eyeSettings.js:399
 msgid "Range of durations in seconds between random blinks"
 msgstr "Intervallo di durata in secondi tra ammiccamenti casuali"
 
-#: src/settings/eyeSettings.js:490
+#: src/settings/eyeSettings.js:467
 msgid "to"
 msgstr "a"
 
-#: src/settings/eyeSettings.js:505
+#: src/settings/eyeSettings.js:482
 msgid "Reset all eye settings?"
 msgstr "Ripristinare tutte le impostazioni degli occhi?"
 
@@ -243,59 +243,59 @@ msgstr "Fork di Cinnamon"
 msgid "Mouse Tracker"
 msgstr "Mouse Tracker"
 
-#: src/settings/trackerSettings.js:69
+#: src/settings/trackerSettings.js:65
 msgid "Shape of the tracker"
 msgstr "Forma del tracker"
 
-#: src/settings/trackerSettings.js:81
+#: src/settings/trackerSettings.js:77
 msgid "Select a Tracker"
 msgstr "Seleziona un Tracker"
 
-#: src/settings/trackerSettings.js:153
+#: src/settings/trackerSettings.js:149
 msgid "Size"
 msgstr "Dimensione"
 
-#: src/settings/trackerSettings.js:154
+#: src/settings/trackerSettings.js:150
 msgid "Size of the tracker"
 msgstr "Dimensione del tracker"
 
-#: src/settings/trackerSettings.js:174
+#: src/settings/trackerSettings.js:170
 msgid "Color"
 msgstr "Colore"
 
-#: src/settings/trackerSettings.js:175
+#: src/settings/trackerSettings.js:171
 msgid "Custom color for the tracker"
 msgstr "Colore personalizzato per il tracker"
 
-#: src/settings/trackerSettings.js:220
+#: src/settings/trackerSettings.js:216
 msgid "Colors on Click"
 msgstr "Colori al clic"
 
-#: src/settings/trackerSettings.js:221
+#: src/settings/trackerSettings.js:217
 msgid "Colors when left, middle, and right-clicking"
 msgstr "Colori a sinistra, centrale e clic destro"
 
-#: src/settings/trackerSettings.js:227
+#: src/settings/trackerSettings.js:223
 msgid "Click highlighting does not work in windows."
 msgstr "L'evidenziazione dei clic non funziona nelle finestre."
 
-#: src/settings/trackerSettings.js:254
+#: src/settings/trackerSettings.js:246
 msgid "Opacity"
 msgstr "Opacità"
 
-#: src/settings/trackerSettings.js:255
+#: src/settings/trackerSettings.js:247
 msgid "Opacity of the tracker"
 msgstr "Opacità del tracker"
 
-#: src/settings/trackerSettings.js:300
+#: src/settings/trackerSettings.js:292
 msgid "Keybinding"
 msgstr "Keybinding"
 
-#: src/settings/trackerSettings.js:321
+#: src/settings/trackerSettings.js:313
 msgid "Reset all tracker settings?"
 msgstr "Ripristinare tutte le impostazioni del tracker?"
 
-#: src/settings/trackerSettings.js:328
+#: src/settings/trackerSettings.js:320
 msgid "Information"
 msgstr "Informazioni"
 

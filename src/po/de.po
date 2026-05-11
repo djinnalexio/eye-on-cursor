@@ -18,15 +18,15 @@ msgstr ""
 "X-Crowdin-File-ID: 40\n"
 "X-Generator: Poedit 3.9\n"
 
-#: src/lib/eye.js:46
+#: src/lib/eye.js:44
 msgid "Animated eye that follows the mouse"
 msgstr "Animiertes Auge, das der Maus folgt"
 
-#: src/lib/eye.js:114 src/settings/trackerSettings.js:306
+#: src/lib/eye.js:110 src/settings/trackerSettings.js:298
 msgid "Toggle Tracker"
 msgstr "Tracker umschalten"
 
-#: src/lib/eye.js:119
+#: src/lib/eye.js:115
 msgid "Settings"
 msgstr "Einstellungen"
 
@@ -58,159 +58,159 @@ msgstr "Anzahl der Augen"
 msgid "Displaying more eyes may reduce performance."
 msgstr "Die Anzeige von mehr Augen kann die Leistung verringern."
 
-#: src/settings/eyeSettings.js:83
+#: src/settings/eyeSettings.js:82
 msgid "Left"
 msgstr "Links"
 
-#: src/settings/eyeSettings.js:84
+#: src/settings/eyeSettings.js:82
 msgid "Center"
 msgstr "Zentriert"
 
-#: src/settings/eyeSettings.js:85
+#: src/settings/eyeSettings.js:82
 msgid "Right"
 msgstr "Rechts"
 
-#: src/settings/eyeSettings.js:89
+#: src/settings/eyeSettings.js:86
 msgid "Position"
 msgstr "Position"
 
-#: src/settings/eyeSettings.js:90
+#: src/settings/eyeSettings.js:87
 msgid "Position of the eyes on the panel"
 msgstr "Position der Augen an der Leiste"
 
-#: src/settings/eyeSettings.js:114
+#: src/settings/eyeSettings.js:107
 msgid "Index"
 msgstr "Index"
 
-#: src/settings/eyeSettings.js:115
+#: src/settings/eyeSettings.js:108
 msgid "Index of the eyes on the panel segment"
 msgstr "Index der Augen auf das Panel-Segment"
 
-#: src/settings/eyeSettings.js:135
+#: src/settings/eyeSettings.js:128
 msgid "Width"
 msgstr "Breite"
 
-#: src/settings/eyeSettings.js:136
+#: src/settings/eyeSettings.js:129
 msgid "Drawing space and padding"
 msgstr "Raum und Polster zeichnen"
 
-#: src/settings/eyeSettings.js:156
+#: src/settings/eyeSettings.js:149
 msgid "Menu"
 msgstr "Menü"
 
-#: src/settings/eyeSettings.js:157
+#: src/settings/eyeSettings.js:150
 msgid "Enable the eye menu"
 msgstr "Augenmenü aktivieren"
 
-#: src/settings/eyeSettings.js:175 src/settings/trackerSettings.js:38
+#: src/settings/eyeSettings.js:168 src/settings/trackerSettings.js:38
 msgid "Appearance"
 msgstr "Erscheinung"
 
-#: src/settings/eyeSettings.js:182
+#: src/settings/eyeSettings.js:174
 msgid "Natural"
 msgstr "Natürlich"
 
-#: src/settings/eyeSettings.js:183
+#: src/settings/eyeSettings.js:174
 msgid "Round"
 msgstr "Runde"
 
-#: src/settings/eyeSettings.js:184
+#: src/settings/eyeSettings.js:174
 msgid "Comic"
 msgstr "Comic"
 
-#: src/settings/eyeSettings.js:188 src/settings/trackerSettings.js:68
+#: src/settings/eyeSettings.js:177 src/settings/trackerSettings.js:64
 msgid "Shape"
 msgstr "Form"
 
-#: src/settings/eyeSettings.js:189
+#: src/settings/eyeSettings.js:178
 msgid "Shape of the eyes"
 msgstr "Augenform"
 
-#: src/settings/eyeSettings.js:213
+#: src/settings/eyeSettings.js:198
 msgid "Sketch Mode"
 msgstr "Skizzenmodus"
 
-#: src/settings/eyeSettings.js:214
+#: src/settings/eyeSettings.js:199
 msgid "Only draw the outline"
 msgstr "Nur den Umriss zeichnen"
 
-#: src/settings/eyeSettings.js:231
+#: src/settings/eyeSettings.js:216
 msgid "Line Thickness"
 msgstr "Linienstärke"
 
-#: src/settings/eyeSettings.js:232
+#: src/settings/eyeSettings.js:217
 msgid "Thickness of the strokes in outline mode"
 msgstr "Stärke der Striche im Umrissmodus"
 
-#: src/settings/eyeSettings.js:254
+#: src/settings/eyeSettings.js:239
 msgid "Iris Color"
 msgstr "Iris Farbe"
 
-#: src/settings/eyeSettings.js:255
+#: src/settings/eyeSettings.js:240
 msgid "Custom color for the iris"
 msgstr "Benutzerdefinierte Farbe für die Iris"
 
-#: src/settings/eyeSettings.js:304 src/settings/trackerSettings.js:277
+#: src/settings/eyeSettings.js:289 src/settings/trackerSettings.js:269
 msgid "Refresh Rate (Hz)"
 msgstr "Bildwiederholrate (Hz)"
 
-#: src/settings/eyeSettings.js:305 src/settings/trackerSettings.js:278
+#: src/settings/eyeSettings.js:290 src/settings/trackerSettings.js:270
 msgid "Higher refresh rates may impact performance."
 msgstr "Höhere Aktualisierungsraten können die Performance beeinflussen."
 
-#: src/settings/eyeSettings.js:329
+#: src/settings/eyeSettings.js:314
 msgid "Blinking"
 msgstr "Blinkend"
 
-#: src/settings/eyeSettings.js:334
+#: src/settings/eyeSettings.js:319
 msgid "Eyelid Color"
 msgstr "Augenlid-Farbe"
 
-#: src/settings/eyeSettings.js:354
+#: src/settings/eyeSettings.js:338
 msgid "Manual"
 msgstr "Manuell"
 
-#: src/settings/eyeSettings.js:355
+#: src/settings/eyeSettings.js:338
 msgid "Fixed"
 msgstr "Fest"
 
-#: src/settings/eyeSettings.js:356
+#: src/settings/eyeSettings.js:338
 msgid "Random"
 msgstr "Zufällig"
 
-#: src/settings/eyeSettings.js:360
+#: src/settings/eyeSettings.js:341
 msgid "Blink Mode"
 msgstr "Blinzel-Modus"
 
-#: src/settings/eyeSettings.js:361
+#: src/settings/eyeSettings.js:342
 msgid "Choose how eyes blink"
 msgstr "Wähle wie Augen blinken"
 
-#: src/settings/eyeSettings.js:387
+#: src/settings/eyeSettings.js:364
 msgid "Manual Blink"
 msgstr "Manuelles Blinken"
 
-#: src/settings/eyeSettings.js:397
+#: src/settings/eyeSettings.js:374
 msgid "Fixed Blink Interval"
 msgstr "Festes Blinzellintervall"
 
-#: src/settings/eyeSettings.js:398
+#: src/settings/eyeSettings.js:375
 msgid "Duration in seconds between blinks"
 msgstr "Dauer in Sekunden zwischen den Blinzeln"
 
-#: src/settings/eyeSettings.js:421
+#: src/settings/eyeSettings.js:398
 msgid "Random Blink Interval"
 msgstr "Zufälliges Blinzelintervall"
 
-#: src/settings/eyeSettings.js:422
+#: src/settings/eyeSettings.js:399
 msgid "Range of durations in seconds between random blinks"
 msgstr "Bereich der Dauer in Sekunden zwischen zufälligen Blinzeln"
 
-#: src/settings/eyeSettings.js:490
+#: src/settings/eyeSettings.js:467
 msgid "to"
 msgstr "zu"
 
-#: src/settings/eyeSettings.js:505
+#: src/settings/eyeSettings.js:482
 msgid "Reset all eye settings?"
 msgstr "Alle Augeneinstellungen zurücksetzen?"
 
@@ -243,59 +243,59 @@ msgstr "Cinnamon-Fork"
 msgid "Mouse Tracker"
 msgstr "Maus-Tracker"
 
-#: src/settings/trackerSettings.js:69
+#: src/settings/trackerSettings.js:65
 msgid "Shape of the tracker"
 msgstr "Form des Tracker"
 
-#: src/settings/trackerSettings.js:81
+#: src/settings/trackerSettings.js:77
 msgid "Select a Tracker"
 msgstr "Tracker auswählen"
 
-#: src/settings/trackerSettings.js:153
+#: src/settings/trackerSettings.js:149
 msgid "Size"
 msgstr "Größe"
 
-#: src/settings/trackerSettings.js:154
+#: src/settings/trackerSettings.js:150
 msgid "Size of the tracker"
 msgstr "Größe des Trackers"
 
-#: src/settings/trackerSettings.js:174
+#: src/settings/trackerSettings.js:170
 msgid "Color"
 msgstr "Farbe"
 
-#: src/settings/trackerSettings.js:175
+#: src/settings/trackerSettings.js:171
 msgid "Custom color for the tracker"
 msgstr "Benutzerdefinierte Farbe für den Tracker"
 
-#: src/settings/trackerSettings.js:220
+#: src/settings/trackerSettings.js:216
 msgid "Colors on Click"
 msgstr "Farben bei Klick"
 
-#: src/settings/trackerSettings.js:221
+#: src/settings/trackerSettings.js:217
 msgid "Colors when left, middle, and right-clicking"
 msgstr "Farben bei Linksklick, Mitte und Rechtsklick"
 
-#: src/settings/trackerSettings.js:227
+#: src/settings/trackerSettings.js:223
 msgid "Click highlighting does not work in windows."
 msgstr "Klick-Hervorhebung funktioniert nicht in Fenstern."
 
-#: src/settings/trackerSettings.js:254
+#: src/settings/trackerSettings.js:246
 msgid "Opacity"
 msgstr "Deckkraft"
 
-#: src/settings/trackerSettings.js:255
+#: src/settings/trackerSettings.js:247
 msgid "Opacity of the tracker"
 msgstr "Deckkraft des Trackers"
 
-#: src/settings/trackerSettings.js:300
+#: src/settings/trackerSettings.js:292
 msgid "Keybinding"
 msgstr "Tastenbelegung"
 
-#: src/settings/trackerSettings.js:321
+#: src/settings/trackerSettings.js:313
 msgid "Reset all tracker settings?"
 msgstr "Alle Tracker-Einstellungen zurücksetzen?"
 
-#: src/settings/trackerSettings.js:328
+#: src/settings/trackerSettings.js:320
 msgid "Information"
 msgstr "Informationen"
 

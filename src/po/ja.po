@@ -18,15 +18,15 @@ msgstr ""
 "X-Crowdin-File-ID: 40\n"
 "X-Generator: Poedit 3.9\n"
 
-#: src/lib/eye.js:46
+#: src/lib/eye.js:44
 msgid "Animated eye that follows the mouse"
 msgstr "マウスを追うアニメーションの目"
 
-#: src/lib/eye.js:114 src/settings/trackerSettings.js:306
+#: src/lib/eye.js:110 src/settings/trackerSettings.js:298
 msgid "Toggle Tracker"
 msgstr "トラッカーの切り替え"
 
-#: src/lib/eye.js:119
+#: src/lib/eye.js:115
 msgid "Settings"
 msgstr "設定"
 
@@ -58,159 +58,159 @@ msgstr "目の数"
 msgid "Displaying more eyes may reduce performance."
 msgstr "目の数が多いとパフォーマンスが低下する場合があります。"
 
-#: src/settings/eyeSettings.js:83
+#: src/settings/eyeSettings.js:82
 msgid "Left"
 msgstr "左"
 
-#: src/settings/eyeSettings.js:84
+#: src/settings/eyeSettings.js:82
 msgid "Center"
 msgstr "中央"
 
-#: src/settings/eyeSettings.js:85
+#: src/settings/eyeSettings.js:82
 msgid "Right"
 msgstr "右"
 
-#: src/settings/eyeSettings.js:89
+#: src/settings/eyeSettings.js:86
 msgid "Position"
 msgstr "位置"
 
-#: src/settings/eyeSettings.js:90
+#: src/settings/eyeSettings.js:87
 msgid "Position of the eyes on the panel"
 msgstr "パネル上の目の位置"
 
-#: src/settings/eyeSettings.js:114
+#: src/settings/eyeSettings.js:107
 msgid "Index"
 msgstr "インデックス"
 
-#: src/settings/eyeSettings.js:115
+#: src/settings/eyeSettings.js:108
 msgid "Index of the eyes on the panel segment"
 msgstr "パネルセグメント上の目のインデックス"
 
-#: src/settings/eyeSettings.js:135
+#: src/settings/eyeSettings.js:128
 msgid "Width"
 msgstr "幅"
 
-#: src/settings/eyeSettings.js:136
+#: src/settings/eyeSettings.js:129
 msgid "Drawing space and padding"
 msgstr "描画スペースと余白"
 
-#: src/settings/eyeSettings.js:156
+#: src/settings/eyeSettings.js:149
 msgid "Menu"
 msgstr "メニュー"
 
-#: src/settings/eyeSettings.js:157
+#: src/settings/eyeSettings.js:150
 msgid "Enable the eye menu"
 msgstr "目のメニューを有効にする"
 
-#: src/settings/eyeSettings.js:175 src/settings/trackerSettings.js:38
+#: src/settings/eyeSettings.js:168 src/settings/trackerSettings.js:38
 msgid "Appearance"
 msgstr "外観"
 
-#: src/settings/eyeSettings.js:182
+#: src/settings/eyeSettings.js:174
 msgid "Natural"
 msgstr "ナチュラル"
 
-#: src/settings/eyeSettings.js:183
+#: src/settings/eyeSettings.js:174
 msgid "Round"
 msgstr "丸"
 
-#: src/settings/eyeSettings.js:184
+#: src/settings/eyeSettings.js:174
 msgid "Comic"
 msgstr "コミック"
 
-#: src/settings/eyeSettings.js:188 src/settings/trackerSettings.js:68
+#: src/settings/eyeSettings.js:177 src/settings/trackerSettings.js:64
 msgid "Shape"
 msgstr "形状"
 
-#: src/settings/eyeSettings.js:189
+#: src/settings/eyeSettings.js:178
 msgid "Shape of the eyes"
 msgstr "目の形状"
 
-#: src/settings/eyeSettings.js:213
+#: src/settings/eyeSettings.js:198
 msgid "Sketch Mode"
 msgstr "スケッチモード"
 
-#: src/settings/eyeSettings.js:214
+#: src/settings/eyeSettings.js:199
 msgid "Only draw the outline"
 msgstr "輪郭のみを描画する"
 
-#: src/settings/eyeSettings.js:231
+#: src/settings/eyeSettings.js:216
 msgid "Line Thickness"
 msgstr "線の太さ"
 
-#: src/settings/eyeSettings.js:232
+#: src/settings/eyeSettings.js:217
 msgid "Thickness of the strokes in outline mode"
 msgstr "輪郭モードのストロークの太さ"
 
-#: src/settings/eyeSettings.js:254
+#: src/settings/eyeSettings.js:239
 msgid "Iris Color"
 msgstr "虹彩の色"
 
-#: src/settings/eyeSettings.js:255
+#: src/settings/eyeSettings.js:240
 msgid "Custom color for the iris"
 msgstr "虹彩のカスタムカラー"
 
-#: src/settings/eyeSettings.js:304 src/settings/trackerSettings.js:277
+#: src/settings/eyeSettings.js:289 src/settings/trackerSettings.js:269
 msgid "Refresh Rate (Hz)"
 msgstr "リフレッシュレート (Hz)"
 
-#: src/settings/eyeSettings.js:305 src/settings/trackerSettings.js:278
+#: src/settings/eyeSettings.js:290 src/settings/trackerSettings.js:270
 msgid "Higher refresh rates may impact performance."
 msgstr "リフレッシュレートが高いとパフォーマンスに影響する場合があります。"
 
-#: src/settings/eyeSettings.js:329
+#: src/settings/eyeSettings.js:314
 msgid "Blinking"
 msgstr "まばたき"
 
-#: src/settings/eyeSettings.js:334
+#: src/settings/eyeSettings.js:319
 msgid "Eyelid Color"
 msgstr "まぶたの色"
 
-#: src/settings/eyeSettings.js:354
+#: src/settings/eyeSettings.js:338
 msgid "Manual"
 msgstr "手動"
 
-#: src/settings/eyeSettings.js:355
+#: src/settings/eyeSettings.js:338
 msgid "Fixed"
 msgstr "固定"
 
-#: src/settings/eyeSettings.js:356
+#: src/settings/eyeSettings.js:338
 msgid "Random"
 msgstr "ランダム"
 
-#: src/settings/eyeSettings.js:360
+#: src/settings/eyeSettings.js:341
 msgid "Blink Mode"
 msgstr "まばたきモード"
 
-#: src/settings/eyeSettings.js:361
+#: src/settings/eyeSettings.js:342
 msgid "Choose how eyes blink"
 msgstr "まばたきの方法を選択する"
 
-#: src/settings/eyeSettings.js:387
+#: src/settings/eyeSettings.js:364
 msgid "Manual Blink"
 msgstr "手動まばたき"
 
-#: src/settings/eyeSettings.js:397
+#: src/settings/eyeSettings.js:374
 msgid "Fixed Blink Interval"
 msgstr "固定まばたき間隔"
 
-#: src/settings/eyeSettings.js:398
+#: src/settings/eyeSettings.js:375
 msgid "Duration in seconds between blinks"
 msgstr "まばたきの間隔（秒）"
 
-#: src/settings/eyeSettings.js:421
+#: src/settings/eyeSettings.js:398
 msgid "Random Blink Interval"
 msgstr "ランダムまばたき間隔"
 
-#: src/settings/eyeSettings.js:422
+#: src/settings/eyeSettings.js:399
 msgid "Range of durations in seconds between random blinks"
 msgstr "ランダムまばたきの間隔の範囲（秒）"
 
-#: src/settings/eyeSettings.js:490
+#: src/settings/eyeSettings.js:467
 msgid "to"
 msgstr "〜"
 
-#: src/settings/eyeSettings.js:505
+#: src/settings/eyeSettings.js:482
 msgid "Reset all eye settings?"
 msgstr "目のすべての設定をリセットしますか？"
 
@@ -243,59 +243,59 @@ msgstr "Cinnamon フォーク"
 msgid "Mouse Tracker"
 msgstr "マウストラッカー"
 
-#: src/settings/trackerSettings.js:69
+#: src/settings/trackerSettings.js:65
 msgid "Shape of the tracker"
 msgstr "トラッカーの形状"
 
-#: src/settings/trackerSettings.js:81
+#: src/settings/trackerSettings.js:77
 msgid "Select a Tracker"
 msgstr "トラッカーを選択"
 
-#: src/settings/trackerSettings.js:153
+#: src/settings/trackerSettings.js:149
 msgid "Size"
 msgstr "サイズ"
 
-#: src/settings/trackerSettings.js:154
+#: src/settings/trackerSettings.js:150
 msgid "Size of the tracker"
 msgstr "トラッカーのサイズ"
 
-#: src/settings/trackerSettings.js:174
+#: src/settings/trackerSettings.js:170
 msgid "Color"
 msgstr "色"
 
-#: src/settings/trackerSettings.js:175
+#: src/settings/trackerSettings.js:171
 msgid "Custom color for the tracker"
 msgstr "トラッカーのカスタムカラー"
 
-#: src/settings/trackerSettings.js:220
+#: src/settings/trackerSettings.js:216
 msgid "Colors on Click"
 msgstr "クリック時の色"
 
-#: src/settings/trackerSettings.js:221
+#: src/settings/trackerSettings.js:217
 msgid "Colors when left, middle, and right-clicking"
 msgstr "左・中・右クリック時の色"
 
-#: src/settings/trackerSettings.js:227
+#: src/settings/trackerSettings.js:223
 msgid "Click highlighting does not work in windows."
 msgstr "クリックのハイライトはウィンドウ内では機能しません。"
 
-#: src/settings/trackerSettings.js:254
+#: src/settings/trackerSettings.js:246
 msgid "Opacity"
 msgstr "不透明度"
 
-#: src/settings/trackerSettings.js:255
+#: src/settings/trackerSettings.js:247
 msgid "Opacity of the tracker"
 msgstr "トラッカーの不透明度"
 
-#: src/settings/trackerSettings.js:300
+#: src/settings/trackerSettings.js:292
 msgid "Keybinding"
 msgstr "キーバインド"
 
-#: src/settings/trackerSettings.js:321
+#: src/settings/trackerSettings.js:313
 msgid "Reset all tracker settings?"
 msgstr "トラッカーのすべての設定をリセットしますか？"
 
-#: src/settings/trackerSettings.js:328
+#: src/settings/trackerSettings.js:320
 msgid "Information"
 msgstr "情報"
 
