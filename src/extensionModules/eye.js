@@ -370,7 +370,7 @@ export function spawnEyes(extension, eyeArray, trackerManager) {
  * @param {Eye[]} eyeArray - The array that stores created Eye instances.
  */
 export function destroyEyes(eyeArray) {
-    eyeArray?.forEach((eye) => eye.destroy());
+    eyeArray.forEach((eye) => eye.destroy());
     eyeArray.length = 0;
 }
 //#endregion

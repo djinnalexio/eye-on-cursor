@@ -70,8 +70,7 @@ export class TrackerManager {
         this.shape = this.settings.get_string('tracker-shape');
         this.size = this.settings.get_int('tracker-size');
         this.colorCustomEnabled = this.hasAccentColor
-            ? this.settings.get_boolean('tracker-color-main-enabled')
-            : true;
+            ? this.settings.get_boolean('tracker-color-main-enabled') : true;
         this.colorMain = this.settings.get_string('tracker-color-main');
         this.colorLeft = this.settings.get_string('tracker-color-left');
         this.colorMiddle = this.settings.get_string('tracker-color-middle');
@@ -436,8 +435,7 @@ export class TrackerManager {
         const newShape = this.settings.get_string('tracker-shape');
         const newSize = this.settings.get_int('tracker-size');
         const newColorCustomEnabled = this.hasAccentColor
-            ? this.settings.get_boolean('tracker-color-main-enabled')
-            : true;
+            ? this.settings.get_boolean('tracker-color-main-enabled') : true;
         const newColorMain = this.settings.get_string('tracker-color-main');
         const newColorLeft = this.settings.get_string('tracker-color-left');
         const newColorMiddle = this.settings.get_string('tracker-color-middle');

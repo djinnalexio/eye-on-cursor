@@ -29,10 +29,12 @@ class TrackerPage extends Adw.PreferencesPage {
         });
 
         this.settings = extension.getSettings();
+        this.resetFunctions = [];
+
+        // Check if accent color variable exists (GNOME 47+)
         this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
             .list_keys()
             .includes('accent-color');
-        this.resetFunctions = [];
 
         //#region Tracker drawing group
         const drawingGroup = new Adw.PreferencesGroup({title: _('Appearance')});
@@ -102,8 +104,8 @@ class TrackerPage extends Adw.PreferencesPage {
             const flowItemContent = new Gtk.Box({
                 orientation: Gtk.Orientation.VERTICAL,
                 spacing: 4,
-                valign: Gtk.Align.CENTER,
                 halign: Gtk.Align.CENTER,
+                valign: Gtk.Align.CENTER,
             });
 
             const picture = Gtk.Picture.new_for_filename(filePath);

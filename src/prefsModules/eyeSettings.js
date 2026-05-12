@@ -27,15 +27,15 @@ class EyePage extends Adw.PreferencesPage {
         });
 
         this.settings = extension.getSettings();
+        this.resetFunctions = [];
+
+        // Check if accent color variable exists (GNOME 47+)
         this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
             .list_keys()
             .includes('accent-color');
-        this.resetFunctions = [];
 
         //#region Eye placement group
-        const placementGroup = new Adw.PreferencesGroup({
-            title: _('Layout'),
-        });
+        const placementGroup = new Adw.PreferencesGroup({title: _('Layout')});
         this.add(placementGroup);
 
         //#region Eye activity
@@ -164,9 +164,7 @@ class EyePage extends Adw.PreferencesPage {
         //#endregion
 
         //#region Eye drawing group
-        const drawingGroup = new Adw.PreferencesGroup({
-            title: _('Appearance'),
-        });
+        const drawingGroup = new Adw.PreferencesGroup({title: _('Appearance')});
         this.add(drawingGroup);
 
         //#region Eye shape
@@ -251,9 +249,6 @@ class EyePage extends Adw.PreferencesPage {
         const colorBox = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
 
         // Iris Color Toggle (GNOME 47+)
-        this.hasAccentColor = new Gio.Settings({schema_id: 'org.gnome.desktop.interface'})
-            .list_keys()
-            .includes('accent-color');
         if (this.hasAccentColor) {
             const irisColorToggle = new Gtk.CheckButton({
                 active: this.settings.get_boolean('eye-color-iris-enabled'),
@@ -310,9 +305,7 @@ class EyePage extends Adw.PreferencesPage {
         //#endregion
 
         //#region Eye blink group
-        const blinkGroup = new Adw.PreferencesGroup({
-            title: _('Blinking'),
-        });
+        const blinkGroup = new Adw.PreferencesGroup({title: _('Blinking')});
         this.add(blinkGroup);
 
         //#region Eyelid color
