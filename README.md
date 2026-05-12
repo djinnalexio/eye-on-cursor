@@ -55,20 +55,14 @@ the attention it needs.
 
 ### From GitHub
 
-> ⚠️ **Note:** When installing this extension manually from GitHub, it will
-> **not receive automatic updates** from the GNOME Extensions website.
-
-1. Go to [the latest release](https://github.com/djinnalexio/eye-on-cursor/releases/latest) and
-  download the extension zip file.
-
-2. At the location of the downloaded zip file, run the install command:
+1. Run the following command to download and install the latest release:
 
     ```bash
-    gnome-extensions install --force eye-on-cursor@djinnalexio.github.io.shell-extension.zip
+    curl -L https://github.com/djinnalexio/eye-on-cursor/releases/download/v2.4.1/eye-on-cursordjinnalexio.github.io.v23.shell-extension.zip \
+    -o /tmp/eye-on-cursor.zip && gnome-extensions install -f /tmp/eye-on-cursor.zip
     ```
 
-3. Log out of your session and log back in, then enable the extension using your Extensions manager
-  app or by running:
+2. Log out and back in, then enable the extension using Extensions Manager or by running:
 
     ```bash
     gnome-extensions enable eye-on-cursor@djinnalexio.github.io
