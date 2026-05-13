@@ -10,6 +10,8 @@ PACK_NAME = $(EXTENSION_UUID).shell-extension.zip
 .PHONY: pack install reset uninstall enable disable prefs test \
 		test-prefs-settings test-prefs-window shexli update-pot upload
 
+.DEFAULT_GOAL := pack
+
 pack:
 	# Packing extension into ./$(PACK_NAME)...
 	gnome-extensions pack ./src -f --extra-source="extensionModules" \
