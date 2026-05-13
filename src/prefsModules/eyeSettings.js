@@ -252,10 +252,8 @@ class EyePage extends Adw.PreferencesPage {
         if (this.hasAccentColor) {
             const irisColorToggle = new Gtk.CheckButton({
                 active: this.settings.get_boolean('eye-color-iris-enabled'),
-                hexpand: false,
                 margin_end: 8,
                 valign: Gtk.Align.CENTER,
-                vexpand: false,
             });
             irisColorToggle.connect('toggled', (widget) => {
                 this.settings.set_boolean('eye-color-iris-enabled', widget.active);

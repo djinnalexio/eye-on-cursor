@@ -24,10 +24,8 @@ export function newColorPicker(settings, key) {
             modal: true,
             with_alpha: false,
         }),
-        hexpand: false,
         margin_end: 8,
         valign: Gtk.Align.CENTER,
-        vexpand: false,
     });
     const currentColor = colorPicker.get_rgba();// Or new Gdk.RGBA();
     currentColor.parse(settings.get_string(key));
@@ -64,8 +62,6 @@ class KeybindingRow extends Adw.ActionRow {
         this.label = new Gtk.ShortcutLabel({
             disabled_text: _('New shortcut…'),
             valign: Gtk.Align.CENTER,
-            hexpand: false,
-            vexpand: false,
             accelerator: settings.get_strv(key)[0],
         });
         this.box = new Gtk.Box({orientation: Gtk.Orientation.HORIZONTAL});
@@ -76,8 +72,6 @@ class KeybindingRow extends Adw.ActionRow {
         this.resetButton = new Gtk.Button({
             icon_name: 'edit-delete-symbolic',
             css_classes: ['destructive-action'],
-            hexpand: false,
-            vexpand: false,
         });
         this.resetButton.connect('clicked', this.resetKeybinding.bind(this));
 

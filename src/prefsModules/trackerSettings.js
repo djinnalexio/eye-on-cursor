@@ -187,10 +187,8 @@ class TrackerPage extends Adw.PreferencesPage {
         if (this.hasAccentColor) {
             const trackerColorToggle = new Gtk.CheckButton({
                 active: this.settings.get_boolean('tracker-color-main-enabled'),
-                hexpand: false,
                 margin_end: 8,
                 valign: Gtk.Align.CENTER,
-                vexpand: false,
             });
             trackerColorToggle.connect('toggled', (widget) => {
                 this.settings.set_boolean('tracker-color-main-enabled', widget.active);
