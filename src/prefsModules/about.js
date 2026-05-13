@@ -52,7 +52,6 @@ const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/cat
  * A row that opens an AboutDialog window with information about the extension.
  *
  * @param {ExtensionMetadata} metadata - The metadata object from metadata.json.
- * @param {string} path - The absolute path to the extension folder.
  */
 export const AboutRow = GObject.registerClass(
 class AboutRow extends Adw.ActionRow {
