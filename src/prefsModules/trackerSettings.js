@@ -11,8 +11,8 @@ import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {AboutRow} from './about.js';
-import {newColorPicker, KeybindingRow, ResetRow} from './prefsWidgets.js';
+import {EyeAboutRow} from './about.js';
+import {newColorPicker, EyeKeybindingRow, EyeResetRow} from './prefsWidgets.js';
 //#endregion
 
 /**
@@ -292,7 +292,7 @@ class TrackerPage extends Adw.PreferencesPage {
         const keybindingGroup = new Adw.PreferencesGroup({title: _('Keybinding')});
         this.add(keybindingGroup);
 
-        const keybindingRow = new KeybindingRow(
+        const keybindingRow = new EyeKeybindingRow(
             this.settings,
             'tracker-keybinding',
             _('Toggle Tracker')
@@ -307,7 +307,7 @@ class TrackerPage extends Adw.PreferencesPage {
         const resetGroup = new Adw.PreferencesGroup();
         this.add(resetGroup);
 
-        const resetRow = new ResetRow(
+        const resetRow = new EyeResetRow(
             'tracker',
             this.settings,
             _('Reset all tracker settings?'),
@@ -320,7 +320,7 @@ class TrackerPage extends Adw.PreferencesPage {
         const aboutGroup = new Adw.PreferencesGroup({title: _('Information')});
         this.add(aboutGroup);
 
-        const aboutRow = new AboutRow(extension.metadata);
+        const aboutRow = new EyeAboutRow(extension.metadata);
         aboutGroup.add(aboutRow);
         //#endregion
     }

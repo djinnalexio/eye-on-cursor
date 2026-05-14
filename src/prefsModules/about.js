@@ -53,8 +53,8 @@ const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/cat
  *
  * @param {ExtensionMetadata} metadata - The metadata object from metadata.json.
  */
-export const AboutRow = GObject.registerClass(
-class AboutRow extends Adw.ActionRow {
+export const EyeAboutRow = GObject.registerClass(
+class EyeAboutRow extends Adw.ActionRow {
     constructor(metadata) {
         super({
             title: _('About Eye on Cursor'),

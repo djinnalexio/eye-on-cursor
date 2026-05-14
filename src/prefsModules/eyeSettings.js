@@ -10,7 +10,7 @@ import Gtk from 'gi://Gtk';
 
 import {gettext as _} from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
 
-import {newColorPicker, KeybindingRow, ResetRow} from './prefsWidgets.js';
+import {newColorPicker, EyeKeybindingRow, EyeResetRow} from './prefsWidgets.js';
 //#endregion
 
 /**
@@ -349,7 +349,7 @@ class EyePage extends Adw.PreferencesPage {
         //#endregion
 
         //#region Blink keybinding
-        const blinkKeybindingRow = new KeybindingRow(
+        const blinkKeybindingRow = new EyeKeybindingRow(
             this.settings,
             'eye-blink-keybinding',
             _('Manual Blink')
@@ -467,7 +467,7 @@ class EyePage extends Adw.PreferencesPage {
         const resetGroup = new Adw.PreferencesGroup();
         this.add(resetGroup);
 
-        const resetRow = new ResetRow(
+        const resetRow = new EyeResetRow(
             'eye',
             this.settings,
             _('Reset all eye settings?'),

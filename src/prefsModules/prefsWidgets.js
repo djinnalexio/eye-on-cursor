@@ -48,8 +48,8 @@ export function newColorPicker(settings, key) {
  * @param {string} key - The schema key in the settings object for this keybinding.
  * @param {string} shortcutName - The name of the shortcut and title of the row.
  */
-export const KeybindingRow = GObject.registerClass(
-class KeybindingRow extends Adw.ActionRow {
+export const EyeKeybindingRow = GObject.registerClass(
+class EyeKeybindingRow extends Adw.ActionRow {
     //#region Keybinding constructor
     constructor(settings, key, shortcutName) {
         super({
@@ -214,8 +214,8 @@ class KeybindingRow extends Adw.ActionRow {
  * @param {Function[]} resetFunctions - The array of functions that update widget values with
  * current key values.
  */
-export const ResetRow = GObject.registerClass(
-class ResetRow extends Adw.ActionRow {
+export const EyeResetRow = GObject.registerClass(
+class EyeResetRow extends Adw.ActionRow {
     constructor(keyPrefix, settings, heading, resetFunctions) {
         super({
             title: _('Reset Settings'),
