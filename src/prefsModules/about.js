@@ -44,7 +44,7 @@ const releaseNotes =
     <li>increased max blink interval to one hour</li>\
     </ul>\
     ';
-const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
+// Const supportUrl = 'https://github.com/djinnalexio/eye-on-cursor/discussions/categories/q-a';
 //#endregion
 
 //#region About row
@@ -80,7 +80,7 @@ class EyeAboutRow extends Adw.ActionRow {
             license_type: Gtk.License.GPL_3_0,
             release_notes: releaseNotes,
             release_notes_version: metadata['version-name'],
-            support_url: supportUrl,
+            // Support_url: supportUrl,
             translator_credits: pgettext('(USER)NAME EMAIL/URL', 'translator_credits'),
             version: metadata['version-name'],
             website: metadata.url,
