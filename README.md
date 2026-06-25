@@ -1,22 +1,27 @@
-<h1 align="center">Eye on Cursor</h1>
-<p align="center">
-  <a href="https://github.com/djinnalexio/eye-on-cursor/blob/main/LICENSE">
-    <img alt="GitHub License" src="https://img.shields.io/github/license/djinnalexio/eye-on-cursor?&logo=gnu">
-  </a>
-  <a href="https://github.com/djinnalexio/eye-on-cursor/releases/latest">
-    <img alt="Latest Release" src="https://img.shields.io/github/v/release/djinnalexio/eye-on-cursor?label=Latest%20Release&logo=github&color=red">
-  </a>
-</p>
-<p align="center">
-  <a href="https://extensions.gnome.org/extension/7036/eye-on-cursor/">
-    <img alt="GNOME versions" src="https://img.shields.io/badge/GNOME_version-≤_50-green?logo=gnome">
-    <img alt="GNOME Downloads" src="https://img.shields.io/badge/dynamic/xml?label=GNOME%20extensions&url=https%3A%2F%2Fextensions.gnome.org%2Fextension%2F7036%2Feye-on-cursor%2F&query=%2Fhtml%2Fbody%2Fdiv%5B2%5D%2Fdiv%2Fdiv%5B2%5D%2Fdiv%5B1%5D%2Fspan%5B3%5D&cacheSeconds=86400&logo=gnome">
-  </a>
-</p>
+> [!WARNING]
+> **This repository has been migrated and archived**
+> 
+> Development has moved to [gitlab.gnome.org](https://gitlab.gnome.org/DjinnAlexio/eye-on-cursor/).
+> This repository is kept for historical reference only and will no longer receive updates.
+
+<div align="center">
+
+[![Static Badge](https://img.shields.io/badge/Eye%20on%20Cursor-gold?logo=gnome&label=gitlab)](https://gitlab.gnome.org/DjinnAlexio/eye-on-cursor/)
+
+# Eye on Cursor
+
+[![GitHub License](https://img.shields.io/github/license/djinnalexio/eye-on-cursor?&logo=gnu)](https://github.com/djinnalexio/eye-on-cursor/blob/main/LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/djinnalexio/eye-on-cursor?label=latest%20release&logo=github&color=red)](https://github.com/djinnalexio/eye-on-cursor/releases/latest")
+[![GNOME versions](https://img.shields.io/badge/compatibility-45_to_50-3584e4?logo=gnome)](https://extensions.gnome.org/extension/7036/eye-on-cursor/)
+[![GNOME Downloads](https://img.shields.io/gnome-extensions/dt/eye-on-cursor%40djinnalexio.github.io?logo=gnome&color=3584e4)](https://extensions.gnome.org/extension/7036/eye-on-cursor/)
+
 <p align="center">
   <img alt="logo" height="100" src="./src/assets/eye-on-cursor-logo.svg">
 </p>
-<h3 align="center">Let your desktop "keep an eye" on your mouse!</h3>
+
+### Let your desktop "keep an eye" on your mouse!
+
+</div>
 
 ## Overview
 
